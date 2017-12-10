@@ -1,16 +1,30 @@
 export default class Slot {
-    constructor({target, x, y}){
+    constructor(target, directionObject, {x, y}){
+
         this.target = target;
-        this.x = x;
-        this.y = y;
+        this.directionObject = directionObject;
+        this.basePoint = new Phaser.Point(x, y);
         this.taken = null;
         this.callback = null;
+        this.point = {x: target.x, y: target.y};
+        console.log('constructor slot', this);
+        this.update()
     }
+
+    get x() {
+        return this.point.x
+    }
+
+    get y() {
+        return this.point.y
+    }
+
     update(){
-        const {target: {x, y, direction}} = this;
-        const point = Phaser.point.rotate(this, x, y, direction, true);
-        return point;
+      console.log('update slot', this);
+      const { basePoint, target: { x, y }} = this;
+      this.point = Phaser.Point.rotate(new Phaser.Point(x+basePoint.x, y+basePoint.y), x, y, this.directionObject.direction, true);
     }
+
     take(protester){
         this.update();
         this.taken = protester;

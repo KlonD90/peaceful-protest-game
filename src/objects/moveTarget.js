@@ -14,7 +14,7 @@ export class MoveTarget {
       return false
     } else if (this.shouldStop(prefab, this.target)) {
       prefab.stop()
-      return stop()
+      return this.stop()
     } else if (this.shouldWait(prefab)) {
       prefab.stop()
     } else {
@@ -25,10 +25,17 @@ export class MoveTarget {
   }
 
   stop (prefab) {
+    if (this.stoped)
+      return;
     this.stoped = true
     this.callback && this.callback()
 
     return false
+  }
+
+  forceStop(){
+    this.stoped = true;
+    return false;
   }
 
   shouldWait (prefab) {

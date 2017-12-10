@@ -23,6 +23,9 @@ setTimeout(function() {
         renderer: Phaser.CANVAS
     });
 
+    // FIXME: debug
+    window.game = game
+
     game.state.add('Boot', Boot);
     game.state.add('Loading', Loading);
     game.state.add('StartMenu', StartMenu);

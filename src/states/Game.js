@@ -909,9 +909,10 @@ class Game {
     screenAttack(){
         const awaitStop = 10000;
         const alphaStops = 10;
-        const alphaStep = awaitStop/alphaStops+1;
+        const alphaStep = awaitStop/(alphaStops+1);
         if (this.mz.screenAttacked)
         {
+            console.log(this.mz.objects.screenAttack);
             // this.mz.screenAttacked = true;
             // this.mz.objects.screenAttack = this.game.add.sprite(this.game.camera.width / 2, this.game.camera.height / 2, 'klyaksa');
             // this.mz.objects.screenAttack.fixedToCamera = false;
@@ -931,11 +932,16 @@ class Game {
         {
             this.mz.screenAttacked = true;
             this.mz.objects.screenAttack = this.game.add.sprite(this.game.camera.width / 2, this.game.camera.height / 2, 'klyaksa');
-            this.mz.objects.screenAttack.fixedToCamera = false;
+            this.mz.objects.screenAttack.fixedToCamera = true;
+            this.mz.objects.screenAttack.tint = 0x00ff00;
+            console.log(this.mz.objects.screenAttack);
             const scaleWidth = this.game.camera.width / this.mz.objects.screenAttack.width;
-            const scaleHeight = this.game.camera.heigh / this.mz.objects.screenAttack.height;
+            const scaleHeight = this.game.camera.height / this.mz.objects.screenAttack.height;
             const leastScale = scaleWidth > scaleHeight ? scaleHeight : scaleWidth;
+
             this.mz.objects.screenAttack.scale.setTo(leastScale);
+            this.mz.objects.screenAttack.x = (this.game.camera.width  /2 - this.mz.objects.screenAttack.width /2 );
+            this.mz.objects.screenAttack.y = (this.game.camera.height  /2 - this.mz.objects.screenAttack.height /2 );
             this.mz.timers.screen.add(awaitStop, this.screenAttackStop, this);
             for (let i=0; i<alphaStops; i++)
             {
@@ -945,12 +951,14 @@ class Game {
     }
 
     screenAttackStop(){
+        alert('attack stop');
         this.mz.objects.screenAttack.destroy();
         this.mz.objects.screenAttack = null;
         this.mz.screenAttacked = false;
     }
 
     screenAttackAlpha(){
+        console.log('attack alpha');
         this.mz.objects.screenAttack.alpha -= 0.5;
     }
 }

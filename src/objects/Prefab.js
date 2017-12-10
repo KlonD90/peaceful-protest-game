@@ -34,6 +34,11 @@ class Prefab {
         if (!moveTarget) return
         if (moveTarget.update(this)) return
 
+        if (this.mode === 'leave')
+        {
+            console.log('leave', moveTarget, this);
+        }
+
         this.moveTarget.shift()
         this.update()
     }
@@ -62,14 +67,16 @@ class Prefab {
 
     moveTo(target, { callback, shouldStop, reset = true } = {}) {
       if (reset) {
-        this.moveTarget.forEach(target => target.stop(this))
-        this.moveTarget = []
+        const targets = this.moveTarget;
+        this.moveTarget = [];
+        targets.forEach(target => target.forceStop(this))
       }
 
       if (target) {
         const newTarget = new MoveTarget({ target, callback, shouldStop })
         this.moveTarget.push(newTarget)
       }
+      console.log('move target', this.moveTarget);
     }
 
     getNextCoords(bounds) {

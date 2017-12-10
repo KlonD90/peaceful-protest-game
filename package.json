@@ -15,7 +15,8 @@
   "dependencies": {
     "core-js": "^2.4.1",
     "file-loader": "^0.11.2",
-    "phaser-ce": "2.8.1"
+    "phaser-ce": "2.8.1",
+    "webpack-dev-server": "^2.9.7"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",

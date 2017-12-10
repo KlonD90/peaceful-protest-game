@@ -1,4 +1,5 @@
 import Protester from './Protester.js';
+import Player from './Player.js'
 import {
     PROTESTER_MODE_WANDER,
     PROTESTER_MODE_ARRESTED,
@@ -45,9 +46,10 @@ class NPCProtester extends Protester {
 
         this.onLeft = onLeft;
 
-        this.isFollower = Math.random() < 0.1;
+        this.isFollower = true;
         this.isFollowing = false;
-        this.isNOD = !this.isFolower && Math.random() < 1;
+        this.isNOD = !this.isFolower && Math.random() < 0.05;
+        this.nodDone = false;
         this.slot = null;
 
         // initially dead
@@ -65,35 +67,43 @@ class NPCProtester extends Protester {
         } else if (this.mood > 0 && this.leavingTimer.running) {
             this.leavingTimer.stop(true);
         }
-        if (this.mood > 0 && this.mode  === PROTESTER_MODE_LEAVE) {
+        if (this.mood > 0 && this.mode  === PROTESTER_MODE_LEAVE && !this.nodDone) {
             this.setMode(PROTESTER_MODE_WANDER);
         }
 
-        if (this.isBeingCheeredUp) {
-            if (this.isNOD)
-            {
-                this.setMode(PROTESTER_MODE_NOD);
+        if (this.mode === PROTESTER_MODE_NOD && this.nodDone)
+        {
+            this.setMode(PROTESTER_MODE_LEAVE);
+        }
 
+        if (this.isFollowing)
+        {
+            if (this.isBeingCheeredUp) {
+                if (this.isNOD)
+                {
+                    if (!this.nodDone && this.mode != PROTESTER_MODE_NOD)
+                        this.setMode(PROTESTER_MODE_NOD);
+                }
+                else
+                {
+                    this.updateProgressBar(this.mood);
+                    this.moodUp(this.moodUpValue);
+                }
+            } else if (this.mood < 0.75) {
+                this.moodDown(this.moodDownValue);
+                this.updateProgressBar(0);
             }
-            else
-            {
-                this.updateProgressBar(this.mood);
-                this.moodUp(this.moodUpValue);
-            }
-        } else if (this.mood < 0.75) {
-            this.moodDown(this.moodDownValue);
-            this.updateProgressBar(0);
         }
 
         this.showPoster = this.mode !== PROTESTER_MODE_ARRESTED && this.mood >= 0.75 && !this.isNOD;
 
         if (this.showPoster && this.isFollower && !this.isFollowing)
         {
-            // this.isFollowing = true;
-            // const slot = this.game.mz.objects.player.takeSlot(this);
-            // if (slot) {
-            //     this.setMode(PROTESTER_MODE_FOLLOW, {slot})
-            // }
+            this.isFollowing = true;
+            const slot = Player.instance.slots.take(this);
+            if (slot) {
+                this.setMode(PROTESTER_MODE_FOLLOW, {slot})
+            }
         }
 
         this.sprite.tint = 0xffffff;
@@ -122,6 +132,7 @@ class NPCProtester extends Protester {
     }
 
     setMode(mode, props = {}) {
+        console.log(mode);
         switch (mode) {
             case PROTESTER_MODE_WANDER: {
                 // clean up previous state
@@ -138,9 +149,12 @@ class NPCProtester extends Protester {
                 break;
             }
             case PROTESTER_MODE_FOLLOW: {
+                if (this.mode === PROTESTER_MODE_WANDER) {
+                    this.stopWandering();
+                }
                 const { slot } = props;
-                slot.update();
-                // this.pursueTo(slot);
+                this.following = slot
+                this.moveTo(slot, { shouldStop: () => false });
                 break;
             }
             case PROTESTER_MODE_ARRESTED: {
@@ -151,11 +165,25 @@ class NPCProtester extends Protester {
                 break;
             }
             case PROTESTER_MODE_NOD: {
+                if (this.mode === PROTESTER_MODE_WANDER) {
+                    this.stopWandering();
+                }
                 console.log(this.GameObject);
-                this.moveTo(this.GameObject.mz.objects.player.sprite, {callback: () => {
-                    this.GameObject.screenAttack();
-                    this.setMode(PROTESTER_MODE_LEAVE);
-                }});
+                this.moveTo(
+                    this.GameObject.mz.objects.player.sprite,
+                    {
+                        callback: () => {
+                            this.nodDone = true;
+                            this.GameObject.screenAttack();
+                            this.moveTo(null);
+                        },
+                        shouldStop: (prefab, target) => {
+                            const fuzzyEqual = prefab.game.math.fuzzyEqual
+                            const prefabCenter = prefab.sprite.body.center
+                            return Math.abs(target.x - prefabCenter.x) + Math.abs(target.y - prefabCenter.y) < 20;
+                        }
+                    }
+                );
                 break;
             }
             case PROTESTER_MODE_LEAVE: {
@@ -167,20 +195,17 @@ class NPCProtester extends Protester {
                 const x = this.sprite.x < this.game.world.width / 2 ? -100 : this.game.world.width + 100
                 const y = this.sprite.y
 
-                this.moveTo({ x, y }, { callback: () => this.handleLeft() });
+                this.moveTo({ x, y }, { callback: () => this.handleLeft(), shouldStop: (prefab, target) =>  {
+                    const prefabCenter = prefab.sprite.body.center
+                    return Math.abs(target.x - prefabCenter.x) + Math.abs(target.y - prefabCenter.y) < 5;
+                }});
                 break;
             }
         }
 
+        // this.following && this.following.dismiss()
+        console.log(this)
         super.setMode(mode, props);
-    }
-
-    follow() {
-        // const coords = this.slot.getPosition();;
-        // this.moveTo({
-        //     ...coords,
-        //     callback: this.follow.bind(this)
-        // });
     }
 
     doNod(){
@@ -221,6 +246,7 @@ class NPCProtester extends Protester {
     moodDown(value) {
         this.mood = Math.max(this.mood - value, 0);
     }
+
 
     revive({ x, y, nextCoords, mood = this.initialMood }) {
         this.sprite.x = x;

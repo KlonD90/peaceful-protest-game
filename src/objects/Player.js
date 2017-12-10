@@ -1,5 +1,6 @@
 import Protester from './Protester.js';
-import Slot from './Slot';
+import SlotManager from './SlotManager';
+
 import {
     PROTESTER_MODE_ARRESTED
 } from '../constants.js';
@@ -64,10 +65,9 @@ class Player extends Protester {
         this.isFrozen = false;
 
 
-        this.slots = slots || [
-            new Slot({target: this, x: -10, y: -10}),
-            new Slot({target: this, x: 10, y: 10}),
-        ];
+        this.slots = new SlotManager(this.sprite, this, slots || [
+            { x: -10, y: -10 } , { x: 10, y: 10},
+        ]);
 
         this.radius = {
             initial: radius,
@@ -92,12 +92,14 @@ class Player extends Protester {
             space: this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
             shift: this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT)
         };
+
+        Player.instance = this
     }
 
     update() {
         this.resetRadius();
         super.update();
-        this.slots.filter(slot => !!slot.taken).forEach(slot => slot.update());
+        this.slots.update()
 
         this.circleGraphics.clear();
 
@@ -285,19 +287,6 @@ class Player extends Protester {
 
         this.isFrozen = true;
     }
-
-    takeSlot(protester){
-        const slot = this.slots.find( x => !x.taken);
-        if (slot)
-        {
-            slot.take(protester);
-            return slot;
-        }
-        else
-            return null;
-    }
-
-
 
     kill() {
         this.game.onResume.removeAll();
