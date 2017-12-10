@@ -24,9 +24,31 @@ class Prefab {
 
         this.mode = null;
         this.moveTarget = [];
+        this.pursuedTarget = null;
+        this.pursuedCallback = null;
     }
 
     update() {
+        if (this.pursuedTarget)
+        {
+            const { x, y } = this.pursuedTarget;
+            if (
+                this.game.math.fuzzyEqual(x, this.sprite.body.center.x, 1) &&
+                this.game.math.fuzzyEqual(y, this.sprite.body.center.y, 1)
+            ) {
+                this.pursuedCallback();
+                // this.stop();
+                // go to next target
+                // this.moveTarget.shift();
+                // if (this.moveTarget.length) {
+                //     this.setVelocity(this.moveTarget[0]);
+                // }
+                //
+                // if (typeof callback === 'function') {
+                //     callback();
+                // }
+            }
+        }
         if (this.moveTarget.length) {
             const { x, y, callback } = this.moveTarget[0];
             if (
@@ -81,6 +103,18 @@ class Prefab {
         } else {
             this.stop();
             this.moveTarget = [];
+        }
+    }
+
+    pursueTarget(target, callback) {
+        if (target) {
+            this.pursuedTarget = target;
+            this.setVelocity(target);
+            this.pursuedCallback = callback;
+        } else {
+            this.stop();
+            this.pursuedTarget = null;
+            this.pursuedCallback = null;
         }
     }
 
