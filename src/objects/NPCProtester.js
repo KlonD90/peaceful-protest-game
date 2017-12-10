@@ -89,7 +89,7 @@ class NPCProtester extends Protester {
         if (this.showPoster && this.isFollower && !this.isFollowing)
         {
             this.isFollowing = true;
-            const slot = this.game.mz.player.takeSlot(this);
+            const slot = this.game.mz.player.slots.take(this);
             if (slot) {
                 this.setMode(PROTESTER_MODE_FOLLOW, {slot})
             }
@@ -138,8 +138,8 @@ class NPCProtester extends Protester {
             }
             case PROTESTER_MODE_FOLLOW: {
                 const { slot } = props;
-                slot.update();
-                // this.pursueTo(slot);
+                this.following = slot
+                this.moveTo(slot, { shouldStop: () => false });
                 break;
             }
             case PROTESTER_MODE_ARRESTED: {
@@ -149,10 +149,10 @@ class NPCProtester extends Protester {
                 }
                 break;
             }
-            case PROTESTER_MODE_NOD: {
-                this.moveTo(this.game.mz.objects.player.sprite);
-                break;
-            }
+            // case PROTESTER_MODE_NOD: {
+            //     this.moveTo(this.game.mz.objects.player.sprite);
+            //     break;
+            // }
             case PROTESTER_MODE_LEAVE: {
                 // clean up previous state
                 if (this.mode === PROTESTER_MODE_WANDER) {
@@ -167,6 +167,7 @@ class NPCProtester extends Protester {
             }
         }
 
+        this.following && this.following.dismiss()
         super.setMode(mode, props);
     }
 
