@@ -64,6 +64,13 @@ const pack = {
         },
         {
             type: 'spritesheet',
+            key: 'klyaksa',
+            url: require('./klyaksa.png'),
+            frameWidth: 1035,
+            frameHeight: 1035
+        },
+        {
+            type: 'spritesheet',
             key: 'repeatButton',
             url: require('./repeatButton.png'),
             frameWidth: 100,

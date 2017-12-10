@@ -305,6 +305,10 @@ class Player extends Protester {
 
         super.kill();
     }
+
+    screenAttack(){
+
+    }
 }
 
 export default Player;

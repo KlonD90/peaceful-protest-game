@@ -36,6 +36,7 @@ class Game {
         this.mz = {
             level,
             gameEnded: false,
+            screenAttacked: false,
             score: 100 * (0.5 * level.protesters.mood + 0.5 * level.protesters.count.start / level.protesters.count.max),
             timePassed: 0, // s
             protesters: {
@@ -55,7 +56,8 @@ class Game {
                 fieldClickHandler: null,
             },
             timers: {
-                swat: null
+                swat: null,
+                screen: null
             },
             objects: {
                 player: null,
@@ -65,7 +67,8 @@ class Game {
                 interface: null,
                 audio: {},
                 pauseMenu: null,
-                endMenu: null
+                endMenu: null,
+                screenAttack: null
             },
             arrays: {
                 protesters: [],
@@ -150,6 +153,8 @@ class Game {
 
         // cops
         this.createCops();
+
+        this.mz.timers.screen = this.game.time.create(false);
 
         // swat
         if (this.mz.level.swat) {
@@ -672,7 +677,8 @@ class Game {
                 moodDown: this.mz.level.protesters.moodDown,
                 dropPoster: this.mz.level.protesters.poster.drop,
                 onLeft,
-                onDropPoster
+                onDropPoster,
+                GameObject: this
             });
             this.mz.arrays.protesters.push(protester.sprite);
         }
@@ -898,6 +904,54 @@ class Game {
             FIELD_OFFSET.top,
             this.game.world.height - FIELD_OFFSET.bottom
         );
+    }
+
+    screenAttack(){
+        const awaitStop = 10000;
+        const alphaStops = 10;
+        const alphaStep = awaitStop/alphaStops+1;
+        if (this.mz.screenAttacked)
+        {
+            // this.mz.screenAttacked = true;
+            // this.mz.objects.screenAttack = this.game.add.sprite(this.game.camera.width / 2, this.game.camera.height / 2, 'klyaksa');
+            // this.mz.objects.screenAttack.fixedToCamera = false;
+            // const scaleWidth = this.game.camera.width / this.mz.objects.screenAttack.width;
+            // const scaleHeight = this.game.camera.heigh / this.mz.objects.screenAttack.height;
+            // const leastScale = scaleWidth > scaleHeight ? scaleHeight : scaleWidth;
+            // this.mz.objects.screenAttack.scale.setTo(leastScale);
+            this.mz.objects.screenAttack.alpha = 1;
+            this.mz.timers.screen.removeAll();
+            this.mz.timers.screen.add(awaitStop, this.screenAttackStop, this);
+            for (let i=0; i<alphaStops; i++)
+            {
+                this.mz.timers.screen.add(alphaStep * (i +1), this.screenAttackAlpha, this);
+            }
+        }
+        else
+        {
+            this.mz.screenAttacked = true;
+            this.mz.objects.screenAttack = this.game.add.sprite(this.game.camera.width / 2, this.game.camera.height / 2, 'klyaksa');
+            this.mz.objects.screenAttack.fixedToCamera = false;
+            const scaleWidth = this.game.camera.width / this.mz.objects.screenAttack.width;
+            const scaleHeight = this.game.camera.heigh / this.mz.objects.screenAttack.height;
+            const leastScale = scaleWidth > scaleHeight ? scaleHeight : scaleWidth;
+            this.mz.objects.screenAttack.scale.setTo(leastScale);
+            this.mz.timers.screen.add(awaitStop, this.screenAttackStop, this);
+            for (let i=0; i<alphaStops; i++)
+            {
+                this.mz.timers.screen.add(alphaStep * (i +1), this.screenAttackAlpha, this);
+            }
+        }
+    }
+
+    screenAttackStop(){
+        this.mz.objects.screenAttack.destroy();
+        this.mz.objects.screenAttack = null;
+        this.mz.screenAttacked = false;
+    }
+
+    screenAttackAlpha(){
+        this.mz.objects.screenAttack.alpha -= 0.5;
     }
 }
 

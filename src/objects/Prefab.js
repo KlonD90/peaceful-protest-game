@@ -5,9 +5,10 @@ import {
 import MoveTarget from "./moveTarget"
 
 class Prefab {
-    constructor({ game, x, y, speed, spriteKey, spriteName, props }) {
+    constructor({ game, x, y, speed, spriteKey, spriteName, props, GameObject }) {
         this.props = props;
         this.game = game;
+        this.GameObject = GameObject;
 
         this.speed = {
             current: speed.value,

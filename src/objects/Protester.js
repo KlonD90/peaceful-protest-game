@@ -4,8 +4,8 @@ import {
 } from '../constants.js';
 
 class Protester extends Prefab {
-    constructor({ game, x, y, speed, spriteKey, spriteName, onDropPoster }) {
-        super({ game, x, y, speed, spriteKey, spriteName });
+    constructor({ game, x, y, speed, spriteKey, spriteName, onDropPoster, GameObject }) {
+        super({ game, x, y, speed, spriteKey, spriteName, GameObject });
 
         this.injurySprite = this.sprite.addChild(
             this.game.make.sprite(

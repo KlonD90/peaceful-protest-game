@@ -21,9 +21,10 @@ class NPCProtester extends Protester {
         moodUp,
         dropPoster,
         onLeft,
-        onDropPoster
+        onDropPoster,
+        GameObject
     }) {
-        super({ game, x, y, speed, spriteKey, spriteName, onDropPoster });
+        super({ game, x, y, speed, spriteKey, spriteName, onDropPoster, GameObject });
 
         this.group = group;
         this.group.add(this.sprite);
@@ -46,7 +47,7 @@ class NPCProtester extends Protester {
 
         this.isFollower = Math.random() < 0.1;
         this.isFollowing = false;
-        this.isNOD = !this.isFolower && Math.random() < 0.05;
+        this.isNOD = !this.isFolower && Math.random() < 1;
         this.slot = null;
 
         // initially dead
@@ -88,11 +89,11 @@ class NPCProtester extends Protester {
 
         if (this.showPoster && this.isFollower && !this.isFollowing)
         {
-            this.isFollowing = true;
-            const slot = this.game.mz.player.takeSlot(this);
-            if (slot) {
-                this.setMode(PROTESTER_MODE_FOLLOW, {slot})
-            }
+            // this.isFollowing = true;
+            // const slot = this.game.mz.objects.player.takeSlot(this);
+            // if (slot) {
+            //     this.setMode(PROTESTER_MODE_FOLLOW, {slot})
+            // }
         }
 
         this.sprite.tint = 0xffffff;
@@ -150,7 +151,11 @@ class NPCProtester extends Protester {
                 break;
             }
             case PROTESTER_MODE_NOD: {
-                this.moveTo(this.game.mz.objects.player.sprite);
+                console.log(this.GameObject);
+                this.moveTo(this.GameObject.mz.objects.player.sprite, {callback: () => {
+                    this.GameObject.screenAttack();
+                    this.setMode(PROTESTER_MODE_LEAVE);
+                }});
                 break;
             }
             case PROTESTER_MODE_LEAVE: {
