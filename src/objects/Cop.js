@@ -91,7 +91,7 @@ class Cop extends Prefab {
                     this.FOV.revive();
                     this.setMode(COP_MODE_WANDER);
                 }
-                this.moveTo(coords[0], { callback, reset: false })
+                this.moveTo(coords[1], { callback, reset: false })
                 break;
             }
         }
