@@ -9,8 +9,8 @@ export class SlotManager {
     this.slots.forEach(slot => slot.update());
   }
 
-  take () {
-    const slot = this.slots.find( x => !x.taken);
+  take (protester) {
+    const slot = this.slots.find(x => !x.taken);
     if(!slot) return null
     slot.take(protester);
     return slot;

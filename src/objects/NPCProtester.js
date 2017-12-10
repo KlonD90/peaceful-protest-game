@@ -1,4 +1,5 @@
 import Protester from './Protester.js';
+import Player from './Player.js'
 import {
     PROTESTER_MODE_WANDER,
     PROTESTER_MODE_ARRESTED,
@@ -70,15 +71,14 @@ class NPCProtester extends Protester {
 
         if (this.isBeingCheeredUp) {
             if (this.isNOD)
-            {
-                this.setMode(PROTESTER_MODE_NOD);
-
-            }
-            else
-            {
+            // {
+            //     this.setMode(PROTESTER_MODE_NOD);
+            // }
+            // else
+            // {
                 this.updateProgressBar(this.mood);
                 this.moodUp(this.moodUpValue);
-            }
+            // }
         } else if (this.mood < 0.75) {
             this.moodDown(this.moodDownValue);
             this.updateProgressBar(0);
@@ -89,7 +89,7 @@ class NPCProtester extends Protester {
         if (this.showPoster && this.isFollower && !this.isFollowing)
         {
             this.isFollowing = true;
-            const slot = this.game.mz.player.slots.take(this);
+            const slot = Player.instance.slots.take(this);
             if (slot) {
                 this.setMode(PROTESTER_MODE_FOLLOW, {slot})
             }
@@ -168,15 +168,8 @@ class NPCProtester extends Protester {
         }
 
         this.following && this.following.dismiss()
+        console.log(this)
         super.setMode(mode, props);
-    }
-
-    follow() {
-        // const coords = this.slot.getPosition();;
-        // this.moveTo({
-        //     ...coords,
-        //     callback: this.follow.bind(this)
-        // });
     }
 
     doNod(){

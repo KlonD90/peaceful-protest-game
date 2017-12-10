@@ -92,6 +92,8 @@ class Player extends Protester {
             space: this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
             shift: this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT)
         };
+
+        Player.instance = this
     }
 
     update() {
