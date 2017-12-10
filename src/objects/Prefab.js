@@ -49,7 +49,7 @@ class Prefab {
 
         // update velocity
         if (this.moveTarget.length) {
-            this.setVelocity(this.moveTarget[0]);
+            this.setVelocity(this.moveTarget[0].target);
         }
     }
 
