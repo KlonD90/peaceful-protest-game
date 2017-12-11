@@ -76,7 +76,7 @@ class NPCProtester extends Protester {
             this.setMode(PROTESTER_MODE_LEAVE);
         }
 
-        if (this.isFollowing)
+        if (!this.isFollowing)
         {
             if (this.isBeingCheeredUp) {
                 if (this.isNOD)
