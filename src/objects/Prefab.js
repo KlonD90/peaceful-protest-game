@@ -76,7 +76,6 @@ class Prefab {
         const newTarget = new MoveTarget({ target, callback, shouldStop })
         this.moveTarget.push(newTarget)
       }
-      console.log('move target', this.moveTarget);
     }
 
     getNextCoords(bounds) {

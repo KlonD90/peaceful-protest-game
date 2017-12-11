@@ -46,9 +46,9 @@ class NPCProtester extends Protester {
 
         this.onLeft = onLeft;
 
-        this.isFollower = true;
+        this.isFollower = false;
         this.isFollowing = false;
-        this.isNOD = !this.isFolower && Math.random() < 0.05;
+        this.isNOD = !this.isFollower && Math.random() < 1;
         this.nodDone = false;
         this.slot = null;
 
