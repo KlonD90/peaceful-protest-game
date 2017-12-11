@@ -33,6 +33,9 @@ import {
 
 class Game {
     init(level) {
+        // FIXME: debug
+        window.game = this
+
         this.mz = {
             level,
             gameEnded: false,
@@ -78,7 +81,7 @@ class Game {
                 droppedPosters: []
             },
             groups: {
-                actors: null,
+                d: null,
                 cars: null,
                 droppedPosters: null,
                 copsFOV: null,
@@ -126,7 +129,7 @@ class Game {
             this.mz.groups.cars.add(autoSprite);
         }
 
-        this.mz.groups.actors = this.game.add.group();
+        this.mz.groups.d = this.game.add.group();
 
         // player
         this.mz.objects.player = new Player({
@@ -138,12 +141,12 @@ class Game {
             onDropPoster: this.handleDropPoster.bind(this)
         });
         this.game.camera.follow(this.mz.objects.player.sprite);
-        this.mz.groups.actors.add(this.mz.objects.player.sprite);
+        this.mz.groups.d.add(this.mz.objects.player.sprite);
 
         // top borders
         for (let i = 0; i < this.game.world.width; i += 100) {
             const offset = Math.max(0, 50 - this.mz.objects.player.sprite.height);
-            const borderTop = this.game.add.sprite(i, FIELD_OFFSET.top - 25, 'border', 0, this.mz.groups.actors);
+            const borderTop = this.game.add.sprite(i, FIELD_OFFSET.top - 25, 'border', 0, this.mz.groups.d);
             borderTop.anchor.set(0, 0.5);
             this.game.physics.arcade.enable(borderTop);
             borderTop.body.setSize(borderTop.width, offset);
@@ -161,7 +164,7 @@ class Game {
             this.mz.objects.swat = new SWATSquad({
                 game: this.game,
                 ...this.mz.level.swat,
-                group: this.mz.groups.actors
+                group: this.mz.groups.d
             });
             this.mz.timers.swat = this.game.time.create(false);
         }
@@ -192,7 +195,7 @@ class Game {
                 spriteName: `journalist${i}`
             });
             this.mz.arrays.press.push(journalist.sprite);
-            this.mz.groups.actors.add(journalist.sprite);
+            this.mz.groups.d.add(journalist.sprite);
             journalist.setMode(JOURNALIST_MODE_WANDER);
         }
 
@@ -210,7 +213,7 @@ class Game {
         // bottom borders
         for (let i = 0; i < this.game.world.width; i += 100) {
             const offset = Math.max(0, 50 - this.mz.objects.player.sprite.height);
-            const borderBottom = this.game.add.sprite(i, this.game.world.height - 25, 'border', 0, this.mz.groups.actors);
+            const borderBottom = this.game.add.sprite(i, this.game.world.height - 25, 'border', 0, this.mz.groups.d);
             borderBottom.anchor.set(0, 0.5);
             this.game.physics.arcade.enable(borderBottom);
             borderBottom.body.setSize(borderBottom.width, offset, 0, borderBottom.height - offset);
@@ -540,7 +543,7 @@ class Game {
         this.mz.postersToRevive.forEach(this.createPoster, this);
         this.mz.postersToRevive = [];
 
-        this.mz.groups.actors.sort('y', Phaser.Group.SORT_ASCENDING);
+        this.mz.groups.d.sort('y', Phaser.Group.SORT_ASCENDING);
 
         if (!this.mz.gameEnded) {
             this.checkWin();
@@ -633,7 +636,7 @@ class Game {
                 spriteName: `cop${i}`
             });
             this.mz.arrays.cops.push(cop.sprite);
-            this.mz.groups.actors.add(cop.sprite);
+            this.mz.groups.d.add(cop.sprite);
 
             if (i < this.mz.cops.alive) {
                 cop.setMode(COP_MODE_WANDER);
@@ -668,7 +671,7 @@ class Game {
             const protester = new NPCProtester({
                 game: this.game,
                 ...this.getRandomCoordinates(),
-                group: this.mz.groups.actors,
+                group: this.mz.groups.d,
                 speed: this.mz.level.protesters.speed,
                 spriteKey: `protester${this.game.rnd.between(1, 3)}`,
                 spriteName: `protester${i}`,
