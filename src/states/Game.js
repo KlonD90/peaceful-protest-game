@@ -228,7 +228,6 @@ class Game {
         this.mz.objects.timer = this.game.time.create();
         this.mz.objects.timer.loop(Phaser.Timer.SECOND, this.updateTimer, this);
         this.mz.objects.timer.start();
-        this.mz.objects.star.update()
 
         // pause menu
         this.mz.objects.pauseMenu = new PauseMenu({ game: this.game });
@@ -558,6 +557,8 @@ class Game {
         if (this.mz.events.keys.esc.justUp) {
             this.game.paused = !this.game.paused;
         }
+
+        this.mz.objects.star && this.mz.objects.star.update()
     }
 
     render() {

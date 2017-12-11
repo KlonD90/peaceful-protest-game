@@ -275,6 +275,11 @@ class NPCProtester extends Protester {
       this.following.dismiss()
       this.following = null
     }
+
+    onSlotDismissing() {
+      this.following = null
+      this.setMode(PROTESTER_MODE_WANDER)
+    }
 }
 
 export default NPCProtester;

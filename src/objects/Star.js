@@ -1,10 +1,12 @@
 import Protester from "./Protester"
+import SlotManager from "./SlotManager"
+import { PROTESTER_MODE_WANDER, PROTESTER_MODE_FOLLOW } from "../constants"
 
 const defaults = {
-  interval: 60,
+  interval: 1,
 
   agitation: {
-    length: 60,
+    duration: 10,
     direction: 0,
     slots: [
       { x: 10, y: 10 },
@@ -23,7 +25,7 @@ export class Star extends Protester {
     REST: "rest",
     MOVE_IN: "moveIn",
     AGITATE: "agitate",
-    MOVE_PUT: "moveOut"
+    MOVE_OUT: "moveOut"
   }
 
   constructor(game, config) {
@@ -46,8 +48,7 @@ export class Star extends Protester {
     switch(state) {
       case Star.STATE.REST: {
         this.state = { type: Star.STATE.REST }
-        // setTimeout(() => this.setState(Star.STATE.MOVE_IN), config.interval * 1000)
-        setTimeout(() => this.setState(Star.STATE.MOVE_IN), 1000)
+        setTimeout(() => this.setState(Star.STATE.MOVE_IN), this.config.interval * 1000)
         break;
       }
       case Star.STATE.MOVE_IN: {
@@ -57,7 +58,41 @@ export class Star extends Protester {
         break;
       }
       case Star.STATE.AGITATE: {
+        const { slots, duration } = this.config.agitation
 
+        this.moveTo()
+        const slotsManager = new SlotManager(this, this.sprite, slots)
+        this.state = { type: Star.STATE.AGITATE, slots: slotsManager }
+        this.update()
+        setTimeout(() => this.setState(Star.STATE.MOVE_OUT), duration * 1000)
+        break
+      }
+      case Star.STATE.MOVE_OUT: {
+        const { slots } = this.state
+        this.state = { type: Star.STATE.MOVE_OUT }
+        slots.dismissAll()
+        this.moveTo(this.GameObject.randomOffscreenCoords(), { callback: () => this.kill() })
+        break
+      }
+    }
+  }
+
+  update() {
+    super.update()
+
+    switch(this.state.type) {
+      case Star.STATE.AGITATE: {
+        let wanderingProtesters =
+          this.GameObject.mz.arrays.protesters.map(protester => protester.mz)
+              .filter(protester => protester.mode === PROTESTER_MODE_WANDER)
+
+        while (this.state.slots.hasEmptySlots() && wanderingProtesters.length > 0) {
+          const protester = wanderingProtesters.shift()
+          const slot = this.state.slots.take(protester)
+          protester.setMode(PROTESTER_MODE_FOLLOW, { slot })
+        }
+
+        break
       }
     }
   }
