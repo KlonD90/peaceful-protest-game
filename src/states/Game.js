@@ -263,7 +263,7 @@ class Game {
         this.mz.score = 0;
         this.mz.protesters.meanMood = 0;
         this.mz.protesters.alive = 0;
-        const posterProtesters = this.mz.arrays.protesters.filter(x => x.mz.showPoster);
+        const posterProtesters = this.mz.arrays.protesters.filter(x => x.mz.showPoster && x.mz.isAgitator);
 
         if (this.mz.objects.player.showPoster)
         {
