@@ -15,6 +15,17 @@ export class SlotManager {
     slot.take(protester);
     return slot;
   }
+
+  hasEmptySlots () {
+    return !!this.slots.find(x => !x.taken)
+  }
+
+  dismissAll () {
+    this.slots.forEach(slot => {
+      slot.taken && slot.taken.onSlotDismissing && slot.taken.onSlotDismissing()
+      slot.dismiss()
+    })
+  }
 }
 
 export default SlotManager
