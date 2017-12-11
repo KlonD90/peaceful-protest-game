@@ -71,6 +71,13 @@ const pack = {
         },
         {
             type: 'spritesheet',
+            key: 'star',
+            url: require('./star.png'),
+            frameHeight: 30,
+            frameHeight: 30
+        },
+        {
+            type: 'spritesheet',
             key: 'repeatButton',
             url: require('./repeatButton.png'),
             frameWidth: 100,
