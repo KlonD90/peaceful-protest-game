@@ -159,6 +159,7 @@ class NPCProtester extends Protester {
             }
             case PROTESTER_MODE_ARRESTED: {
                 // clean up previous state
+                this.dismissSlotsTaken()
                 if (this.mode === PROTESTER_MODE_WANDER) {
                     this.stopWandering();
                 }
@@ -203,7 +204,7 @@ class NPCProtester extends Protester {
             }
         }
 
-        // this.following && this.following.dismiss()
+
         console.log(this)
         super.setMode(mode, props);
     }
@@ -267,6 +268,12 @@ class NPCProtester extends Protester {
         this.stopWandering();
 
         super.kill();
+    }
+
+    dismissSlotsTaken() {
+      if (!this.following) return
+      this.following.dismiss()
+      this.following = null
     }
 }
 
