@@ -77,7 +77,6 @@ class Prefab {
         this.moveTarget.push(newTarget)
         newTarget.update(this)
       }
-      console.log(this, 'move target', this.moveTarget);
     }
 
     getNextCoords(bounds) {

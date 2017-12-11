@@ -923,9 +923,11 @@ class Game {
     }
 
     screenAttack(){
-        const awaitStop = 10000;
-        const alphaStops = 10;
+        const awaitStop = 5000;
+        const alphaStops = 49;
         const alphaStep = awaitStop/(alphaStops+1);
+        const spriteHeight = 1035;
+        const spriteWidth = 1035;
         if (this.mz.screenAttacked)
         {
             console.log(this.mz.objects.screenAttack);
@@ -937,37 +939,40 @@ class Game {
             // const leastScale = scaleWidth > scaleHeight ? scaleHeight : scaleWidth;
             // this.mz.objects.screenAttack.scale.setTo(leastScale);
             this.mz.objects.screenAttack.alpha = 1;
+            this.mz.timers.screen.stop();
             this.mz.timers.screen.removeAll();
             this.mz.timers.screen.add(awaitStop, this.screenAttackStop, this);
             for (let i=0; i<alphaStops; i++)
             {
                 this.mz.timers.screen.add(alphaStep * (i +1), this.screenAttackAlpha, this);
             }
+            this.mz.timers.screen.start();
         }
         else
         {
             this.mz.screenAttacked = true;
-            this.mz.objects.screenAttack = this.game.add.sprite(this.game.camera.width / 2, this.game.camera.height / 2, 'klyaksa');
-            this.mz.objects.screenAttack.fixedToCamera = true;
-            this.mz.objects.screenAttack.tint = 0x00ff00;
-            console.log(this.mz.objects.screenAttack);
-            const scaleWidth = this.game.camera.width / this.mz.objects.screenAttack.width;
-            const scaleHeight = this.game.camera.height / this.mz.objects.screenAttack.height;
+            const scaleWidth = this.game.camera.width / spriteWidth;
+            const scaleHeight = this.game.camera.height / spriteHeight;
             const leastScale = scaleWidth > scaleHeight ? scaleHeight : scaleWidth;
+            this.mz.objects.screenAttack = this.game.add.sprite(this.game.camera.width / 2 - (spriteWidth/2), this.game.camera.height / 2 - (spriteHeight/2), 'klyaksa');
+            this.mz.objects.screenAttack.fixedToCamera = true;
+            console.log(this.mz.objects.screenAttack);
+            this.mz.objects.screenAttack.scale.setTo(2.5);
 
-            this.mz.objects.screenAttack.scale.setTo(leastScale);
             this.mz.objects.screenAttack.x = (this.game.camera.width  /2 - this.mz.objects.screenAttack.width /2 );
             this.mz.objects.screenAttack.y = (this.game.camera.height  /2 - this.mz.objects.screenAttack.height /2 );
+            console.log('x', this.game.camera.width/2, this.mz.objects.screenAttack.width/2);
+            console.log(this.mz.objects.screenAttack);
             this.mz.timers.screen.add(awaitStop, this.screenAttackStop, this);
             for (let i=0; i<alphaStops; i++)
             {
                 this.mz.timers.screen.add(alphaStep * (i +1), this.screenAttackAlpha, this);
             }
+            this.mz.timers.screen.start();
         }
     }
 
     screenAttackStop(){
-        alert('attack stop');
         this.mz.objects.screenAttack.destroy();
         this.mz.objects.screenAttack = null;
         this.mz.screenAttacked = false;
@@ -975,7 +980,7 @@ class Game {
 
     screenAttackAlpha(){
         console.log('attack alpha');
-        this.mz.objects.screenAttack.alpha -= 0.5;
+        this.mz.objects.screenAttack.alpha -= 0.005;
     }
 }
 
