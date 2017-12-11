@@ -1,6 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 
+plugins = process.env.NO_UGLIFY ? [] : [new webpack.optimize.UglifyJsPlugin()]
+
 module.exports = {
     entry: {
         polyfill: ['core-js/es6', 'core-js/es7'],
@@ -44,7 +46,5 @@ module.exports = {
             }
         ]
     },
-    plugins: [
-        new webpack.optimize.UglifyJsPlugin()
-    ]
+    plugins: plugins
 };
