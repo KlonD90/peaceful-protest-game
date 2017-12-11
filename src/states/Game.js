@@ -2,6 +2,7 @@ import Player from './../objects/Player.js';
 import NPCProtester from './../objects/NPCProtester.js';
 import Cop from './../objects/Cop.js';
 import Journalist from './../objects/Journalist.js';
+import Star from './../objects/Star.js'
 import SWATSquad from '../objects/SWATSquad.js';
 import Shield from '../objects/Shield.js';
 import DroppedPoster from '../objects/DroppedPoster.js';
@@ -63,6 +64,7 @@ class Game {
                 screen: null
             },
             objects: {
+                star: null,
                 player: null,
                 swat: null,
                 shield: null,
@@ -113,6 +115,8 @@ class Game {
         this.mz.objects.audio.applause = this.game.add.audio('applause');
         this.mz.objects.audio.boo = this.game.add.audio('boo');
         this.mz.objects.audio.pick = this.game.add.audio('pick');
+
+        this.mz.objects.star = new Star(this)
 
         // FOVs should always be below everything
         this.mz.groups.playerFOV = this.game.add.group();
@@ -553,6 +557,8 @@ class Game {
         if (this.mz.events.keys.esc.justUp) {
             this.game.paused = !this.game.paused;
         }
+
+        this.mz.objects.star && this.mz.objects.star.update()
     }
 
     render() {
@@ -687,13 +693,20 @@ class Game {
         }
     }
 
-    reviveProtester({ sprite, mood }) {
+    randomOffscreenCoords() {
         const randomOffset = this.game.rnd.between(0, 100);
-        sprite.mz.revive({
+
+        return {
             x: this.game.rnd.between(0, 1) === 0 ?
                 -100 - randomOffset :
                 this.game.world.width + 100 + randomOffset,
             y: this.getRandomCoordinateY(),
+        }
+    }
+
+    reviveProtester({ sprite, mood }) {
+        sprite.mz.revive({
+            ...this.randomOffscreenCoords(),
             nextCoords: this.getRandomCoordinates(),
             mood
         });

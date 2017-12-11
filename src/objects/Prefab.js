@@ -75,6 +75,7 @@ class Prefab {
       if (target) {
         const newTarget = new MoveTarget({ target, callback, shouldStop })
         this.moveTarget.push(newTarget)
+        newTarget.update(this)
       }
     }
 
