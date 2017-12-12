@@ -28,16 +28,16 @@ export class Star extends Protester {
     MOVE_OUT: "moveOut"
   }
 
-  constructor(game, config) {
+  constructor({ config, GameObject, ...prefabOptions }) {
+    console.log({ config, GameObject, ...prefabOptions })
     const fullConfig = { ...defaults, ...config }
-
+    console.log(prefabOptions)
     super({
-      ...game.getRandomCoordinates(),
+      ...GameObject.getRandomCoordinates(),
       spriteKey: `star`,
       spriteName: `star`,
-      game: game.game,
-      GameObject: game,
-      speed: { value: fullConfig.speed }
+      speed: { value: fullConfig.speed },
+      ...prefabOptions, GameObject,
     })
 
     this.config = fullConfig

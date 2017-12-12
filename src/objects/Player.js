@@ -9,10 +9,6 @@ const TAP_RUNNING_DELTA = 200;
 
 class Player extends Protester {
     constructor({
-        game,
-        x,
-        y,
-        speed,
         fovGroup,
         radius,
         cheering,
@@ -20,17 +16,13 @@ class Player extends Protester {
         staminaCooldown,
         powerUp,
         powerDown,
-        onDropPoster,
-        slots
+        slots,
+        ...protesterOptions,
     }) {
         super({
-            game,
-            x,
-            y,
-            speed,
             spriteKey: 'player',
             spriteName: 'player',
-            onDropPoster
+            ...protesterOptions,
         });
 
         this.sprite.inputEnabled = true;
@@ -98,7 +90,6 @@ class Player extends Protester {
 
     update() {
         this.resetRadius();
-        super.update();
         this.slots.update()
 
         this.circleGraphics.clear();

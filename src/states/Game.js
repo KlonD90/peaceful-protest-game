@@ -9,6 +9,7 @@ import DroppedPoster from '../objects/DroppedPoster.js';
 import GameInterface from '../objects/GameInterface.js';
 import PauseMenu from './../objects/PauseMenu.js';
 import EndMenu from './../objects/EndMenu.js';
+import Collider from "../Collider.js"
 
 import {
     FIELD_OFFSET,
@@ -36,6 +37,8 @@ class Game {
     init(level) {
         // FIXME: debug
         window.game = this
+
+        this.collider = new Collider({ game: this.game, gameObject: this.gameObject, scale: 30 })
 
         this.mz = {
             level,
@@ -116,7 +119,7 @@ class Game {
         this.mz.objects.audio.boo = this.game.add.audio('boo');
         this.mz.objects.audio.pick = this.game.add.audio('pick');
 
-        this.mz.objects.star = new Star(this)
+        this.mz.objects.star = this.createPrefab(Star, {})
 
         // FOVs should always be below everything
         this.mz.groups.playerFOV = this.game.add.group();
@@ -136,14 +139,15 @@ class Game {
         this.mz.groups.d = this.game.add.group();
 
         // player
-        this.mz.objects.player = new Player({
-            game: this.game,
+        this.mz.objects.player = this.createPrefab(Player, {
             x: this.game.world.centerX,
             y: this.game.world.centerY,
             fovGroup: this.mz.groups.playerFOV,
             ...this.mz.level.player,
             onDropPoster: this.handleDropPoster.bind(this)
         });
+
+        this.collider.addEntity({ object: this.mz.objects.player, sprite: this.mz.objects.player.sprite })
         this.game.camera.follow(this.mz.objects.player.sprite);
         this.mz.groups.d.add(this.mz.objects.player.sprite);
 
@@ -184,8 +188,7 @@ class Game {
         // press
         const onFinishShooting = this.handleFinishShooting.bind(this);
         for (let i = 0; i < this.mz.level.press.count; i++) {
-            const journalist = new Journalist({
-                game: this.game,
+            const journalist = this.createPrefab(Journalist, {
                 ...this.getRandomCoordinates(),
                 fov: {
                     group: this.mz.groups.pressFOV,
@@ -203,6 +206,7 @@ class Game {
             journalist.setMode(JOURNALIST_MODE_WANDER);
         }
 
+
         // protesters
         this.createProtesters();
 
@@ -213,6 +217,7 @@ class Game {
                 this.mz.objects.player.togglePoster();
             }
         });
+
 
         // bottom borders
         for (let i = 0; i < this.game.world.width; i += 100) {
@@ -254,6 +259,8 @@ class Game {
     update() {
         // update background
         this.mz.objects.bgTile.tilePosition.set(-this.game.camera.x, -this.game.camera.y);
+
+        this.collider.update()
 
         if (!this.mz.gameEnded) {
             this.playRandomSound();
@@ -629,18 +636,18 @@ class Game {
         const totalCount = this.mz.level.cops.count[this.mz.level.cops.count.length - 1][1];
         this.mz.cops.alive = this.getCopsRequiredNumber();
         for (let i = 0; i < totalCount; i++) {
-            const cop = new Cop({
-                game: this.game,
-                ...this.getRandomCoordinates(),
-                alive: i < this.mz.cops.alive,
-                fov: {
-                    group: this.mz.groups.copsFOV,
-                    distance: this.mz.level.cops.fov.distance,
-                    angle: this.mz.level.cops.fov.angle
-                },
-                speed: this.mz.level.cops.speed,
-                spriteName: `cop${i}`
-            });
+            const cop = this.createPrefab(Cop, {
+              ...this.getRandomCoordinates,
+              alive: i < this.mz.cops.alive,
+              fov: {
+                  group: this.mz.groups.copsFOV,
+                  distance: this.mz.level.cops.fov.distance,
+                  angle: this.mz.level.cops.fov.angle
+              },
+              speed: this.mz.level.cops.speed,
+              spriteName: `cop${i}`
+            })
+
             this.mz.arrays.cops.push(cop.sprite);
             this.mz.groups.d.add(cop.sprite);
 
@@ -674,8 +681,7 @@ class Game {
         const onDropPoster = this.handleDropPoster.bind(this);
         const onLeft = this.handleProtesterLeft.bind(this);
         for (let i = 0; i < count; i++) {
-            const protester = new NPCProtester({
-                game: this.game,
+            const protester = this.createPrefab(NPCProtester, {
                 ...this.getRandomCoordinates(),
                 group: this.mz.groups.d,
                 speed: this.mz.level.protesters.speed,
@@ -687,7 +693,6 @@ class Game {
                 dropPoster: this.mz.level.protesters.poster.drop,
                 onLeft,
                 onDropPoster,
-                GameObject: this
             });
             this.mz.arrays.protesters.push(protester.sprite);
         }
@@ -981,6 +986,14 @@ class Game {
     screenAttackAlpha(){
         console.log('attack alpha');
         this.mz.objects.screenAttack.alpha -= 0.005;
+    }
+
+    createPrefab(constructor, options) {
+      const moveTo = this.collider.moveToFactory()
+      const defaults = { game: this.game, GameObject: this, moveTo }
+      const game = new constructor({ ...defaults, ...options })
+      this.collider.addEntity({ sprite: game.sprite, object: game })
+      return game
     }
 }
 

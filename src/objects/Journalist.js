@@ -8,8 +8,8 @@ import {
 } from '../constants.js';
 
 class Journalist extends Prefab {
-    constructor({ game, x, y, speed, fov, shootingDuration, cooldownDuration, onFinishShooting }) {
-        super({ game, x, y, speed, spriteKey: 'journalist' });
+    constructor({ fov, shootingDuration, cooldownDuration, onFinishShooting, ...prefabOptions }) {
+        super({ spriteKey: 'journalist', ...prefabOptions });
 
         this.FOV = new FOV({
             game: this.game,
@@ -54,8 +54,6 @@ class Journalist extends Prefab {
             angle: this.sprite.body.angle,
             mode: this.mode === JOURNALIST_MODE_SHOOTING ? FOV_MODE_CAPTURE : FOV_MODE_NORMAL
         });
-
-        super.update();
     }
 
     setMode(mode, props = {}) {

@@ -10,22 +10,16 @@ import {
 
 class NPCProtester extends Protester {
     constructor({
-        game,
-        x,
-        y,
         group,
-        speed,
-        spriteKey,
-        spriteName,
         mood,
         moodDown,
         moodUp,
         dropPoster,
         onLeft,
         onDropPoster,
-        GameObject
+        ...prefabOptions
     }) {
-        super({ game, x, y, speed, spriteKey, spriteName, onDropPoster, GameObject });
+        super(prefabOptions);
 
         this.group = group;
         this.group.add(this.sprite);

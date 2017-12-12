@@ -8,6 +8,7 @@ const SQUAD_DISCIPLINE = 0.4;
 const TURN_FREQUENCY = 30;
 
 class SWATSquad {
+    // TODO: prefab???? ? ?
     constructor({ game, count, speed, group }) {
         this.game = game;
 

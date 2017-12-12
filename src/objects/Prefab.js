@@ -2,10 +2,8 @@ import {
     FIELD_OFFSET
 } from '../constants.js';
 
-import MoveTarget from "./moveTarget"
-
 class Prefab {
-    constructor({ game, x, y, speed, spriteKey, spriteName, props, GameObject }) {
+    constructor({ game, x, y, speed, spriteKey, spriteName, props, GameObject, moveTo }) {
         this.props = props;
         this.game = game;
         this.GameObject = GameObject;
@@ -26,21 +24,7 @@ class Prefab {
         this.stayingTimer = this.game.time.create(false);
 
         this.mode = null;
-        this.moveTarget = [];
-    }
-
-    update() {
-        const moveTarget = this.moveTarget[0]
-        if (!moveTarget) return
-        if (moveTarget.update(this)) return
-
-        if (this.mode === 'leave')
-        {
-            console.log('leave', moveTarget, this);
-        }
-
-        this.moveTarget.shift()
-        this.update()
+        this.moveTo = moveTo
     }
 
     setMode(mode) {
@@ -52,31 +36,11 @@ class Prefab {
             return;
         }
         this.speed.current = value;
-
-        // update velocity
-        if (this.moveTarget.length) {
-            this.setVelocity(this.moveTarget[0].target);
-        }
     }
 
     setVelocity(target) {
         const rotationToTarget = this.game.math.angleBetweenPoints(this.sprite.body.center, target);
         this.game.physics.arcade.velocityFromRotation(rotationToTarget, this.speed.current, this.sprite.body.velocity);
-    }
-
-
-    moveTo(target, { callback, shouldStop, reset = true } = {}) {
-      if (reset) {
-        const targets = this.moveTarget;
-        this.moveTarget = [];
-        targets.forEach(target => target.forceStop(this))
-      }
-
-      if (target) {
-        const newTarget = new MoveTarget({ target, callback, shouldStop })
-        this.moveTarget.push(newTarget)
-        newTarget.update(this)
-      }
     }
 
     getNextCoords(bounds) {

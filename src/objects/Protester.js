@@ -4,8 +4,8 @@ import {
 } from '../constants.js';
 
 class Protester extends Prefab {
-    constructor({ game, x, y, speed, spriteKey, spriteName, onDropPoster, GameObject }) {
-        super({ game, x, y, speed, spriteKey, spriteName, GameObject });
+    constructor({ onDropPoster, ...prefabOptions }) {
+        super(prefabOptions);
 
         this.injurySprite = this.sprite.addChild(
             this.game.make.sprite(
@@ -31,8 +31,6 @@ class Protester extends Prefab {
     update() {
         this.injurySprite.visible = this.sprite.health !== 1;
         this.posterSprite.visible = this.posterSprite.alive && this.showPoster;
-
-        super.update();
     }
 
     setMode(mode, props = {}) {
