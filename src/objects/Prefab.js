@@ -43,6 +43,25 @@ class Prefab {
         this.game.physics.arcade.velocityFromRotation(rotationToTarget, this.speed.current, this.sprite.body.velocity);
     }
 
+
+    moveTo(target, { callback, shouldStop, reset = true } = {}) {
+      if (reset) {
+        const targets = this.moveTarget;
+        this.moveTarget = [];
+        targets.forEach(target => target.forceStop(this))
+      }
+
+      if (target) {
+        const newTarget = new MoveTarget({ target, callback, shouldStop })
+        this.moveTarget.push(newTarget)
+        newTarget.update(this)
+      }
+      else
+      {
+          this.sprite.body.stop();
+      }
+    }
+
     getNextCoords(bounds) {
         const directions = [];
         if (!bounds) {

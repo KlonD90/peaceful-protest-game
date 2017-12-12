@@ -78,7 +78,7 @@ class Cop extends Prefab {
                 const { jailCoords } = props;
                 this.FOV.kill();
                 this.returnCoords = { x: this.sprite.x, y: this.sprite.y };
-                this.moveTo(jailCoords, () => this.handleCovoyEnd())
+                this.moveTo(jailCoords, {callback: () => this.handleCovoyEnd()})
                 break;
             }
             case COP_MODE_ENTER: {
@@ -130,7 +130,9 @@ class Cop extends Prefab {
                 left: Math.min(this.sprite.x, this.attractionPoint.x)
             };
         }
-        return super.getNextCoords(bounds);
+        const coords = super.getNextCoords(bounds);
+        console.log(coords);
+        return coords;
     }
 
     revive(rtl) {
