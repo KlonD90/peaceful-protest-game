@@ -46,7 +46,7 @@ class NPCProtester extends Protester {
 
         this.onLeft = onLeft;
 
-        this.isFollower = Math.random() < 0.05;
+        this.isFollower = true;
         this.isFollowing = false;
         this.isNOD = !this.isFollower && Math.random() < 0.05;
         this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.1;
@@ -97,9 +97,11 @@ class NPCProtester extends Protester {
         }
 
         this.showPoster = this.mode !== PROTESTER_MODE_ARRESTED && this.mood >= 0.75 && !this.isNOD;
-
+        // if (this.isFollower)
+        //     alert('ia am follower');
         if (this.showPoster && this.isFollower && !this.isFollowing)
         {
+            alert('follower');
             this.isFollowing = true;
             const slot = Player.instance.slots.take(this);
             if (slot) {
@@ -210,13 +212,6 @@ class NPCProtester extends Protester {
         super.setMode(mode, props);
     }
 
-    doNod(){
-        // this.moveTo({
-        //     ...this.getNextCoords(),
-        //     callback: this.wander.bind(this)
-        // });
-    }
-
     wander() {
         const nextAction = this.game.rnd.between(0, 10);
         if (nextAction === 0) {
@@ -264,10 +259,20 @@ class NPCProtester extends Protester {
         this.setMode(PROTESTER_MODE_WANDER, { coords: nextCoords });
     }
 
+    reset(){
+        this.dismissSlotsTaken();
+        this.isFollower = Math.random() < 0.05;
+        this.isFollowing = false;
+        this.isNOD = !this.isFollower && Math.random() < 0.05;
+        this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.1;
+        this.nodDone = false;
+        this.slot = null;
+    }
+
     kill() {
         this.group.add(this.sprite);
         this.stopWandering();
-
+        this.reset();
         super.kill();
     }
 

@@ -33,7 +33,8 @@ export class MoveTarget {
     return false
   }
 
-  forceStop(){
+  forceStop(prefab){
+    prefab.stop();
     this.stoped = true;
     return false;
   }
@@ -43,7 +44,7 @@ export class MoveTarget {
     const prefabCenter = prefab.sprite.body.center
     const target = this.target
 
-    return fuzzyEqual(target.x, prefabCenter.x, 1) && fuzzyEqual(target.y, prefabCenter.y, 1)
+    return fuzzyEqual(target.x, prefabCenter.x, 100) && fuzzyEqual(target.y, prefabCenter.y, 100)
   }
 }
 

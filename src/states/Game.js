@@ -116,7 +116,7 @@ class Game {
         this.mz.objects.audio.boo = this.game.add.audio('boo');
         this.mz.objects.audio.pick = this.game.add.audio('pick');
 
-        this.mz.objects.star = new Star(this)
+        // this.mz.objects.star = new Star(this)
 
         // FOVs should always be below everything
         this.mz.groups.playerFOV = this.game.add.group();
@@ -558,7 +558,7 @@ class Game {
             this.game.paused = !this.game.paused;
         }
 
-        this.mz.objects.star && this.mz.objects.star.update()
+        // this.mz.objects.star && this.mz.objects.star.update()
     }
 
     render() {

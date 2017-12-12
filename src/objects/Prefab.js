@@ -77,6 +77,10 @@ class Prefab {
         this.moveTarget.push(newTarget)
         newTarget.update(this)
       }
+      else
+      {
+          this.sprite.body.stop();
+      }
     }
 
     getNextCoords(bounds) {
