@@ -1,5 +1,3 @@
-// @flow
-
 export class MoveTarget {
   constructor ({ target, shouldStop, callback }) {
     this.target = target
