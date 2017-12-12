@@ -1,6 +1,5 @@
 export default class Slot {
     constructor(target, directionObject, {x, y}){
-
         this.target = target;
         this.directionObject = directionObject;
         this.basePoint = new Phaser.Point(x, y);
@@ -23,6 +22,8 @@ export default class Slot {
       console.log('update slot', this);
       const { basePoint, target: { x, y }} = this;
       this.point = Phaser.Point.rotate(new Phaser.Point(x+basePoint.x, y+basePoint.y), x, y, this.directionObject.direction, true);
+
+      if (Number.isNaN(this.x) || Number.isNaN(this.y)) throw new Error("Slot mathematics error")
     }
 
     take(protester){

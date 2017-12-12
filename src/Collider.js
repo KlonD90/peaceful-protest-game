@@ -72,7 +72,6 @@ export class Collider {
 
     this.entities.forEach(({ move, sprite, object }) => {
       if (move.length === 0) return
-
       const moveFrom = this.rCoordsToMCoords(sprite.body.center)
       const moveTo = this.rCoordsToMCoords(move[0].target)
 
@@ -144,22 +143,12 @@ export class Collider {
 function mget (matrix: boolean[][], path: ?MCoords): ?boolean {
   if (!path) return null
   const [x, y] = path
-  if(!matrix[x]) return false
-  return !!matrix[x][y]
+  return matrix[x][y]
 }
 
 function mset (matrix: boolean[][], path: ?MCoords, value: boolean): void {
   if (!path) return
   const [x, y] = path
-
-  for(let i = matrix.length; i <= x; i++) {
-    matrix[i] = []
-  }
-
-  for(let j = matrix[x].length; j <= y; j++) {
-    matrix[x][j] = false
-  }
-
   matrix[x][y] = value
 }
 
