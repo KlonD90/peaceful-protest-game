@@ -40,17 +40,19 @@ class SWATSquad {
 
             if (
                 this.game.math.fuzzyEqual(
-                    this.game.math.distanceSq(lastSprite.x, lastSprite.y, this.moveTarget.x, this.moveTarget.y),
+                    this.game.math.distanceSq(lastSprite.x, lastSprite.y, this.moveTargets[0].x, this.moveTargets[0].y),
                     0,
                     lastSprite.width
                 )
             ) {
-                this.setMode(SWAT_MODE_HIDE);
+                this.moveTargets.shift()
+                this.moveTargets.length === 0 ? this.setMode(SWAT_MODE_HIDE) : this.update()
             } else {
+                const [moveTarget, ...rest] = this.moveTargets
                 // change direction once in a while
                 if (this.updateIndex % TURN_FREQUENCY === 0) {
                     const firstSprite = this.sprites[0];
-                    const angle = this.game.math.angleBetweenPoints(firstSprite, this.moveTarget) +
+                    const angle = this.game.math.angleBetweenPoints(firstSprite, moveTarget) +
                         (this.updateIndex === 0 ? 1 : -1) * this.game.rnd.realInRange(0, SQUAD_DISCIPLINE);
                     this.game.physics.arcade.velocityFromRotation(angle, this.speed.current, firstSprite.body.velocity);
                 }
@@ -83,16 +85,19 @@ class SWATSquad {
                         this.sprites[i].body.stop();
                     }
                     this.updateIndex = 0;
-                    this.moveTarget = null;
+                    this.moveTargets = [];
                 }
                 break;
             }
             case SWAT_MODE_HUNT: {
                 if (this.mode === SWAT_MODE_HIDE) {
-                    const { x, y, target } = props;
-                    this.moveTarget = target;
+                    const { start, targets } = props;
+                    const { x, y } = start
 
-                    const directionSign = this.moveTarget.x > x ? -1 : 1;
+                    this.moveTargets = targets;
+                    const [moveTarget, ...rest] = targets
+
+                    const directionSign = moveTarget.x > x ? -1 : 1;
                     for (let i = 0; i < this.sprites.length; i++) {
                         const swatSprite = this.sprites[i];
                         swatSprite.x = x + i * directionSign * SQUAD_DENSITY;

@@ -1,6 +1,10 @@
 import Protester from "./Protester"
 import SlotManager from "./SlotManager"
-import { PROTESTER_MODE_WANDER, PROTESTER_MODE_FOLLOW } from "../constants"
+import {
+  PROTESTER_MODE_WANDER,
+  PROTESTER_MODE_FOLLOW,
+  PROTESTER_MODE_ARRESTED
+} from "../constants"
 
 const defaults = {
   interval: 1,
@@ -25,7 +29,7 @@ export class Star extends Protester {
     REST: "rest",
     MOVE_IN: "moveIn",
     AGITATE: "agitate",
-    ARRESTED: "arrested",
+    ARRESTED: PROTESTER_MODE_ARRESTED,
   }
 
   constructor({ config, GameObject, ...prefabOptions }) {
@@ -68,13 +72,21 @@ export class Star extends Protester {
       case Star.STATE.AGITATE: {
         const { slots, duration, direction } = this.config.agitation
 
-        this.direction = 0
+        this.direction = direction
 
         this.moveTo()
         const slotsManager = new SlotManager(this.sprite, this, slots)
         this.state = { type: Star.STATE.AGITATE, slots: slotsManager }
-        // this.update()
-        // setTimeout(() => this.setState(Star.STATE.MOVE_OUT), duration * 1000)
+        break
+      }
+      case Star.STATE.ARRESTED: {
+        const { slots, duration, direction } = this.config.agitation
+
+        this.moveTo()
+        this.state = { type: Star.STATE.ARRESTED }
+        const { x, y } = props
+        this.sprite.x = x
+        this.sprite.y = y
         break
       }
     }

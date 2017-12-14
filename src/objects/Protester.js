@@ -54,7 +54,7 @@ class Protester extends Prefab {
     dropPosterRnd() {
         if (this.game.rnd.frac() < this.dropPoster) {
             this.posterSprite.kill();
-            this.onDropPoster({ x: this.sprite.x, y: this.sprite.y });
+            this.onDropPoster && this.onDropPoster({ x: this.sprite.x, y: this.sprite.y });
         }
     }
 }

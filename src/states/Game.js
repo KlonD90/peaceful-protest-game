@@ -463,10 +463,10 @@ class Game {
         }
 
         // protesters collision
-        for (let i = 0; i <= this.mz.arrays.protesters.length; i++) {
-            const protesterSprite = i === this.mz.arrays.protesters.length ?
-                this.mz.objects.player.sprite :
-                this.mz.arrays.protesters[i];
+        let allProtesters = [...this.mz.arrays.protesters, this.mz.objects.player.sprite]
+        if(this.mz.objects.star) allProtesters.push(this.mz.objects.star.sprite)
+
+        for (let protesterSprite of allProtesters) {
 
             if (
                 !protesterSprite.alive ||
@@ -831,18 +831,26 @@ class Game {
         this.mz.objects.audio.boo.play();
 
         const direction = this.game.rnd.between(0, 1) === 0 ? 'ltor' : 'rtol';
-        this.mz.objects.swat.setMode(SWAT_MODE_HUNT, {
-            x: direction === 'ltor' ?
-                -100 :
-                this.game.world.width + 100,
-            y: this.getRandomCoordinateY(),
-            target: {
-                x: direction === 'ltor' ?
-                    this.game.world.width + 100:
-                    -100,
-                y: this.getRandomCoordinateY()
-            }
-        });
+
+        const start = {
+          x: direction === 'ltor' ? - 100 : this.game.world.width + 100,
+          y: this.getRandomCoordinateY(),
+        }
+
+        let targets = []
+
+        if (this.mz.objects.star) {
+          const { x, y } = this.mz.objects.star.sprite.body.center
+          targets.push({ x, y })
+        }
+
+        targets.push({
+          x: direction === 'ltor' ? this.game.world.width + 100 : -100,
+          y: this.getRandomCoordinateY(),
+        })
+
+
+        this.mz.objects.swat.setMode(SWAT_MODE_HUNT, { start, targets })
     }
 
     launchShield() {
