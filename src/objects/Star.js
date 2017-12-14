@@ -66,7 +66,7 @@ export class Star extends Protester {
         const slotsManager = new SlotManager(this.sprite, this, slots)
         this.state = { type: Star.STATE.AGITATE, slots: slotsManager }
         this.update()
-        setTimeout(() => this.setState(Star.STATE.MOVE_OUT), duration * 1000)
+        // setTimeout(() => this.setState(Star.STATE.MOVE_OUT), duration * 1000)
         break
       }
       case Star.STATE.MOVE_OUT: {
