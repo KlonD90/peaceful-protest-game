@@ -71,18 +71,18 @@ export class Collider {
     const matrix = this.getMatrix()
 
     this.entities.forEach(({ move, sprite, object }) => {
-      if (move.length === 0) return
+      if (move.length === 0) return void sprite.body.stop();
       const moveFrom = this.rCoordsToMCoords(sprite.body.center)
       const moveTo = this.rCoordsToMCoords(move[0].target)
 
-      const finder = new PF.AStarFinder()
+      const finder = new PF.AStarFinder({allowDiagonal: true})
       const path = this._findPath(finder, moveFrom, moveTo, matrix)
 
       if (path[2] || mget(matrix, path[1]) === false) {
         const nextTarget = this.mCoordsToRCoords(path[1])
         this.invokeRawMoving(object, nextTarget)
       } else {
-        if (move[0].follow) return
+        if (move[0].follow) return void sprite.body.stop();
         if (move[0].callback) move[0].callback()
         move.shift()
       }
@@ -90,7 +90,7 @@ export class Collider {
   }
 
   rCoordsToMCoords ({x, y}: RCoords): MCoords {
-    return [this._rCoordToMCoord(x, this.game.width), this._rCoordToMCoord(y, this.game.height)]
+    return [this._rCoordToMCoord(x, this.game.world.width), this._rCoordToMCoord(y, this.game.world.height)]
   }
 
   _rCoordToMCoord (value: number, max: number): number {

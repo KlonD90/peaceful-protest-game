@@ -11,7 +11,7 @@ import {
 
 class Cop extends Prefab {
     constructor({ alive, fov, x = 0, y = 0, ...prefabOptions }) {
-        super({ x, y, ...prefabOptions });
+        super({ x, y, spriteKey: 'cop', ...prefabOptions });
 
         this.FOV = new FOV({
             game: this.game,
@@ -36,6 +36,8 @@ class Cop extends Prefab {
             newSpeed *= this.speed.running;
         }
         this.setSpeed(newSpeed);
+
+        super.update()
 
         this.FOV.update({
             x: this.sprite.x,

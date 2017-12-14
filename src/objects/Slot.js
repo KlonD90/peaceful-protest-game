@@ -18,6 +18,10 @@ export default class Slot {
         return this.point.y
     }
 
+    get follow(){
+        return true;
+    }
+
     update(){
       console.log('update slot', this);
       const { basePoint, target: { x, y }} = this;

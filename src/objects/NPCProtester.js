@@ -16,7 +16,6 @@ class NPCProtester extends Protester {
         moodUp,
         dropPoster,
         onLeft,
-        onDropPoster,
         ...prefabOptions
     }) {
         super(prefabOptions);
@@ -29,7 +28,7 @@ class NPCProtester extends Protester {
 
         this.leavingTimer = this.game.time.create(false);
 
-        this.mood = mood;
+        this.mood = 1||mood;
         this.initialMood = mood;
         this.moodUpValue = moodUp;
         this.moodDownValue = moodDown;
@@ -95,7 +94,6 @@ class NPCProtester extends Protester {
         //     alert('ia am follower');
         if (this.showPoster && this.isFollower && !this.isFollowing)
         {
-            alert('follower');
             this.isFollowing = true;
             const slot = Player.instance.slots.take(this);
             if (slot) {
@@ -151,7 +149,7 @@ class NPCProtester extends Protester {
                 }
                 const { slot } = props;
                 this.following = slot
-                this.moveTo(slot, { shouldStop: () => false });
+                this.moveTo(slot, { follow: true });
                 break;
             }
             case PROTESTER_MODE_ARRESTED: {
@@ -255,7 +253,7 @@ class NPCProtester extends Protester {
 
     reset(){
         this.dismissSlotsTaken();
-        this.isFollower = Math.random() < 0.05;
+        this.isFollower = true;
         this.isFollowing = false;
         this.isNOD = !this.isFollower && Math.random() < 0.05;
         this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.1;

@@ -92,6 +92,8 @@ class Player extends Protester {
         this.resetRadius();
         this.slots.update()
 
+        super.update()
+
         this.circleGraphics.clear();
 
         if (this.mode === PROTESTER_MODE_ARRESTED || this.isFrozen) {

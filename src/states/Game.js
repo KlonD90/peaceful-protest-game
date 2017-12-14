@@ -147,7 +147,7 @@ class Game {
             onDropPoster: this.handleDropPoster.bind(this)
         });
 
-        this.collider.addEntity({ object: this.mz.objects.player, sprite: this.mz.objects.player.sprite })
+        // this.collider.addEntity({ object: this.mz.objects.player, sprite: this.mz.objects.player.sprite })
         this.game.camera.follow(this.mz.objects.player.sprite);
         this.mz.groups.d.add(this.mz.objects.player.sprite);
 
@@ -544,6 +544,25 @@ class Game {
             this.mz.objects.player.sprite,
             this.mz.arrays.borders
         );
+        this.game.physics.arcade.collide(
+            this.mz.objects.player.sprite,
+            this.mz.arrays.protesters
+        );
+        this.game.physics.arcade.collide(
+            this.mz.objects.player.sprite,
+            this.mz.arrays.cops
+        );
+        // player vs borders collision
+        this.game.physics.arcade.collide(
+            this.mz.arrays.protesters,
+            this.mz.arrays.borders
+        );
+        this.game.physics.arcade.collide(
+            this.mz.arrays.protesters,
+            this.mz.arrays.cops
+        );
+
+
 
         // update posters
         this.mz.arrays.droppedPosters.forEach(droppedPoster => {

@@ -27,6 +27,20 @@ class Prefab {
         this.moveTo = moveTo
     }
 
+    update() {
+        // const moveTarget = this.moveTarget[0]
+        // if (!moveTarget) return void this.sprite.body.stop();
+        // if (moveTarget.update(this)) return
+        //
+        // if (this.mode === 'leave')
+        // {
+        //     console.log('leave', moveTarget, this);
+        // }
+        //
+        // this.moveTarget.shift()
+        // this.update()
+    }
+
     setMode(mode) {
         this.mode = mode;
     }
@@ -44,23 +58,23 @@ class Prefab {
     }
 
 
-    moveTo(target, { callback, shouldStop, reset = true } = {}) {
-      if (reset) {
-        const targets = this.moveTarget;
-        this.moveTarget = [];
-        targets.forEach(target => target.forceStop(this))
-      }
-
-      if (target) {
-        const newTarget = new MoveTarget({ target, callback, shouldStop })
-        this.moveTarget.push(newTarget)
-        newTarget.update(this)
-      }
-      else
-      {
-          this.sprite.body.stop();
-      }
-    }
+    // moveTo(target, { callback, shouldStop, reset = true } = {}) {
+    //   if (reset) {
+    //     const targets = this.moveTarget;
+    //     this.moveTarget = [];
+    //     targets.forEach(target => target.forceStop(this))
+    //   }
+    //
+    //   if (target) {
+    //     const newTarget = new MoveTarget({ target, callback, shouldStop })
+    //     this.moveTarget.push(newTarget)
+    //     newTarget.update(this)
+    //   }
+    //   else
+    //   {
+    //       this.sprite.body.stop();
+    //   }
+    // }
 
     getNextCoords(bounds) {
         const directions = [];
