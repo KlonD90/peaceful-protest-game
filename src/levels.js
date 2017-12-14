@@ -89,8 +89,8 @@ export default {
             speed: {
                 value: 200
             },
-            frequency: 15000,
-            scoreThreshold: 60
+            frequency: 5000,
+            scoreThreshold: 10
         },
         press: {
             count: 5,

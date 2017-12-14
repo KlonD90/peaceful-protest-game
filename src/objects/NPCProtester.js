@@ -92,11 +92,21 @@ class NPCProtester extends Protester {
         this.showPoster = this.mode !== PROTESTER_MODE_ARRESTED && this.mood >= 0.75 && !this.isNOD;
         // if (this.isFollower)
         //     alert('ia am follower');
-        if (this.showPoster && this.isFollower && !this.following)
+        if (this.showPoster && this.isFollower)
         {
-            const slot = Player.instance.slots.take(this);
-            if (slot) {
-                this.setMode(PROTESTER_MODE_FOLLOW, {slot})
+            if ( !this.following)
+            {
+                const slot = Player.instance.slots.take(this);
+                if (slot) {
+                    this.setMode(PROTESTER_MODE_FOLLOW, {slot})
+                }
+            }
+            else
+            {
+                if (this.following.target === Player.instance.sprite)
+                {
+                    this.showPoster = Player.instance.showPoster;
+                }
             }
         }
 
