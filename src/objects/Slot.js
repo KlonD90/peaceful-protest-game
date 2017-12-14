@@ -23,7 +23,6 @@ export default class Slot {
     }
 
     update(){
-      console.log('update slot', this);
       const { basePoint, target: { x, y }} = this;
       this.point = Phaser.Point.rotate(new Phaser.Point(x+basePoint.x, y+basePoint.y), x, y, this.directionObject.direction, true);
 

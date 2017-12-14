@@ -92,9 +92,8 @@ class NPCProtester extends Protester {
         this.showPoster = this.mode !== PROTESTER_MODE_ARRESTED && this.mood >= 0.75 && !this.isNOD;
         // if (this.isFollower)
         //     alert('ia am follower');
-        if (this.showPoster && this.isFollower && !this.isFollowing)
+        if (this.showPoster && this.isFollower && !this.following)
         {
-            this.isFollowing = true;
             const slot = Player.instance.slots.take(this);
             if (slot) {
                 this.setMode(PROTESTER_MODE_FOLLOW, {slot})
@@ -172,11 +171,6 @@ class NPCProtester extends Protester {
                             this.nodDone = true;
                             this.GameObject.screenAttack();
                             this.moveTo(null);
-                        },
-                        shouldStop: (prefab, target) => {
-                            const fuzzyEqual = prefab.game.math.fuzzyEqual
-                            const prefabCenter = prefab.sprite.body.center
-                            return Math.abs(target.x - prefabCenter.x) + Math.abs(target.y - prefabCenter.y) < 20;
                         }
                     }
                 );
@@ -254,7 +248,6 @@ class NPCProtester extends Protester {
     reset(){
         this.dismissSlotsTaken();
         this.isFollower = true;
-        this.isFollowing = false;
         this.isNOD = !this.isFollower && Math.random() < 0.05;
         this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.1;
         this.nodDone = false;

@@ -58,7 +58,8 @@ class Player extends Protester {
 
 
         this.slots = new SlotManager(this.sprite, this, slots || [
-            { x: -10, y: -10 } , { x: 10, y: 10},
+            { x: -30, y: -30 } ,
+            { x: 30, y: 30},
         ]);
 
         this.radius = {

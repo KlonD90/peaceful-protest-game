@@ -32,6 +32,7 @@ import {
 import {
     getFormattedTime
 } from '../utils.js';
+import {JOURNALIST_MODE_FOLLOW} from "../constants";
 
 class Game {
     init(level) {
@@ -64,7 +65,8 @@ class Game {
             },
             timers: {
                 swat: null,
-                screen: null
+                screen: null,
+                resize: null,
             },
             objects: {
                 star: null,
@@ -92,7 +94,8 @@ class Game {
                 copsFOV: null,
                 pressFOV: null,
                 playerFOV: null
-            }
+            },
+            zoomLevel: 0
         };
     }
 
@@ -166,6 +169,7 @@ class Game {
         this.createCops();
 
         this.mz.timers.screen = this.game.time.create(false);
+        this.mz.timers.resize = this.game.time.create(false);
 
         // swat
         if (this.mz.level.swat) {
@@ -361,7 +365,7 @@ class Game {
 
             if (newTarget) {
                 journalist.setMode(JOURNALIST_MODE_SHOOTING, { target: newTarget });
-            } else if (journalist.mode !== JOURNALIST_MODE_WANDER) {
+            } else if (journalist.mode !== JOURNALIST_MODE_WANDER && journalist.mode !== JOURNALIST_MODE_FOLLOW) {
                 journalist.setMode(JOURNALIST_MODE_WANDER);
             }
 
@@ -557,10 +561,10 @@ class Game {
             this.mz.arrays.protesters,
             this.mz.arrays.borders
         );
-        this.game.physics.arcade.collide(
-            this.mz.arrays.protesters,
-            this.mz.arrays.cops
-        );
+        // this.game.physics.arcade.collide(
+        //     this.mz.arrays.protesters,
+        //     this.mz.arrays.cops
+        // );
 
 
 
@@ -584,7 +588,19 @@ class Game {
             this.game.paused = !this.game.paused;
         }
 
-        // this.mz.objects.star && this.mz.objects.star.update()
+        this.mz.objects.star && this.mz.objects.star.update()
+
+        const desiredZoomLevel = Math.round(this.mz.protesters.alive/10 - 0.7);
+        if (this.mz.zoomLevel < desiredZoomLevel)
+        {
+            this.mz.zoomLevel = desiredZoomLevel;
+            this.mz.timers.resize.removeAll();
+            this.mz.timers.resize.stop();
+            const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
+            for (let i=1; i<zoomSteps+1; i++)
+                this.mz.timers.resize.add(i*300, this.cameraZoom, this);
+            this.mz.timers.resize.start();
+        }
     }
 
     render() {
@@ -1013,6 +1029,12 @@ class Game {
       const game = new constructor({ ...defaults, ...options })
       this.collider.addEntity({ sprite: game.sprite, object: game })
       return game
+    }
+
+    cameraZoom(){
+        this.game.camera.scale.x -= 0.002
+        this.game.camera.scale.y -= 0.002
+        this.game.world.resize(this.game.world.width+10, this.game.world.height+10);
     }
 }
 

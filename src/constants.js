@@ -36,6 +36,7 @@ export const PROTESTER_MODE_NOD = 'nod';
 
 export const JOURNALIST_MODE_WANDER = 'wander';
 export const JOURNALIST_MODE_SHOOTING = 'shooting';
+export const JOURNALIST_MODE_FOLLOW = 'follow';
 
 export const I18N_GAME_TITLE = 'gameTitle';
 export const I18N_MENU_BACK = 'menuBack';

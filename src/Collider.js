@@ -131,7 +131,14 @@ export class Collider {
       matrix[i] = []
       for(let j = 0; j <= m; j++) matrix[i][j] = false
     }
-    for(let { sprite } of this.entities) mset(matrix, this.rCoordsToMCoords(sprite.body.center), true)
+    for(let { sprite } of this.entities){
+      const {x: centerX, y: centerY} = sprite.body.center;
+      mset(matrix, this.rCoordsToMCoords({x: centerX, y: centerY}), true);
+        mset(matrix, this.rCoordsToMCoords({x: centerX+1, y: centerY}), true);
+        mset(matrix, this.rCoordsToMCoords({x: centerX-11, y: centerY}), true);
+      mset(matrix, this.rCoordsToMCoords({x: centerX, y: centerY - 1 }), true);
+      mset(matrix, this.rCoordsToMCoords({x: centerX, y: centerY + 1}), true);
+    }
     return matrix
   }
 

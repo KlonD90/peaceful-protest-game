@@ -11,9 +11,9 @@ const defaults = {
     slots: [
       { x: 10, y: 10 },
       { x: 10, y: -10 },
+      { x: 20, y: -20 },
     ],
   },
-
   speed: 100,
 }
 
@@ -25,7 +25,7 @@ export class Star extends Protester {
     REST: "rest",
     MOVE_IN: "moveIn",
     AGITATE: "agitate",
-    MOVE_OUT: "moveOut"
+    ARRESTED: "arrested",
   }
 
   constructor({ config, GameObject, ...prefabOptions }) {
@@ -34,13 +34,19 @@ export class Star extends Protester {
     console.log(prefabOptions)
     super({
       ...GameObject.getRandomCoordinates(),
-      spriteKey: `star`,
+      spriteKey: `protester1`,
       spriteName: `star`,
       speed: { value: fullConfig.speed },
       ...prefabOptions, GameObject,
     })
 
+    this.starGraphic = this.game.add.graphics();
+    this.sprite.addChild(this.starGraphic);
+
     this.config = fullConfig
+
+
+    this.restTimer = this.game.time.create(false);
     this.kill()
   }
 
@@ -48,10 +54,12 @@ export class Star extends Protester {
     switch(state) {
       case Star.STATE.REST: {
         this.state = { type: Star.STATE.REST }
-        setTimeout(() => this.setState(Star.STATE.MOVE_IN), this.config.interval * 1000)
+        this.restTimer.add(this.config.interval * 1000, () => this.setState(Star.STATE.MOVE_IN), this);
+        this.restTimer.start();
         break;
       }
       case Star.STATE.MOVE_IN: {
+        this.restTimer.stop();
         this.revive()
         this.moveTo(this.GameObject.getRandomCoordinates(), { callback: () => this.setState(Star.STATE.AGITATE) })
         this.state = { type: Star.STATE.MOVE_IN }
@@ -65,27 +73,20 @@ export class Star extends Protester {
         this.moveTo()
         const slotsManager = new SlotManager(this.sprite, this, slots)
         this.state = { type: Star.STATE.AGITATE, slots: slotsManager }
-        this.update()
+        // this.update()
         // setTimeout(() => this.setState(Star.STATE.MOVE_OUT), duration * 1000)
-        break
-      }
-      case Star.STATE.MOVE_OUT: {
-        const { slots } = this.state
-        this.state = { type: Star.STATE.MOVE_OUT }
-        slots.dismissAll()
-        this.moveTo(this.GameObject.randomOffscreenCoords(), { callback: () => this.kill() })
         break
       }
     }
   }
 
   update() {
-    super.update()
+
 
     switch(this.state.type) {
       case Star.STATE.AGITATE: {
         let wanderingProtesters =
-          this.GameObject.mz.arrays.protesters.map(protester => protester.mz)
+          this.GameObject.mz.arrays.protesters.filter(sprite => sprite.alive).map(protester => protester.mz)
               .filter(protester => protester.mode === PROTESTER_MODE_WANDER)
 
         while (this.state.slots.hasEmptySlots() && wanderingProtesters.length > 0) {
@@ -97,6 +98,17 @@ export class Star extends Protester {
         break
       }
     }
+
+
+    this.updateStarGraphic()
+
+    super.update()
+  }
+
+  updateStarGraphic(){
+      this.starGraphic.clear()
+      this.starGraphic.lineStyle(3, 0xffff00, 1);
+      drawStar(this.starGraphic, 0, 0, 5, 30,15)
   }
 
   revive() {
@@ -116,3 +128,31 @@ export class Star extends Protester {
 }
 
 export default Star
+
+
+function drawStar(graphic, cx,cy,spikes,outerRadius,innerRadius){
+    var rot=Math.PI/2*3;
+    var x=cx;
+    var y=cy;
+    var step=Math.PI/spikes;
+
+    graphic.moveTo(cx,cy-outerRadius)
+    for(var i=0;i<spikes;i++){
+        x=cx+Math.cos(rot)*outerRadius;
+        y=cy+Math.sin(rot)*outerRadius;
+        graphic.lineTo(x,y)
+        rot+=step
+
+        x=cx+Math.cos(rot)*innerRadius;
+        y=cy+Math.sin(rot)*innerRadius;
+        graphic.lineTo(x,y)
+        rot+=step
+    }
+    graphic.lineTo(cx,cy-outerRadius);
+    // ctx.closePath();
+    // ctx.lineWidth=5;
+    // ctx.strokeStyle='blue';
+    // ctx.stroke();
+    // ctx.fillStyle='skyblue';
+    // ctx.fill();
+}

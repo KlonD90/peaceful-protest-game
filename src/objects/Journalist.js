@@ -4,7 +4,8 @@ import {
     FOV_MODE_NORMAL,
     FOV_MODE_CAPTURE,
     JOURNALIST_MODE_WANDER,
-    JOURNALIST_MODE_SHOOTING
+    JOURNALIST_MODE_SHOOTING,
+    JOURNALIST_MODE_FOLLOW
 } from '../constants.js';
 
 class Journalist extends Prefab {
@@ -34,6 +35,7 @@ class Journalist extends Prefab {
         this.onFinishShooting = onFinishShooting;
 
         this.target = null;
+        this.following = null;
     }
 
     update() {
@@ -78,6 +80,16 @@ class Journalist extends Prefab {
                 this.shootingTimer.add(this.shootingDuration, this.shootingTimerCallback, this);
                 this.shootingTimer.start();
 
+                break;
+            }
+            case JOURNALIST_MODE_FOLLOW: {
+                if (this.mode === JOURNALIST_MODE_WANDER) {
+                    this.stopWandering();
+                }
+
+                const { slot } = props;
+                this.following = slot
+                this.moveTo(slot, { follow: true });
                 break;
             }
         }
