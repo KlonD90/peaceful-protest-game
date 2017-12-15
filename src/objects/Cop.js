@@ -5,8 +5,9 @@ import {
     COP_MODE_WANDER,
     COP_MODE_PURSUE,
     COP_MODE_CONVOY,
+    COP_MODE_FIGHT,
     FOV_MODE_CAPTURE,
-    FOV_MODE_NORMAL
+    FOV_MODE_NORMAL,
 } from '../constants.js';
 
 class Cop extends Prefab {
@@ -94,6 +95,11 @@ class Cop extends Prefab {
                 this.moveTo(coords[1], { callback, reset: false })
                 break;
             }
+            case COP_MODE_FIGHT: {
+                this.FOV.kill();
+                this.moveTo();
+                break;
+            }
         }
 
         super.setMode(mode);
@@ -105,6 +111,10 @@ class Cop extends Prefab {
         }
 
         this.setMode(COP_MODE_WANDER, { coords: this.returnCoords });
+    }
+
+    handleFightWin() {
+
     }
 
     wander() {

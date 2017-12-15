@@ -2,7 +2,8 @@ import Protester from './Protester.js';
 import SlotManager from './SlotManager';
 
 import {
-    PROTESTER_MODE_ARRESTED
+    PROTESTER_MODE_ARRESTED,
+    PLAYER_MODE_FIGHT
 } from '../constants.js';
 
 const TAP_RUNNING_DELTA = 200;
@@ -58,8 +59,10 @@ class Player extends Protester {
 
 
         this.slots = new SlotManager(this.sprite, this, slots || [
-            { x: -30, y: -30 } ,
-            { x: 30, y: 30},
+            { x: -30, y: 0 } ,
+            { x: -30, y: 30},
+            { x: -30, y: -30},
+            { x: -30, y: -60},
         ]);
 
         this.radius = {
@@ -184,7 +187,7 @@ class Player extends Protester {
             this.stop();
         }
 
-        if (this.keys.space.justDown) {
+        if (this.keys.space.justDown && this.mode !== PLAYER_MODE_FIGHT) {
             this.togglePoster();
         }
     }
@@ -201,6 +204,10 @@ class Player extends Protester {
                 this.sprite.body.collideWorldBounds = false;
 
                 this.cooldownTimer.stop(true);
+                break;
+            }
+            case PLAYER_MODE_FIGHT: {
+                this.showPoster = false;
                 break;
             }
         }

@@ -6,17 +6,15 @@ import {
   PROTESTER_MODE_ARRESTED
 } from "../constants"
 
+const slotsPositions = drawStarPosition(0, 0, 5, 70, 50);
+
 const defaults = {
   interval: 1,
 
   agitation: {
     duration: 10,
     direction: 0,
-    slots: [
-      { x: 10, y: 10 },
-      { x: 10, y: -10 },
-      { x: 20, y: -20 },
-    ],
+    slots: slotsPositions,
   },
   speed: 100,
 }
@@ -167,4 +165,26 @@ function drawStar(graphic, cx,cy,spikes,outerRadius,innerRadius){
     // ctx.stroke();
     // ctx.fillStyle='skyblue';
     // ctx.fill();
+}
+
+function drawStarPosition(cx,cy,spikes,outerRadius,innerRadius){
+    var rot=Math.PI/2*3;
+    var x=cx;
+    var y=cy;
+    var step=Math.PI/spikes;
+    var list = [];
+
+    for(var i=0;i<spikes;i++){
+        x=cx+Math.cos(rot)*outerRadius;
+        y=cy+Math.sin(rot)*outerRadius;
+        list.push({x,y});
+        rot+=step
+
+        x=cx+Math.cos(rot)*innerRadius;
+        y=cy+Math.sin(rot)*innerRadius;
+        list.push({x,y})
+        rot+=step
+    }
+    list.push({x: cx, y: cy-outerRadius});
+    return list;
 }

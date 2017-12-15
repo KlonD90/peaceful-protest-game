@@ -26,7 +26,8 @@ import {
     SHIELD_MODE_DRIVE,
     PROTESTER_MODE_ARRESTED,
     JOURNALIST_MODE_SHOOTING,
-    JOURNALIST_MODE_WANDER
+    JOURNALIST_MODE_WANDER,
+    PLAYER_MODE_FIGHT
 } from '../constants.js';
 
 import {
@@ -483,7 +484,8 @@ class Game {
                 if (
                     !copSprite.alive ||
                     copSprite.mz.target !== protesterSprite ||
-                    !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds())
+                    !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) ||
+                    protesterSprite.mz.mode === PLAYER_MODE_FIGHT
                 ) {
                     continue;
                 }
@@ -552,10 +554,10 @@ class Game {
             this.mz.objects.player.sprite,
             this.mz.arrays.protesters
         );
-        this.game.physics.arcade.collide(
-            this.mz.objects.player.sprite,
-            this.mz.arrays.cops
-        );
+        // this.game.physics.arcade.collide(
+        //     this.mz.objects.player.sprite,
+        //     this.mz.arrays.cops
+        // );
         // player vs borders collision
         this.game.physics.arcade.collide(
             this.mz.arrays.protesters,

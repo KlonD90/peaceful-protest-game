@@ -17,6 +17,7 @@ export const COP_MODE_ENTER = 'enter';
 export const COP_MODE_WANDER = 'wander';
 export const COP_MODE_PURSUE = 'pursue';
 export const COP_MODE_CONVOY = 'convoy';
+export const COP_MODE_FIGHT = 'fight';
 
 export const SWAT_MODE_HIDE = 'hide';
 export const SWAT_MODE_HUNT = 'hunt';
@@ -63,3 +64,5 @@ export const I18N_STATS_TOTAL = 'statsTotal';
 export const I18N_STATS_ACTIVE = 'statsActive';
 export const I18N_STATS_ARRESTED = 'statsArrested';
 export const I18N_STATS_LEFT = 'statsLeft';
+
+export const PLAYER_MODE_FIGHT = 'fight';

@@ -139,6 +139,7 @@ class NPCProtester extends Protester {
         console.log(mode);
         switch (mode) {
             case PROTESTER_MODE_WANDER: {
+                this.setSpeed(this.speed.value);
                 // clean up previous state
                 if (this.mode === PROTESTER_MODE_LEAVE) {
                     this.moveTo(null);
@@ -153,15 +154,21 @@ class NPCProtester extends Protester {
                 break;
             }
             case PROTESTER_MODE_FOLLOW: {
+
                 if (this.mode === PROTESTER_MODE_WANDER) {
                     this.stopWandering();
                 }
                 const { slot } = props;
                 this.following = slot
+                if (slot.target === Player.instance.sprite)
+                {
+                    this.setSpeed(this.speed.value * 1.5);
+                }
                 this.moveTo(slot, { follow: true });
                 break;
             }
             case PROTESTER_MODE_ARRESTED: {
+                this.setSpeed(this.speed.value);
                 // clean up previous state
                 this.dismissSlotsTaken()
                 if (this.mode === PROTESTER_MODE_WANDER) {
@@ -170,6 +177,7 @@ class NPCProtester extends Protester {
                 break;
             }
             case PROTESTER_MODE_NOD: {
+                this.setSpeed(this.speed.value);
                 if (this.mode === PROTESTER_MODE_WANDER) {
                     this.stopWandering();
                 }
@@ -187,6 +195,7 @@ class NPCProtester extends Protester {
                 break;
             }
             case PROTESTER_MODE_LEAVE: {
+                this.setSpeed(this.speed.value);
                 // clean up previous state
                 if (this.mode === PROTESTER_MODE_WANDER) {
                     this.stopWandering();
