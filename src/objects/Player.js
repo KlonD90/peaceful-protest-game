@@ -21,7 +21,7 @@ class Player extends Protester {
         ...protesterOptions,
     }) {
         super({
-            spriteKey: 'player',
+            spriteKey: 'player_sprite',
             spriteName: 'player',
             ...protesterOptions,
         });
@@ -56,6 +56,7 @@ class Player extends Protester {
 
         this.showPoster = false;
         this.isFrozen = false;
+        this.isGoing = false;
 
 
         this.slots = new SlotManager(this.sprite, this, slots || [
@@ -88,6 +89,10 @@ class Player extends Protester {
             space: this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
             shift: this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT)
         };
+
+        this.sprite.smoothed = true;
+        this.sprite.body.setCircle(20);
+        this.sprite.animations.add('walk', [1, 2], 4, true);
 
         Player.instance = this
     }
@@ -147,6 +152,7 @@ class Player extends Protester {
         }
 
         this.setSpeed(newSpeed);
+        this.sprite.angle = this.direction - 90;
 
         if (areMovingKeysDown) {
             this.moveTo(null);
@@ -175,21 +181,28 @@ class Player extends Protester {
                 this.speed.current,
                 this.sprite.body.velocity
             );
-
+            console.log('direction', this.direction);
+            // this.sprite.frame = 2;
             this.resetClickSpeed(true);
-
+            if (!this.isGoing)
+            {
+                this.isGoing = true;
+                this.sprite.animations.play('walk');
+            }
         } else if (
             this.keys.up.justUp ||
             this.keys.down.justUp ||
             this.keys.left.justUp ||
             this.keys.right.justUp
         ) {
+            this.isGoing = false;
             this.stop();
         }
 
         if (this.keys.space.justDown && this.mode !== PLAYER_MODE_FIGHT) {
             this.togglePoster();
         }
+
     }
 
     handleGameResume() {

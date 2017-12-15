@@ -71,7 +71,7 @@ export class Collider {
     const matrix = this.getMatrix()
 
     this.entities.forEach(({ move, sprite, object }) => {
-      if (move.length === 0) return void sprite.body.stop();
+      if (move.length === 0) return void sprite.mz.stop();
       const moveFrom = this.rCoordsToMCoords(sprite.body.center)
       const moveTo = this.rCoordsToMCoords(move[0].target)
 

@@ -45,6 +45,7 @@ class NPCProtester extends Protester {
         this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.1;
         this.nodDone = false;
         this.slot = null;
+        this.sprite.body.setCircle(20);
 
         // initially dead
         this.kill();
@@ -140,6 +141,8 @@ class NPCProtester extends Protester {
         switch (mode) {
             case PROTESTER_MODE_WANDER: {
                 this.setSpeed(this.speed.value);
+                // this.GameObject.mz.groups.d.add(this.sprite);
+
                 // clean up previous state
                 if (this.mode === PROTESTER_MODE_LEAVE) {
                     this.moveTo(null);
@@ -163,6 +166,9 @@ class NPCProtester extends Protester {
                 if (slot.target === Player.instance.sprite)
                 {
                     this.setSpeed(this.speed.value * 1.5);
+                    // this.GameObject.mz.groups.npcProtesters.add(this.sprite);
+                    // alert('change group');
+                    // console.log('sprite', this.sprite);
                 }
                 this.moveTo(slot, { follow: true });
                 break;

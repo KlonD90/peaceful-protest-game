@@ -181,6 +181,46 @@ const pack = {
         },
         {
             type: 'spritesheet',
+            key: 'player_sprite',
+            url: require('./player_sprite.png'),
+            frameWidth: 31,
+            frameHeight: 37,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'protester_sprite',
+            url: require('./guy.png'),
+            frameWidth: 31,
+            frameHeight: 37,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'cop_sprite',
+            url: require('./cop.png'),
+            frameWidth: 31,
+            frameHeight: 37,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'press_sprite',
+            url: require('./press.png'),
+            frameWidth: 31,
+            frameHeight: 37,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
             key: 'protester1',
             url: require('./protester01.png'),
             frameWidth: 32,

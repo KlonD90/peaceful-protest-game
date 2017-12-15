@@ -10,7 +10,7 @@ import {
 
 class Journalist extends Prefab {
     constructor({ fov, shootingDuration, cooldownDuration, onFinishShooting, ...prefabOptions }) {
-        super({ spriteKey: 'journalist', ...prefabOptions });
+        super({ spriteKey: 'press_sprite', ...prefabOptions });
 
         this.FOV = new FOV({
             game: this.game,
@@ -25,6 +25,7 @@ class Journalist extends Prefab {
 
         this.progressBar = this.game.add.graphics();
         this.sprite.addChild(this.progressBar);
+        this.sprite.body.setCircle(37);
 
         this.shootingTimer = this.game.time.create(false);
         this.shootingDuration = shootingDuration * 1000;

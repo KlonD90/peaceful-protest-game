@@ -12,7 +12,7 @@ import {
 
 class Cop extends Prefab {
     constructor({ alive, fov, x = 0, y = 0, ...prefabOptions }) {
-        super({ x, y, spriteKey: 'cop', ...prefabOptions });
+        super({ x, y, spriteKey: 'cop_sprite', ...prefabOptions });
 
         this.FOV = new FOV({
             game: this.game,
@@ -25,6 +25,8 @@ class Cop extends Prefab {
         this.attractionPoint = null;
         this.attractionStrength = 0;
         this.returnCoords = null;
+
+        this.sprite.body.setCircle(20);
 
         if (!alive) {
             this.kill();

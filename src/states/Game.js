@@ -27,7 +27,8 @@ import {
     PROTESTER_MODE_ARRESTED,
     JOURNALIST_MODE_SHOOTING,
     JOURNALIST_MODE_WANDER,
-    PLAYER_MODE_FIGHT
+    PLAYER_MODE_FIGHT,
+    PROTESTER_MODE_FOLLOW
 } from '../constants.js';
 
 import {
@@ -94,7 +95,8 @@ class Game {
                 droppedPosters: null,
                 copsFOV: null,
                 pressFOV: null,
-                playerFOV: null
+                playerFOV: null,
+                npcProtesters: null
             },
             zoomLevel: 0
         };
@@ -123,7 +125,7 @@ class Game {
         this.mz.objects.audio.boo = this.game.add.audio('boo');
         this.mz.objects.audio.pick = this.game.add.audio('pick');
 
-        this.mz.objects.star = this.createPrefab(Star, {})
+        // this.mz.objects.star = this.createPrefab(Star, {})
 
         // FOVs should always be below everything
         this.mz.groups.playerFOV = this.game.add.group();
@@ -141,6 +143,7 @@ class Game {
         }
 
         this.mz.groups.d = this.game.add.group();
+        this.mz.groups.npcProtesters = this.game.add.group();
 
         // player
         this.mz.objects.player = this.createPrefab(Player, {
@@ -550,9 +553,15 @@ class Game {
             this.mz.objects.player.sprite,
             this.mz.arrays.borders
         );
+        const checkFollowPlayer = (sprite) => !(
+            sprite && sprite.mz && sprite.mz.mode && sprite.mz.mode === PROTESTER_MODE_FOLLOW &&
+            sprite.mz.following && sprite.mz.following.target === this.mz.objects.player.sprite
+        );
         this.game.physics.arcade.collide(
             this.mz.objects.player.sprite,
-            this.mz.arrays.protesters
+            this.mz.arrays.protesters,
+            null,
+            (sprite1, sprite2) => checkFollowPlayer(sprite1) && checkFollowPlayer(sprite2)
         );
         // this.game.physics.arcade.collide(
         //     this.mz.objects.player.sprite,
@@ -722,7 +731,7 @@ class Game {
                 ...this.getRandomCoordinates(),
                 group: this.mz.groups.d,
                 speed: this.mz.level.protesters.speed,
-                spriteKey: `protester${this.game.rnd.between(1, 3)}`,
+                spriteKey: `protester_sprite`,
                 spriteName: `protester${i}`,
                 mood: this.mz.level.protesters.mood,
                 moodUp: this.mz.level.protesters.moodUp,

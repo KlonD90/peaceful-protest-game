@@ -55,6 +55,8 @@ class Prefab {
     setVelocity(target) {
         const rotationToTarget = this.game.math.angleBetweenPoints(this.sprite.body.center, target);
         this.game.physics.arcade.velocityFromRotation(rotationToTarget, this.speed.current, this.sprite.body.velocity);
+        this.sprite.rotation = rotationToTarget-(Math.PI/2);
+        console.log('rotation to target', rotationToTarget);
     }
 
 
@@ -136,6 +138,7 @@ class Prefab {
     }
 
     stop() {
+        // this.sprite.animations.stop(null, true);
         this.sprite.body.stop();
     }
 
