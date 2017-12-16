@@ -91,7 +91,7 @@ class Player extends Protester {
         };
 
         this.sprite.smoothed = true;
-        this.sprite.body.setCircle(20);
+        this.sprite.body.setCircle(18);
         this.sprite.animations.add('walk', [1, 2], 4, true);
 
         Player.instance = this

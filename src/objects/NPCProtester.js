@@ -45,7 +45,7 @@ class NPCProtester extends Protester {
         this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.1;
         this.nodDone = false;
         this.slot = null;
-        this.sprite.body.setCircle(20);
+        this.sprite.body.setCircle(18);
 
         // initially dead
         this.kill();
