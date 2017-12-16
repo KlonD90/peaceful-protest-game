@@ -11,14 +11,15 @@ import PF from "pathfinding"
 
 type Sprite = any
 type EntityObject = any
-type RCoords = { x: number, y: number }
+export type RCoords = { x: number, y: number }
 type MCoords = [number, number]
 type Move = { target: RCoords, callback: () => void, follow: boolean }
-type Entity = { sprite: Sprite, object: EntityObject, move: Move[] }
+type Entity = { sprite: Sprite, object: EntityObject, move: Move[], personalMatrix: MCoords[] }
 type Props = { game: any, gameObject: Object, scale: number }
 type Grid = any
 type Finder = { findPath: (number, number, number, number, Grid) => MCoords[] }
-
+type Matrix = boolean[][]
+export type PersonalMatrix = { center: MCoords, matrix: Matrix }
 
 type MoveOpts = {
   callback?: () => void, follow?: boolean, reset?: boolean
@@ -39,9 +40,15 @@ export class Collider {
     })
   }
 
-  addEntity ({sprite, object }: { sprite: Sprite, object: EntityObject }) {
-    const move = []
-    this.entities.push({ sprite, object, move })
+  addEntity (
+    { sprite, object, personalMatrix }:
+    { sprite: Sprite, object: EntityObject, personalMatrix?: PersonalMatrix }) {
+    this.entities.push({
+      sprite,
+      object,
+      move: [],
+      personalMatrix: compilePersonalMatrix(personalMatrix)
+    })
   }
 
   moveEntity (
@@ -109,7 +116,7 @@ export class Collider {
     return (x - 0.5) * this.scale
   }
 
-  _findPath(finder: Finder, from: MCoords, to: MCoords, matrix: boolean[][]): MCoords[] {
+  _findPath(finder: Finder, from: MCoords, to: MCoords, matrix: Matrix): MCoords[] {
     const fromBit = !!mget(matrix, from)
     const toBit = !!mget(matrix, to)
     mset(matrix, from, false)
@@ -124,20 +131,20 @@ export class Collider {
     return result
   }
 
-  getMatrix (): boolean[][] {
+  getMatrix (): Matrix {
     const [n, m] = this.rCoordsToMCoords({ x: Infinity, y: Infinity })
     let matrix = []
     for(let i = 0; i <= n; i++) {
       matrix[i] = []
       for(let j = 0; j <= m; j++) matrix[i][j] = false
     }
-    for(let { sprite } of this.entities){
-      const {x: centerX, y: centerY} = sprite.body.center;
-      mset(matrix, this.rCoordsToMCoords({x: centerX, y: centerY}), true);
-        mset(matrix, this.rCoordsToMCoords({x: centerX+1, y: centerY}), true);
-        mset(matrix, this.rCoordsToMCoords({x: centerX-11, y: centerY}), true);
-      mset(matrix, this.rCoordsToMCoords({x: centerX, y: centerY - 1 }), true);
-      mset(matrix, this.rCoordsToMCoords({x: centerX, y: centerY + 1}), true);
+
+    for(let { sprite, personalMatrix } of this.entities) {
+      personalMatrix.forEach(point => {
+        const { x: x1, y: y1 } = this.mCoordsToRCoords(point)
+        const { x: x2, y: y2 } = sprite.body.center
+        mset(matrix, this.rCoordsToMCoords({ x: x1 + x2, y: y1 + y2 }), true)
+      })
     }
     return matrix
   }
@@ -147,16 +154,29 @@ export class Collider {
   }
 }
 
-function mget (matrix: boolean[][], path: ?MCoords): ?boolean {
+function mget (matrix: Matrix, path: ?MCoords): ?boolean {
   if (!path) return null
   const [x, y] = path
   return matrix[x][y]
 }
 
-function mset (matrix: boolean[][], path: ?MCoords, value: boolean): void {
+function mset (matrix: Matrix, path: ?MCoords, value: boolean): void {
   if (!path) return
   const [x, y] = path
   matrix[x][y] = value
+}
+
+function compilePersonalMatrix(personalMatrix?: PersonalMatrix): MCoords[] {
+  if (!personalMatrix) return [[0, 0]]
+  const { center, matrix } = personalMatrix
+  const [centerX, centerY] = center
+  let result = []
+
+  for (let x = 0; x < matrix.length; x++)
+    for (let y = 0; y < matrix[x].length; y++)
+      if (matrix[x][y]) result.push([x - centerX, y - centerY])
+
+  return result
 }
 
 export default Collider

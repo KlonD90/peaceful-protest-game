@@ -39,6 +39,9 @@ export const JOURNALIST_MODE_WANDER = 'wander';
 export const JOURNALIST_MODE_SHOOTING = 'shooting';
 export const JOURNALIST_MODE_FOLLOW = 'follow';
 
+export const PADDY_WAGON_MODE_STAY = 'stay';
+export const PADDY_WAGON_MODE_LEAVE = 'leave';
+
 export const I18N_GAME_TITLE = 'gameTitle';
 export const I18N_MENU_BACK = 'menuBack';
 export const I18N_MENU_LEVEL_1 = 'menuLevel1';
