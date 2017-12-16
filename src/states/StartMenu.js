@@ -28,7 +28,7 @@ class StartMenu {
         const menuVerticalSpacing = Math.min(this.game.height / 7, 70);
         this.menu = [
             [I18N_MENU_LEVEL_1, this.handleClickPlay.bind(this, 'level1')],
-            [I18N_MENU_LEVEL_2, this.handleClickPlay.bind(this, 'level2')],
+            // [I18N_MENU_LEVEL_2, this.handleClickPlay.bind(this, 'level2')],
             [I18N_MENU_HOW_TO, this.handleClickHelp.bind(this)],
             [I18N_MENU_CONTROLS, this.handleClickControls.bind(this)]
         ].map(([itemTitle, callback], i) => {

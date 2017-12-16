@@ -47,7 +47,7 @@ export class Collider {
       sprite,
       object,
       move: [],
-      personalMatrix: compilePersonalMatrix(personalMatrix)
+      personalMatrix: this.compilePersonalMatrix(sprite)
     })
   }
 
@@ -72,17 +72,38 @@ export class Collider {
     }
   }
 
+  compilePersonalMatrix(sprite) {
+    const [centerX, centerY] = this.rCoordsToMCoords(sprite.body.center);
+    const startX = this._rCoordToMCoord(sprite.body.x, this.game.world.width);
+    const endX = this._rCoordToMCoord(sprite.body.x+sprite.body.width, this.game.world.width);
+    const startY = this._rCoordToMCoord(sprite.body.y, this.game.world.height);
+    const endY = this._rCoordToMCoord(sprite.body.y+sprite.body.height, this.game.world.height);
+    let result = [];
+    for (let x=startX;x<=endX; x++)
+    {
+      for (let y=startY; y<=endY; y++)
+      {
+        result.push(
+            {x: x - centerX, y: y - centerY}
+        );
+      }
+    }
+    return result;
+  }
+
   onPhaserCollision (...someSignature: any) { /* FIXME */ }
 
   update () {
     const matrix = this.getMatrix()
 
+      console.log('matrix', matrix);
+
     this.entities.forEach(({ move, sprite, object }) => {
-      if (move.length === 0) return void sprite.mz.stop();
+      if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
       const moveFrom = this.rCoordsToMCoords(sprite.body.center)
       const moveTo = this.rCoordsToMCoords(move[0].target)
 
-      const finder = new PF.AStarFinder({allowDiagonal: true})
+      const finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true})
       const path = this._findPath(finder, moveFrom, moveTo, matrix)
 
       if (path[2] || mget(matrix, path[1]) === false) {
@@ -140,11 +161,17 @@ export class Collider {
     }
 
     for(let { sprite, personalMatrix } of this.entities) {
-      personalMatrix.forEach(point => {
-        const { x: x1, y: y1 } = this.mCoordsToRCoords(point)
-        const { x: x2, y: y2 } = sprite.body.center
-        mset(matrix, this.rCoordsToMCoords({ x: x1 + x2, y: y1 + y2 }), true)
-      })
+      if (sprite.alive)
+      {
+          personalMatrix.forEach(point => {
+              const { x: x1, y: y1 } = point;
+              const [x2, y2 ] = this.rCoordsToMCoords(sprite.body.center)
+              mset(matrix, [Math.min(x1 + x2, m), Math.min( y1 + y2, n)], true)
+          })
+      }
+      // if (personalMatrix.length > 5)
+      //   alert(JSON.stringify([personalMatrix, sprite.body.center]))
+
     }
     return matrix
   }
@@ -165,18 +192,4 @@ function mset (matrix: Matrix, path: ?MCoords, value: boolean): void {
   const [x, y] = path
   matrix[x][y] = value
 }
-
-function compilePersonalMatrix(personalMatrix?: PersonalMatrix): MCoords[] {
-  if (!personalMatrix) return [[0, 0]]
-  const { center, matrix } = personalMatrix
-  const [centerX, centerY] = center
-  let result = []
-
-  for (let x = 0; x < matrix.length; x++)
-    for (let y = 0; y < matrix[x].length; y++)
-      if (matrix[x][y]) result.push([x - centerX, y - centerY])
-
-  return result
-}
-
 export default Collider

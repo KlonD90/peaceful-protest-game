@@ -17,10 +17,11 @@ export const PaddyWagon: LevelObject = {
   sprite: "paddy_wagon",
   objectClass: PaddyWagonClass,
   speed: { value: 100 },
-
+  group: 'cars',
+  immovable: true,
   positions: [
-    { x: 195, y: 230 },
-    { x: 615, y: 230 },
+    { x: 300, y: 150, angle: 90 },
+    // { x: 615, y: 230 },
   ],
 
   personalMatrix: {

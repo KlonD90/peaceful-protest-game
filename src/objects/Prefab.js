@@ -16,11 +16,16 @@ class Prefab {
         this.viewSprite = this.game.add.sprite(x, y, spriteKey, 0)
         this.sprite = this.game.add.sprite(x, y);
         this.sprite.mz = this;
+        this.viewSprite.mz = this;
         this.sprite.name = spriteName;
         this.sprite.anchor.set(0.5);
         this.sprite.addChild(this.viewSprite);
+        // this.sprite.width = this.viewSprite.width;
+        // this.sprite.height = this.viewSprite.height;
 
         this.game.physics.arcade.enable(this.sprite);
+        // this.game.physics.arcade.enable(this.viewSprite);
+        this.game.physics.arcade.enable(this.viewSprite);
         this.sprite.body.reset(this.sprite.x, this.sprite.y);
         this.viewSprite.anchor.set(0.5);
         this.viewSprite.reset(0, 0)
@@ -62,7 +67,7 @@ class Prefab {
         const rotationToTarget = this.game.math.angleBetweenPoints(this.sprite.body.center, target);
         this.game.physics.arcade.velocityFromRotation(rotationToTarget, this.speed.current, this.sprite.body.velocity);
         this.viewSprite.rotation = rotationToTarget-(Math.PI/2);
-        console.log('rotation to target', rotationToTarget);
+        // console.log('rotation to target', rotationToTarget);
     }
 
 

@@ -43,7 +43,7 @@ class Game {
         // FIXME: debug
         window.game = this
 
-        this.collider = new Collider({ game: this.game, gameObject: this.gameObject, scale: 30 })
+        this.collider = new Collider({ game: this.game, gameObject: this.gameObject, scale: 40 })
 
         this.mz = {
             level,
@@ -98,7 +98,8 @@ class Game {
                 copsFOV: null,
                 pressFOV: null,
                 playerFOV: null,
-                npcProtesters: null
+                npcProtesters: null,
+                levelObjects: null
             },
             zoomLevel: 0
         };
@@ -133,16 +134,17 @@ class Game {
         this.mz.groups.playerFOV = this.game.add.group();
         this.mz.groups.pressFOV = this.game.add.group();
         this.mz.groups.copsFOV = this.game.add.group();
+        this.mz.groups.levelObjects = this.game.add.group();
 
         this.mz.groups.droppedPosters = this.game.add.group();
 
         this.mz.groups.cars = this.game.add.group();
         // cars
-        for (let i = 0; i < this.game.world.width; i += 300) {
-            const autoSprite = this.game.add.sprite(i, 120, 'auto');
-            autoSprite.anchor.set(0, 1);
-            this.mz.groups.cars.add(autoSprite);
-        }
+        // for (let i = 0; i < this.game.world.width; i += 300) {
+        //     const autoSprite = this.game.add.sprite(i, 120, 'auto');
+        //     autoSprite.anchor.set(0, 1);
+        //     this.mz.groups.cars.add(autoSprite);
+        // }
 
         this.mz.groups.d = this.game.add.group();
         this.mz.groups.npcProtesters = this.game.add.group();
@@ -161,15 +163,15 @@ class Game {
         this.mz.groups.d.add(this.mz.objects.player.sprite);
 
         // top borders
-        for (let i = 0; i < this.game.world.width; i += 100) {
-            const offset = Math.max(0, 50 - this.mz.objects.player.sprite.height);
-            const borderTop = this.game.add.sprite(i, FIELD_OFFSET.top - 25, 'border', 0, this.mz.groups.d);
-            borderTop.anchor.set(0, 0.5);
-            this.game.physics.arcade.enable(borderTop);
-            borderTop.body.setSize(borderTop.width, offset);
-            borderTop.body.immovable = true;
-            this.mz.arrays.borders.push(borderTop);
-        }
+        // for (let i = 0; i < this.game.world.width; i += 100) {
+        //     const offset = Math.max(0, 50 - this.mz.objects.player.sprite.height);
+        //     const borderTop = this.game.add.sprite(i, FIELD_OFFSET.top - 25, 'border', 0, this.mz.groups.d);
+        //     borderTop.anchor.set(0, 0.5);
+        //     this.game.physics.arcade.enable(borderTop);
+        //     borderTop.body.setSize(borderTop.width, offset);
+        //     borderTop.body.immovable = true;
+        //     this.mz.arrays.borders.push(borderTop);
+        // }
 
         // cops
         this.createCops();
@@ -230,15 +232,15 @@ class Game {
 
 
         // bottom borders
-        for (let i = 0; i < this.game.world.width; i += 100) {
-            const offset = Math.max(0, 50 - this.mz.objects.player.sprite.height);
-            const borderBottom = this.game.add.sprite(i, this.game.world.height - 25, 'border', 0, this.mz.groups.d);
-            borderBottom.anchor.set(0, 0.5);
-            this.game.physics.arcade.enable(borderBottom);
-            borderBottom.body.setSize(borderBottom.width, offset, 0, borderBottom.height - offset);
-            borderBottom.body.immovable = true;
-            this.mz.arrays.borders.push(borderBottom);
-        }
+        // for (let i = 0; i < this.game.world.width; i += 100) {
+        //     const offset = Math.max(0, 50 - this.mz.objects.player.sprite.height);
+        //     const borderBottom = this.game.add.sprite(i, this.game.world.height - 25, 'border', 0, this.mz.groups.d);
+        //     borderBottom.anchor.set(0, 0.5);
+        //     this.game.physics.arcade.enable(borderBottom);
+        //     borderBottom.body.setSize(borderBottom.width, offset, 0, borderBottom.height - offset);
+        //     borderBottom.body.immovable = true;
+        //     this.mz.arrays.borders.push(borderBottom);
+        // }
 
         this.mz.objects.timer = this.game.time.create();
         this.mz.objects.timer.loop(Phaser.Timer.SECOND, this.updateTimer, this);
@@ -267,14 +269,38 @@ class Game {
 
         this.mz.levelObjects = {}
         for (let key in levelObjects) {
-          const { speed, personalMatrix, sprite, positions, objectClass, ...extras } = levelObjects[key]
-          this.mz.levelObjects[key] = positions.map(({ x, y }) => {
-            return this.createPrefab(objectClass, {
-              x, y, speed,
-              spriteKey: sprite, spriteName: sprite,
-              ...extras
-            }, { personalMatrix })
+          const { speed, personalMatrix, sprite, positions, objectClass, immovable, group, ...extras } = levelObjects[key]
+          this.mz.levelObjects[key] = positions.map(({ x, y, angle }, i) => {
+            const levelObject = this.game.add.sprite(x, y, sprite, 0);
+            levelObject.spriteName = sprite+i;
+            // levelObject.anchor.set(0.5);
+
+
+            // levelObject.body.reset(x, y)
+            if (angle)
+            {
+                levelObject.angle = angle;
+
+                if (angle === 90 || angle === -90)
+                {
+
+                    alert('change size '+levelObject.height +' '+levelObject.width);
+                }
+                // levelObject.body.rotation = Phaser.Math.degToRad(angle);
+            }
+            this.game.physics.arcade.enable(levelObject);
+            levelObject.body.setSize(levelObject.height, levelObject.width, -levelObject.height, 0);
+            this.mz.groups[group].add(levelObject);
+
+            if (immovable)
+            {
+                alert('immovable', immovable);
+                levelObject.body.immovable = true;
+            }
+            this.collider.addEntity({ sprite: levelObject, object: this.game })
+            return levelObject;
           })
+
         }
     }
 
@@ -563,10 +589,10 @@ class Game {
         }
 
         // player vs borders collision
-        this.game.physics.arcade.collide(
-            this.mz.objects.player.sprite,
-            this.mz.arrays.borders
-        );
+        // this.game.physics.arcade.collide(
+        //     this.mz.objects.player.sprite,
+        //     this.mz.arrays.borders
+        // );
         const checkFollowPlayer = (sprite) => !(
             sprite && sprite.mz && sprite.mz.mode && sprite.mz.mode === PROTESTER_MODE_FOLLOW &&
             sprite.mz.following && sprite.mz.following.target === this.mz.objects.player.sprite
@@ -582,19 +608,18 @@ class Game {
         //     this.mz.arrays.cops
         // );
         // player vs borders collision
-        this.game.physics.arcade.collide(
-            this.mz.arrays.protesters,
-            this.mz.arrays.borders
-        );
+        // this.game.physics.arcade.collide(
+        //     this.mz.arrays.protesters,
+        //     this.mz.arrays.borders
+        // );
         // this.game.physics.arcade.collide(
         //     this.mz.arrays.protesters,
         //     this.mz.arrays.cops
         // );
-
         this.game.physics.arcade.collide(
           this.mz.levelObjects.paddyWagon,
-          [...this.mz.arrays.protesters, this.mz.objects.player.sprite],
-        )
+          this.mz.objects.player.sprite
+        );
 
         // update posters
         this.mz.arrays.droppedPosters.forEach(droppedPoster => {
@@ -1057,6 +1082,11 @@ class Game {
     screenAttackAlpha(){
         console.log('attack alpha');
         this.mz.objects.screenAttack.alpha -= 0.005;
+    }
+
+    createLevelObject(sprite, { personalMatrix } = {}) {
+        this.collider.addEntity({ sprite: sprite, object: {sprite}, personalMatrix })
+        return game
     }
 
     createPrefab(constructor, options, { personalMatrix } = {}) {
