@@ -22,8 +22,8 @@ class Prefab {
 
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.reset(this.sprite.x, this.sprite.y);
-        this.viewSprite.x = -(this.viewSprite.width / 2);
-        this.viewSprite.y = -(this.viewSprite.height / 2);
+        this.viewSprite.anchor.set(0.5);
+        this.viewSprite.reset(0, 0)
 
         console.log(this.viewSprite);
 
