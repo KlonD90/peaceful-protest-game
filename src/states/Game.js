@@ -591,7 +591,10 @@ class Game {
         //     this.mz.arrays.cops
         // );
 
-
+        this.game.physics.arcade.collide(
+          this.mz.levelObjects.paddyWagon,
+          [...this.mz.arrays.protesters, this.mz.objects.player.sprite],
+        )
 
         // update posters
         this.mz.arrays.droppedPosters.forEach(droppedPoster => {
