@@ -13,13 +13,19 @@ class Prefab {
             ...speed
         };
 
-        this.sprite = this.game.add.sprite(x, y, spriteKey, 0);
+        this.viewSprite = this.game.add.sprite(x, y, spriteKey, 0)
+        this.sprite = this.game.add.sprite(x, y);
         this.sprite.mz = this;
         this.sprite.name = spriteName;
         this.sprite.anchor.set(0.5);
+        this.sprite.addChild(this.viewSprite);
 
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.reset(this.sprite.x, this.sprite.y);
+        this.viewSprite.x = -(this.viewSprite.width / 2);
+        this.viewSprite.y = -(this.viewSprite.height / 2);
+
+        console.log(this.viewSprite);
 
         this.stayingTimer = this.game.time.create(false);
 
@@ -55,7 +61,7 @@ class Prefab {
     setVelocity(target) {
         const rotationToTarget = this.game.math.angleBetweenPoints(this.sprite.body.center, target);
         this.game.physics.arcade.velocityFromRotation(rotationToTarget, this.speed.current, this.sprite.body.velocity);
-        this.sprite.rotation = rotationToTarget-(Math.PI/2);
+        this.viewSprite.rotation = rotationToTarget-(Math.PI/2);
         console.log('rotation to target', rotationToTarget);
     }
 

@@ -92,7 +92,7 @@ class Player extends Protester {
 
         this.sprite.smoothed = true;
         this.sprite.body.setCircle(18);
-        this.sprite.animations.add('walk', [1, 2], 4, true);
+        this.viewSprite.animations.add('walk', [1, 2], 4, true);
 
         Player.instance = this
     }
@@ -152,7 +152,7 @@ class Player extends Protester {
         }
 
         this.setSpeed(newSpeed);
-        this.sprite.angle = this.direction - 90;
+        this.viewSprite.angle = this.direction - 90;
 
         if (areMovingKeysDown) {
             this.moveTo(null);
@@ -187,7 +187,7 @@ class Player extends Protester {
             if (!this.isGoing)
             {
                 this.isGoing = true;
-                this.sprite.animations.play('walk');
+                this.viewSprite.animations.play('walk');
             }
         } else if (
             this.keys.up.justUp ||
