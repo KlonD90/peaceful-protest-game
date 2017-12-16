@@ -11,6 +11,8 @@ import PauseMenu from './../objects/PauseMenu.js';
 import EndMenu from './../objects/EndMenu.js';
 import Collider from "../Collider.js"
 
+import levelObjects from "../levelObjects.js"
+
 import {
     FIELD_OFFSET,
     END_GAME_PLAYER_KILLED,
@@ -262,6 +264,18 @@ class Game {
         this.game.input.onDown.add(this.handleUnpause, this);
 
         this.mz.events.keys.esc = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC);
+
+        this.mz.levelObjects = {}
+        for (let key in levelObjects) {
+          const { speed, personalMatrix, sprite, positions, objectClass, ...extras } = levelObjects[key]
+          this.mz.levelObjects[key] = positions.map(({ x, y }) => {
+            return this.createPrefab(objectClass, {
+              x, y, speed,
+              spriteKey: sprite, spriteName: sprite,
+              ...extras
+            }, { personalMatrix })
+          })
+        }
     }
 
     update() {
@@ -1042,11 +1056,11 @@ class Game {
         this.mz.objects.screenAttack.alpha -= 0.005;
     }
 
-    createPrefab(constructor, options) {
+    createPrefab(constructor, options, { personalMatrix } = {}) {
       const moveTo = this.collider.moveToFactory()
       const defaults = { game: this.game, GameObject: this, moveTo }
       const game = new constructor({ ...defaults, ...options })
-      this.collider.addEntity({ sprite: game.sprite, object: game })
+      this.collider.addEntity({ sprite: game.sprite, object: game, personalMatrix })
       return game
     }
 

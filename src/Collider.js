@@ -11,7 +11,7 @@ import PF from "pathfinding"
 
 type Sprite = any
 type EntityObject = any
-type RCoords = { x: number, y: number }
+export type RCoords = { x: number, y: number }
 type MCoords = [number, number]
 type Move = { target: RCoords, callback: () => void, follow: boolean }
 type Entity = { sprite: Sprite, object: EntityObject, move: Move[], personalMatrix: MCoords[] }
@@ -19,7 +19,7 @@ type Props = { game: any, gameObject: Object, scale: number }
 type Grid = any
 type Finder = { findPath: (number, number, number, number, Grid) => MCoords[] }
 type Matrix = boolean[][]
-type PersonalMatrix = { center: MCoords, matrix: Matrix }
+export type PersonalMatrix = { center: MCoords, matrix: Matrix }
 
 type MoveOpts = {
   callback?: () => void, follow?: boolean, reset?: boolean

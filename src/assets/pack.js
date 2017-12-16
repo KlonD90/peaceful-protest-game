@@ -64,6 +64,13 @@ const pack = {
         },
         {
             type: 'spritesheet',
+            key: 'paddy_wagon',
+            url: require('./paddy_wagon.png'),
+            frameWidth: 120,
+            frameHeight: 300,
+        },
+        {
+            type: 'spritesheet',
             key: 'klyaksa',
             url: require('./klyaksa.png'),
             frameWidth: 1035,
