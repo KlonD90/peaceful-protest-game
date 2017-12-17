@@ -40,9 +40,11 @@ class Protester extends Prefab {
 
                 this.moveTo(null);
 
-                const { x, y } = props;
+                const { x, y, by } = props;
                 this.sprite.x = x;
                 this.sprite.y = y;
+
+                by.onArrest && by.onArrest(this)
 
                 break;
             }

@@ -182,6 +182,7 @@ class Game {
         // swat
         if (this.mz.level.swat) {
             this.mz.objects.swat = new SWATSquad({
+                gameObject: this,
                 game: this.game,
                 ...this.mz.level.swat,
                 group: this.mz.groups.d
@@ -870,7 +871,8 @@ class Game {
                     this.game.rnd.sign() :
                     -Math.sign(copSprite.body.velocity.x)
             ) * protesterSprite.body.halfWidth,
-            y: protesterSprite.body.halfHeight
+            y: protesterSprite.body.halfHeight,
+            by: copSprite.mz
         });
 
         if (protesterSprite.name !== 'player') {

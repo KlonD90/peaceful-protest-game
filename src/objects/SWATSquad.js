@@ -1,7 +1,10 @@
 import {
     SWAT_MODE_HIDE,
-    SWAT_MODE_HUNT
+    SWAT_MODE_HUNT,
+    PADDY_WAGON_MODE_LEAVE,
 } from '../constants.js';
+
+import Star from "./Star.js"
 
 const SQUAD_DENSITY = 40;
 const SQUAD_DISCIPLINE = 0.4;
@@ -9,8 +12,9 @@ const TURN_FREQUENCY = 30;
 
 class SWATSquad {
     // TODO: prefab???? ? ?
-    constructor({ game, count, speed, group }) {
+    constructor({ game, gameObject, count, speed, group }) {
         this.game = game;
+        this.gameObject = gameObject
 
         this.speed = {
             current: speed.value,
@@ -45,6 +49,7 @@ class SWATSquad {
                     lastSprite.width
                 )
             ) {
+                this.moveTargets[0].callback && this.moveTargets[0].callback()
                 this.moveTargets.shift()
                 this.moveTargets.length === 0 ? this.setMode(SWAT_MODE_HIDE) : this.update()
             } else {
@@ -111,6 +116,22 @@ class SWATSquad {
 
         this.mode = mode;
     }
+
+    onArrest (protester) {
+      if (protester instanceof Star) {
+        console.log("Arrested star")
+        const paddyWagon = pickRandomElementFromArray(this.GameObject.levelObjects.paddyWagon)
+        const callback = () => paddyWagon.setState(PADDY_WAGON_MODE_LEAVE)
+        this.moveTargets.unshift({ ...paddyWagon.sprite.body.center, callback })
+      }
+    }
+}
+
+function pickRandomElementFromArray (array) {
+  if (array.length === 0) return undefined
+  let index = Math.floor(Math.random()*array.length)
+  if (index >= array.length) index = 0
+  return array[index]
 }
 
 export default SWATSquad;
