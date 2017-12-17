@@ -73,13 +73,17 @@ export class Collider {
 
   compilePersonalMatrix (sprite: Sprite): MCoords[] {
     const [centerX, centerY] = this.rCoordsToMCoords(sprite.body.center);
-    const startX = this._rCoordToMCoord(sprite.body.x, this.game.world.width);
-    const endX = this._rCoordToMCoord(sprite.body.x+sprite.body.width, this.game.world.width);
-    const startY = this._rCoordToMCoord(sprite.body.y, this.game.world.height);
-    const endY = this._rCoordToMCoord(sprite.body.y+sprite.body.height, this.game.world.height);
+    const [startX, startY] = this.rCoordsToMCoords(sprite.body);
+    const [endX, endY] = this.rCoordsToMCoords({
+      x: sprite.body.x+sprite.body.width,
+      y: sprite.body.y+sprite.body.height
+    });
+
+    const { height, width, x, y, center} = sprite.body
+
     let result = [];
     for (let x=startX;x<=endX; x++) for (let y=startY; y<=endY; y++) {
-        result.push([y - centerY, x - centerX])
+        result.push([x - centerX, y - centerY])
     }
     return result;
   }
@@ -88,17 +92,17 @@ export class Collider {
 
   update () {
     const matrix = this.getMatrix()
-    //   let str = '';
-    // for (let y=0; y<matrix.length; y++)
-    // {
-    //   for (let x=0; x<matrix[y].length; x++)
-    //   {
-    //     str+= ((0+matrix[y][x])+'');
-    //   }
-    //   str+='\n';
-    // }
-    // console.log('matrix');
-    // console.log(str);
+      let str = '';
+    for (let y=0; y<matrix.length; y++)
+    {
+      for (let x=0; x<matrix[y].length; x++)
+      {
+        str+= ((0+matrix[y][x])+'');
+      }
+      str+='\n';
+    }
+    console.log('matrix');
+    console.log(str);
 
     this.entities.forEach(({ move, sprite, object }) => {
       if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
@@ -106,7 +110,7 @@ export class Collider {
       const moveTo = this.rCoordsToMCoords(move[0].target)
 
       const finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true})
-      const path = this._findPath(finder, moveFrom, moveTo, matrix)
+      const path = this._findPath(finder, sprite, moveTo, matrix)
 
       if (path[2] || mget(matrix, path[1]) === false) {
         const nextTarget = this.mCoordsToRCoords(path[1])
@@ -157,31 +161,28 @@ export class Collider {
   }
 
   getMatrix (): Matrix {
-    const [n, m] = this.rCoordsToMCoords({ x: Infinity, y: Infinity })
-    let matrix = []
-    for(let i = 0; i <= n; i++) {
-      matrix[i] = []
-      for(let j = 0; j <= m; j++) matrix[i][j] = false
-    }
+    const [maxX, maxY] = this.rCoordsToMCoords({ x: Infinity, y: Infinity })
+    let matrix = mzero(maxX + 1, maxY + 1)
 
     for(let { sprite, personalMatrix } of this.entities) {
       if (sprite.alive && ( (sprite.mz && sprite.mz.mode !== null) || !sprite.mz))
       {
-        // if (sprite === this.gameObject.mz.levelObjects['paddyWagon'][0])
-        // {
-        //   console.log('paddy wagon matrix', personalMatrix);
-        //   console.log(
-        //       personalMatrix.reduce( (p, r) => p.x<r?p.x:r, 0 ),
-        //       personalMatrix.reduce( (p, r) => p.x>r?p.x:r, 0 ),
-        //       personalMatrix.reduce( (p, r) => p.y<r?p.y:r, 0 ),
-        //       personalMatrix.reduce( (p, r) => p.y>r?p.y:r, 0 ),
-        //   );
-        // }
-          personalMatrix.forEach(point => {
-              const [x1, y1] = point;
-              const [x2, y2] = this.rCoordsToMCoords(sprite.body.center)
-              mset(matrix, [Math.min( x1 + x2, m), Math.min(y1 + y2, n)], true)
-          })
+        if (sprite === this.gameObject.mz.levelObjects['paddyWagon'][0])
+        {
+          // console.log('paddy wagon matrix', personalMatrix);
+          // console.log(
+          //     personalMatrix.reduce( (p, r) => p.x<r?p.x:r, 0 ),
+          //     personalMatrix.reduce( (p, r) => p.x>r?p.x:r, 0 ),
+          //     personalMatrix.reduce( (p, r) => p.y<r?p.y:r, 0 ),
+          //     personalMatrix.reduce( (p, r) => p.y>r?p.y:r, 0 ),
+          // );
+        }
+        const [x1, y1] = this.rCoordsToMCoords(sprite.body.center)
+
+        personalMatrix.forEach(point => {
+            const [x2, y2] = point;
+            mset(matrix, [Math.min(x1 + x2, maxX), Math.min(y1 + y2, maxY)], true)
+        })
       }
       // if (personalMatrix.length > 5)
       //   alert(JSON.stringify([personalMatrix, sprite.body.center]))
@@ -193,17 +194,51 @@ export class Collider {
   invokeRawMoving (object: EntityObject, target: RCoords): void {
     object.setVelocity(target)
   }
+
+  applyPersonalMatrix({
+    matrix,
+    personalMatrix,
+    sprite,
+    value,
+  }: {
+    matrix: Matrix,
+    personalMatrix: MCoords[],
+    sprite: Sprite,
+    value: boolean,
+  }) {
+    const [maxX, maxY] = this.rCoordsToMCoords({ x: Infinity, y: Infinity })
+    const [x1, y1] = this.rCoordsToMCoords(sprite.body.center)
+
+    personalMatrix.forEach(point => {
+        const [x2, y2] = point;
+        mset(matrix, [Math.min(x1 + x2, maxX), Math.min(y1 + y2, maxY)], true)
+    })
+  }
 }
+
 
 function mget (matrix: Matrix, path: ?MCoords): ?boolean {
   if (!path) return null
   const [x, y] = path
-  return matrix[x][y]
+  return matrix[y][x]
 }
 
 function mset (matrix: Matrix, path: ?MCoords, value: boolean): void {
   if (!path) return
   const [x, y] = path
-  matrix[x][y] = value
+  matrix[y][x] = value
 }
+
+
+function mzero (maxX: number, maxY: number): Matrix {
+  let matrix = []
+  for(let y = 0; y < maxY; y++) {
+    matrix[y] = []
+    for(let x = 0; x < maxX; x++) {
+      matrix[y][x] = false
+    }
+  }
+  return matrix
+}
+
 export default Collider

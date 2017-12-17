@@ -9,7 +9,7 @@ import DroppedPoster from '../objects/DroppedPoster.js';
 import GameInterface from '../objects/GameInterface.js';
 import PauseMenu from './../objects/PauseMenu.js';
 import EndMenu from './../objects/EndMenu.js';
-import Collider from "../Collider.js"
+import Collider from "../Collider"
 
 import levelObjects from "../levelObjects.js"
 
