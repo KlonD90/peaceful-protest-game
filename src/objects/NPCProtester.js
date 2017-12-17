@@ -274,8 +274,8 @@ class NPCProtester extends Protester {
 
     reset(){
         this.dismissSlotsTaken();
-        this.isFollower = true;
-        this.isNOD = !this.isFollower && Math.random() < 0.05;
+        this.isFollower = Math.random() < 0.1;
+        this.isNOD = !this.isFollower && Math.random() < 0.2;
         this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.1;
         this.nodDone = false;
         this.slot = null;

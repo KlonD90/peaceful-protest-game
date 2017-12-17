@@ -729,7 +729,7 @@ class Game {
 
     updateTimer() {
         this.mz.timePassed++;
-        this.mz.objects.interface.updateTimer(getFormattedTime(this.mz.level.duration - this.mz.timePassed));
+        this.mz.objects.interface.updateTimer(Math.round(this.mz.score));
     }
 
     createCops() {
