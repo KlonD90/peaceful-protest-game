@@ -95,8 +95,17 @@ export class Collider {
 
   update () {
     const matrix = this.getMatrix()
-
-      console.log('matrix', matrix);
+      let str = '';
+    for (let y=0; y<matrix.length; y++)
+    {
+      for (let x=0; x<matrix[y].length; x++)
+      {
+        str+= ((0+matrix[y][x])+'');
+      }
+      str+='\n';
+    }
+    console.log('matrix');
+    console.log(str);
 
     this.entities.forEach(({ move, sprite, object }) => {
       if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
@@ -163,10 +172,20 @@ export class Collider {
     for(let { sprite, personalMatrix } of this.entities) {
       if (sprite.alive)
       {
+        if (sprite === this.gameObject.mz.levelObjects['paddyWagon'][0])
+        {
+          console.log('paddy wagon matrix', personalMatrix);
+          console.log(
+              personalMatrix.reduce( (p, r) => p.x<r?p.x:r, 0 ),
+              personalMatrix.reduce( (p, r) => p.x>r?p.x:r, 0 ),
+              personalMatrix.reduce( (p, r) => p.y<r?p.y:r, 0 ),
+              personalMatrix.reduce( (p, r) => p.y>r?p.y:r, 0 ),
+          );
+        }
           personalMatrix.forEach(point => {
               const { x: x1, y: y1 } = point;
               const [x2, y2 ] = this.rCoordsToMCoords(sprite.body.center)
-              mset(matrix, [Math.min(x1 + x2, m), Math.min( y1 + y2, n)], true)
+              mset(matrix, [Math.min( y1 + y2, m), Math.min(x1 + x2, n)], true)
           })
       }
       // if (personalMatrix.length > 5)
