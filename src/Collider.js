@@ -41,7 +41,7 @@ export class Collider {
   }
 
   addEntity (
-    { sprite, object, personalMatrix }: { sprite: Sprite, object: EntityObject }) {
+    { sprite, object }: { sprite: Sprite, object: EntityObject }) {
     this.entities.push({
       sprite,
       object,
