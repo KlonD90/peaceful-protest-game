@@ -41,8 +41,7 @@ export class Collider {
   }
 
   addEntity (
-    { sprite, object, personalMatrix }:
-    { sprite: Sprite, object: EntityObject, personalMatrix?: PersonalMatrix }) {
+    { sprite, object, personalMatrix }: { sprite: Sprite, object: EntityObject }) {
     this.entities.push({
       sprite,
       object,
@@ -72,21 +71,15 @@ export class Collider {
     }
   }
 
-  compilePersonalMatrix(sprite) {
+  compilePersonalMatrix (sprite: Sprite): MCoords[] {
     const [centerX, centerY] = this.rCoordsToMCoords(sprite.body.center);
     const startX = this._rCoordToMCoord(sprite.body.x, this.game.world.width);
     const endX = this._rCoordToMCoord(sprite.body.x+sprite.body.width, this.game.world.width);
     const startY = this._rCoordToMCoord(sprite.body.y, this.game.world.height);
     const endY = this._rCoordToMCoord(sprite.body.y+sprite.body.height, this.game.world.height);
     let result = [];
-    for (let x=startX;x<=endX; x++)
-    {
-      for (let y=startY; y<=endY; y++)
-      {
-        result.push(
-            {x: x - centerX, y: y - centerY}
-        );
-      }
+    for (let x=startX;x<=endX; x++) for (let y=startY; y<=endY; y++) {
+        result.push([x - centerX, y - centerY])
     }
     return result;
   }
@@ -164,8 +157,8 @@ export class Collider {
       if (sprite.alive)
       {
           personalMatrix.forEach(point => {
-              const { x: x1, y: y1 } = point;
-              const [x2, y2 ] = this.rCoordsToMCoords(sprite.body.center)
+              const [x1, y1] = point;
+              const [x2, y2] = this.rCoordsToMCoords(sprite.body.center)
               mset(matrix, [Math.min(x1 + x2, m), Math.min( y1 + y2, n)], true)
           })
       }
