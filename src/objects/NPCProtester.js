@@ -267,6 +267,8 @@ class NPCProtester extends Protester {
 
         super.revive();
 
+        console.log('next coords', nextCoords);
+
         this.setMode(PROTESTER_MODE_WANDER, { coords: nextCoords });
     }
 

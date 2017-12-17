@@ -7,7 +7,7 @@ class Protester extends Prefab {
     constructor({ onDropPoster, ...prefabOptions }) {
         super(prefabOptions);
 
-        this.injurySprite = this.sprite.addChild(
+        this.injurySprite = this.viewSprite.addChild(
             this.game.make.sprite(
                 -15,
                 -this.sprite.height / 2 - 2,
@@ -17,7 +17,7 @@ class Protester extends Prefab {
         this.injurySprite.bringToTop();
         this.injurySprite.visible = false;
 
-        this.posterSprite = this.sprite.addChild(this.game.make.sprite(-10, 11, 'poster', 0));
+        this.posterSprite = this.viewSprite.addChild(this.game.make.sprite(-10, 11, 'poster', 0));
         this.posterSprite.bringToTop();
         this.posterSprite.anchor.set(0.5, 1);
         this.posterSprite.visible = false;
@@ -40,9 +40,11 @@ class Protester extends Prefab {
 
                 this.moveTo(null);
 
-                const { x, y } = props;
+                const { x, y, by } = props;
                 this.sprite.x = x;
                 this.sprite.y = y;
+
+                by && by.onArrest && by.onArrest(this)
 
                 break;
             }

@@ -159,6 +159,7 @@ class Prefab {
     }
 
     revive() {
+        this.sprite.body.enable = true;
         this.sprite.revive(1);
     }
 

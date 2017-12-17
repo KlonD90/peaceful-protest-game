@@ -111,6 +111,18 @@ class Player extends Protester {
             return;
         }
 
+        if (this.mode === PLAYER_MODE_FIGHT)
+        {
+            if (this.keys.space.justDown)
+            {
+
+            }
+            this.updateFightBar();
+            return;
+        }
+
+
+
         this.circleGraphics.lineStyle(1, 0x33ff33, 1);
         this.circleGraphics.drawCircle(this.sprite.x, this.sprite.y, this.radius.graphic * 2);
 
@@ -222,6 +234,7 @@ class Player extends Protester {
             }
             case PLAYER_MODE_FIGHT: {
                 this.showPoster = false;
+                this.fightBar = 50;
                 break;
             }
         }
@@ -312,6 +325,20 @@ class Player extends Protester {
 
     screenAttack(){
 
+    }
+
+    updateFightBar(){
+        const y = -30;
+        const width = 25;
+        const height = 5;
+        this.progressBar.clear();
+        if (percent !== 0) {
+            this.progressBar.lineStyle(1, 0xffff000, 1);
+            this.progressBar.drawRect(-width / 2, y - height / 2, width, height);
+            this.progressBar.lineStyle(height, color, 1);
+            this.progressBar.moveTo(-width / 2, y);
+            this.progressBar.lineTo(Math.round(width * (-0.5 + percent)), y);
+        }
     }
 }
 

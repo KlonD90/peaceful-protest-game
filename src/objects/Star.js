@@ -6,7 +6,7 @@ import {
   PROTESTER_MODE_ARRESTED
 } from "../constants"
 
-const slotsPositions = drawStarPosition(0, 0, 5, 70, 50);
+const slotsPositions = drawStarPosition(0, 0, 3, 70, 50);
 
 const defaults = {
   interval: 1,

@@ -36,7 +36,7 @@ import {
 import {
     getFormattedTime
 } from '../utils.js';
-import {JOURNALIST_MODE_FOLLOW} from "../constants";
+import {COP_MODE_FIGHT, JOURNALIST_MODE_FOLLOW} from "../constants";
 
 class Game {
     init(level) {
@@ -112,7 +112,7 @@ class Game {
 
         this.game.world.resize(this.mz.level.worldWidth, this.mz.level.worldHeight);
 
-        this.mz.objects.bgTile = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'ground');
+        this.mz.objects.bgTile = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'meeting_map');
         this.mz.objects.bgTile.fixedToCamera = true;
 
         this.mz.objects.audio.theme = this.game.add.audio('theme');
@@ -128,7 +128,7 @@ class Game {
         this.mz.objects.audio.boo = this.game.add.audio('boo');
         this.mz.objects.audio.pick = this.game.add.audio('pick');
 
-        // this.mz.objects.star = this.createPrefab(Star, {})
+
 
         // FOVs should always be below everything
         this.mz.groups.playerFOV = this.game.add.group();
@@ -149,6 +149,40 @@ class Game {
         this.mz.groups.d = this.game.add.group();
         this.mz.groups.npcProtesters = this.game.add.group();
 
+        this.mz.levelObjects = {}
+        for (let key in levelObjects) {
+            const { speed, personalMatrix, sprite, positions, objectClass, immovable, group, ...extras } = levelObjects[key]
+            this.mz.levelObjects[key] = positions.map(({ x, y, angle }, i) => {
+                const levelObject = this.game.add.sprite(x, y, sprite, 0);
+                levelObject.spriteName = sprite+i;
+                // levelObject.anchor.set(0.5);
+
+
+                // levelObject.body.reset(x, y)
+                if (angle)
+                {
+                    levelObject.angle = angle;
+
+                    if (angle === 90 || angle === -90)
+                    {
+
+                    }
+                    // levelObject.body.rotation = Phaser.Math.degToRad(angle);
+                }
+                this.game.physics.arcade.enable(levelObject);
+                levelObject.body.setSize(levelObject.height, levelObject.width, -levelObject.height, 0);
+                this.mz.groups[group].add(levelObject);
+
+                if (immovable)
+                {
+                    levelObject.body.immovable = true;
+                }
+                this.collider.addEntity({ sprite: levelObject, object: this.game })
+                return levelObject;
+            })
+
+        }
+        this.mz.objects.star = this.createPrefab(Star, {})
         // player
         this.mz.objects.player = this.createPrefab(Player, {
             x: this.game.world.centerX,
@@ -182,6 +216,7 @@ class Game {
         // swat
         if (this.mz.level.swat) {
             this.mz.objects.swat = new SWATSquad({
+                gameObject: this,
                 game: this.game,
                 ...this.mz.level.swat,
                 group: this.mz.groups.d
@@ -267,41 +302,7 @@ class Game {
 
         this.mz.events.keys.esc = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC);
 
-        this.mz.levelObjects = {}
-        for (let key in levelObjects) {
-          const { speed, personalMatrix, sprite, positions, objectClass, immovable, group, ...extras } = levelObjects[key]
-          this.mz.levelObjects[key] = positions.map(({ x, y, angle }, i) => {
-            const levelObject = this.game.add.sprite(x, y, sprite, 0);
-            levelObject.spriteName = sprite+i;
-            // levelObject.anchor.set(0.5);
 
-
-            // levelObject.body.reset(x, y)
-            if (angle)
-            {
-                levelObject.angle = angle;
-
-                if (angle === 90 || angle === -90)
-                {
-
-                    alert('change size '+levelObject.height +' '+levelObject.width);
-                }
-                // levelObject.body.rotation = Phaser.Math.degToRad(angle);
-            }
-            this.game.physics.arcade.enable(levelObject);
-            levelObject.body.setSize(levelObject.height, levelObject.width, -levelObject.height, 0);
-            this.mz.groups[group].add(levelObject);
-
-            if (immovable)
-            {
-                alert('immovable', immovable);
-                levelObject.body.immovable = true;
-            }
-            this.collider.addEntity({ sprite: levelObject, object: this.game })
-            return levelObject;
-          })
-
-        }
     }
 
     update() {
@@ -451,7 +452,18 @@ class Game {
             const copSprite = this.mz.arrays.cops[i];
             const cop = copSprite.mz;
 
-            if (cop.mode !== COP_MODE_CONVOY && cop.mode !== COP_MODE_ENTER) {
+            if (cop.mode === COP_MODE_CONVOY && this.mz.objects.player.mode !== PLAYER_MODE_FIGHT && this.mz.objects.player.mode !== PROTESTER_MODE_ARRESTED)
+            {
+                const playerCenter = this.mz.objects.player.sprite.body.center;
+                const diffCop = Math.abs(copSprite.x - playerCenter.x)+Math.abs(copSprite.y - playerCenter.y);
+                if (diffCop < 100)
+                {
+                    this.mz.objects.player.setMode(PLAYER_MODE_FIGHT);
+                    cop.setMode(COP_MODE_FIGHT);
+                }
+            }
+
+            if (cop.mode !== COP_MODE_CONVOY && cop.mode !== COP_MODE_ENTER && cop.mode !== COP_MODE_FIGHT) {
                 // set attraction point and strength
                 cop.attractionPoint = { ...this.mz.objects.player.sprite.body.center };
                 let attractionStrength = 0;
@@ -809,7 +821,8 @@ class Game {
     }
 
     beatUpProtester(sprite) {
-        sprite.damage(0.1);
+        sprite.body.enable = false;
+        sprite.mz.viewSprite.damage(0.1);
         this.playRandomPunch();
     }
 
@@ -840,8 +853,8 @@ class Game {
         let minDistanceSq = Infinity;
         this.mz.groups.cars.forEach(carSprite => {
             const carCoords = {
-                x: (carSprite.right + carSprite.left) / 2,
-                y: carSprite.bottom + 20
+                x: (carSprite.body.x + carSprite.body.width) / 2,
+                y: carSprite.body.y + carSprite.body.height + 250
             };
             const distanceToCarSq = this.getDistanceSq(copSprite, carCoords);
             if (distanceToCarSq < minDistanceSq) {
@@ -849,6 +862,7 @@ class Game {
                 minDistanceSq = distanceToCarSq;
             }
         });
+
 
         this.arrest(protesterSprite, copSprite);
 
@@ -870,7 +884,8 @@ class Game {
                     this.game.rnd.sign() :
                     -Math.sign(copSprite.body.velocity.x)
             ) * protesterSprite.body.halfWidth,
-            y: protesterSprite.body.halfHeight
+            y: protesterSprite.body.halfHeight,
+            by: copSprite.mz
         });
 
         if (protesterSprite.name !== 'player') {
@@ -1000,11 +1015,29 @@ class Game {
         return this.game.math.distanceSq(obj1.x, obj1.y, obj2.x, obj2.y);
     }
 
+    checkContainWagon({x, y}){
+        for (let w of this.mz.levelObjects.paddyWagon)
+        {
+            console.log(w);
+            if (w.getBounds().contains(x, y))
+                return true;
+        }
+        return false;
+    }
+
     getRandomCoordinates() {
-        return {
+        let coords = {
             x: this.getRandomCoordinateX(),
             y: this.getRandomCoordinateY()
         };
+
+        while (this.checkContainWagon(coords)) {
+            coords = {
+                x: this.getRandomCoordinateX(),
+                y: this.getRandomCoordinateY()
+            };
+        }
+        return coords;
     }
 
     getRandomCoordinateX() {

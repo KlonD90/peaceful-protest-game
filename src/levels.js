@@ -4,12 +4,14 @@ export default {
         worldWidth: 600,
         worldHeight: 600,
         duration: 3 * 60, // s
-        winningThreshold: 75,
+        winningThreshold: 100,
         cops: {
             count: [
-                [60, 0],
-                [85, 1],
-                [100, 2]
+                [60, 1],
+                // [50, 2],
+                // [60, 3],
+                [90, 4],
+                [100, 5]
             ],
             speed: {
                 value: 50,
@@ -40,7 +42,7 @@ export default {
             speed: {
                 value: 60
             },
-            mood: 0.3,
+            mood: 1,
             moodUp: 0.001,
             moodDown: 0.0001,
             poster: {
@@ -59,7 +61,15 @@ export default {
             staminaCooldown: 5, // s
             powerUp: 0.1,
             powerDown: 0.01
-        }
+        },
+        swat: {
+            count: 5,
+            speed: {
+                value: 200
+            },
+            frequency: 15000,
+            scoreThreshold: 60
+        },
     },
     level2: {
         id: 'level2',

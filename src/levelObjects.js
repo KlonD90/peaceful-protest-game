@@ -20,27 +20,9 @@ export const PaddyWagon: LevelObject = {
   group: 'cars',
   immovable: true,
   positions: [
-    { x: 300, y: 150, angle: 90 },
+    { x: 300, y: 0, angle: 90 },
     // { x: 615, y: 230 },
   ],
-
-  personalMatrix: {
-    center: [1.5, 4.5],
-    matrix: [
-      /*      00     01     02     03    */
-      /*00*/ [true , true , true , true ],
-      /*01*/ [true , true , true , true ],
-      /*02*/ [true , true , true , true ],
-      /*03*/ [true , true , true , true ],
-      /*04*/ [true , true , true , true ],
-                     /* center */
-      /*05*/ [true , true , true , true ],
-      /*06*/ [true , true , true , true ],
-      /*07*/ [true , true , true , true ],
-      /*08*/ [true , true , true , true ],
-      /*09*/ [true , true , true , true ],
-    ],
-  },
 }
 
 export default {

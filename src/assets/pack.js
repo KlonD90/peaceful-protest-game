@@ -266,6 +266,12 @@ const pack = {
             key: 'ground',
             url: require('./ground01.png'),
             overwrite: false
+        },
+        {
+            type: 'image',
+            key: 'meeting_map',
+            url: require('./meeting_map.png'),
+            overwrite: false
         }
     ],
     level2: [

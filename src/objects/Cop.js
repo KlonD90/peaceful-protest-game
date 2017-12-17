@@ -28,6 +28,7 @@ class Cop extends Prefab {
 
         this.sprite.body.setCircle(20);
 
+
         if (!alive) {
             this.kill();
         }
@@ -98,8 +99,9 @@ class Cop extends Prefab {
                 break;
             }
             case COP_MODE_FIGHT: {
-                this.FOV.kill();
-                this.moveTo();
+                this.jailTarget = this.moveTargets;
+                // this.FOV.kill();
+                this.moveTo(null);
                 break;
             }
         }
@@ -109,7 +111,8 @@ class Cop extends Prefab {
 
     handleCovoyEnd() {
         for (let i = 0; i < this.sprite.children.length; i++) {
-            this.sprite.getChildAt(i).mz.kill();
+            if (this.sprite.getChildAt(i) !== this.viewSprite)
+                this.sprite.getChildAt(i).mz.kill();
         }
 
         this.setMode(COP_MODE_WANDER, { coords: this.returnCoords });
@@ -150,19 +153,20 @@ class Cop extends Prefab {
     }
 
     revive(rtl) {
-        const offset = this.game.rnd.between(50, 200);
-        const x = rtl ? -offset : this.game.world.width + offset;
-        const y = 110;
+        const offset = this.game.rnd.between(-100, 100);
+        const wagon = this.GameObject.mz.levelObjects.paddyWagon[0];
+        const x = Math.round(wagon.body.center.x)+offset;
+        const y = wagon.y + wagon.body.height + 150;
         this.sprite.x = x;
         this.sprite.y = y;
         this.sprite.body.reset(x, y);
+        this.sprite.body.enable = true;
 
-        const entranceX = this.game.rnd.between(1, Math.floor(this.game.world.width / 100) - 1) * 100;
-        this.setMode(COP_MODE_ENTER, {
-            coords: [{ x: entranceX, y }, { x: entranceX, y: y + this.sprite.height }]
-        });
+        // const entranceX = this.game.rnd.between(1, Math.floor(this.game.world.width / 100) - 1) * 100;
+        this.FOV.revive();
 
         super.revive();
+        this.setMode(COP_MODE_WANDER);
     }
 
     kill() {
@@ -170,6 +174,7 @@ class Cop extends Prefab {
 
         this.stopWandering();
         this.FOV.kill();
+        this.sprite.body.enable = false;
 
         super.kill();
     }
