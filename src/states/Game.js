@@ -109,6 +109,7 @@ class Game {
         // this.game.time.advancedTiming = true;
 
         this.game.stage.backgroundColor = '#ccc';
+        this.game.sound.mute = true;
 
         this.game.world.resize(this.mz.level.worldWidth, this.mz.level.worldHeight);
 
@@ -631,6 +632,10 @@ class Game {
         this.game.physics.arcade.collide(
           this.mz.levelObjects.paddyWagon,
           this.mz.objects.player.sprite
+        );
+        this.game.physics.arcade.collide(
+            this.mz.objects.player.sprite,
+            this.mz.objects.star.sprite
         );
 
         // update posters

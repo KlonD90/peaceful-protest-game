@@ -93,7 +93,10 @@ class Player extends Protester {
 
         this.sprite.smoothed = true;
         // this.sprite.body.setCircle(20);
-        this.viewSprite.animations.add('walk', [1, 2], 4, true);
+        const fpsAnimation = 3;
+        this.viewSprite.animations.add('walk', [1, 2], fpsAnimation, true);
+        this.viewSprite.animations.add('run', [1, 2], fpsAnimation*this.speed.running, true);
+        this.fightBar = 0;
 
         Player.instance = this
     }
@@ -141,17 +144,37 @@ class Player extends Protester {
                 if (this.stamina > 0) {
                     this.stamina -= 1;
                     newSpeed *= this.speed.running;
+                    if (!this.isRunning)
+                    {
+                        this.isRunning = true;
+                        this.viewSprite.animations.play('run');
+                    }
                 } else {
                     this.cooldownTimer.add(this.staminaCooldown, () => {
                         this.cooldownTimer.stop(true);
                     });
                     this.cooldownTimer.start();
+                    if (this.isRunning)
+                    {
+                        this.isRunning = false;
+                        this.viewSprite.animations.play('walk');
+                    }
                 }
             } else if (this.stamina < this.maxStamina) {
                 this.stamina += 1;
+                if (this.isRunning)
+                {
+                    this.isRunning = false;
+                    this.viewSprite.animations.play('walk');
+                }
             }
         } else {
             this.stamina = this.maxStamina * this.cooldownTimer.ms / this.staminaCooldown;
+            if (this.isRunning)
+            {
+                this.isRunning = false;
+                this.viewSprite.animations.play('walk');
+            }
         }
 
         if (this.stamina < this.maxStamina) {
@@ -234,7 +257,7 @@ class Player extends Protester {
             }
             case PLAYER_MODE_FIGHT: {
                 this.showPoster = false;
-                this.fightBar = 50;
+                this.fightBar = 10;
                 break;
             }
         }
@@ -332,6 +355,7 @@ class Player extends Protester {
         const width = 25;
         const height = 5;
         this.progressBar.clear();
+        const percent = this.fightBar/100;
         if (percent !== 0) {
             this.progressBar.lineStyle(1, 0xffff000, 1);
             this.progressBar.drawRect(-width / 2, y - height / 2, width, height);
