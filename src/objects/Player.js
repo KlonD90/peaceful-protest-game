@@ -98,6 +98,9 @@ class Player extends Protester {
         this.viewSprite.animations.add('run', [1, 2], fpsAnimation*this.speed.running, true);
         this.fightBar = 0;
 
+
+
+
         Player.instance = this
     }
 
@@ -118,7 +121,7 @@ class Player extends Protester {
         {
             if (this.keys.space.justDown)
             {
-
+                this.fightBar+=1;
             }
             this.updateFightBar();
             return;
@@ -258,6 +261,9 @@ class Player extends Protester {
             case PLAYER_MODE_FIGHT: {
                 this.showPoster = false;
                 this.fightBar = 10;
+                this.GameObject.mz.timers.fight.add(this.handleTickFight, 200, this);
+                this.GameObject.mz.timers.fight.loop(this.handleFightLose, 5000, this);
+                this.GameObject.mz.timers.fight.start();
                 break;
             }
         }
@@ -363,6 +369,31 @@ class Player extends Protester {
             this.progressBar.moveTo(-width / 2, y);
             this.progressBar.lineTo(Math.round(width * (-0.5 + percent)), y);
         }
+        if (percent >= 100)
+        {
+            this.handleFightWin();
+        }
+    }
+
+    handleTickFight(){
+        this.fightBar--;
+        if (this.fightBar < 0)
+            this.fightBar = 0;
+    }
+
+    handleFightWin(){
+        this.clearTimers();
+        alert('win');
+    }
+
+    handleFightLose(){
+        this.clearTimers();
+        alert('lose');
+    }
+
+    clearTimers(){
+        this.GameObject.mz.timers.fight.removeAll();
+        this.GameObject.mz.timers.fight.stop();
     }
 }
 
