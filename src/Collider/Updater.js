@@ -68,6 +68,8 @@ class Updater {
       this._applyPersonalMatrix(true, { personalMatrix, target, matrix })
     }
 
+    console.log(matrix, mshow(matrix))
+
     return matrix
   }
 
@@ -85,7 +87,7 @@ class Updater {
 
     personalMatrix.forEach(point => {
         const [x2, y2] = point;
-        mset(matrix, [Math.min(x1 + x2, maxX), Math.min(y1 + y2, maxY)], true)
+        mset(matrix, [Math.min(x1 + x2, maxX), Math.min(y1 + y2, maxY)], value)
     })
   }
 
@@ -116,6 +118,10 @@ function mzero (maxX: number, maxY: number): Matrix {
     }
   }
   return matrix
+}
+
+function mshow(matrix: Matrix): string {
+  return matrix.map(row => row.map(x => x ? 1 : 0).join()).join("\n")
 }
 
 export default Updater
