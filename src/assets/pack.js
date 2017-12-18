@@ -98,6 +98,13 @@ const pack = {
             frameHeight: 50
         },
         {
+            type: 'spritesheet',
+            key: 'podskazka_plakat',
+            url: require('./soundButtons.png'),
+            frameWidth: 50,
+            frameHeight: 50
+        },
+        {
             type: 'audio',
             key: 'theme',
             urls: require('./audio/theme.mp3')

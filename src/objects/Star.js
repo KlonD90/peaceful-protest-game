@@ -93,8 +93,6 @@ export class Star extends Protester {
   }
 
   update() {
-
-
     switch(this.state.type) {
       case Star.STATE.AGITATE: {
         let wanderingProtesters =
@@ -111,9 +109,7 @@ export class Star extends Protester {
       }
     }
 
-
     this.updateStarGraphic()
-
     super.update()
   }
 

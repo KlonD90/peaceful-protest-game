@@ -32,6 +32,7 @@ class NPCProtester extends Protester {
         this.initialMood = mood;
         this.moodUpValue = moodUp;
         this.moodDownValue = moodDown;
+        this.shownPoster = false;
 
         this.dropPoster = dropPoster;
 
@@ -109,6 +110,12 @@ class NPCProtester extends Protester {
                     this.showPoster = Player.instance.showPoster;
                 }
             }
+        }
+
+        if (this.shownPoster && !this.shownPoster)
+        {
+            this.shownPoster = true;
+            this.GameObject.increaseScore(10, this.sprite);
         }
 
         this.sprite.tint = 0xffffff;
@@ -279,6 +286,7 @@ class NPCProtester extends Protester {
         this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.1;
         this.nodDone = false;
         this.slot = null;
+        this.shownPoster = false;
     }
 
     kill() {

@@ -50,7 +50,7 @@ class Game {
             level,
             gameEnded: false,
             screenAttacked: false,
-            score: 100 * (0.5 * level.protesters.mood + 0.5 * level.protesters.count.start / level.protesters.count.max),
+            score: 0,
             timePassed: 0, // s
             protesters: {
                 alive: 0,
@@ -183,9 +183,9 @@ class Game {
                 this.collider.addEntity({ sprite: levelObject, object: this.game })
                 return levelObject;
             })
-
         }
-        this.mz.objects.star = this.createPrefab(Star, {})
+        this.mz.objects.star = this.createPrefab(Star, {});
+        this.mz.objects.star.setState(Star.STATE.MOVE_IN);;
         // player
         this.mz.objects.player = this.createPrefab(Player, {
             x: this.game.world.centerX,
@@ -305,8 +305,8 @@ class Game {
         this.game.input.onDown.add(this.handleUnpause, this);
 
         this.mz.events.keys.esc = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC);
-        this.game.camera.width = 600;
-        this.game.camera.height = 300;
+        // this.game.camera.width = 600;
+        // this.game.camera.height = 300;
         // this.game.camera.scale.x = 2;
         // this.game.camera.scale.y = 2;
         this.game.camera.setBoundsToWorld()
@@ -382,14 +382,14 @@ class Game {
         this.mz.protesters.meanMood = this.mz.protesters.alive !== 0 ?
             this.mz.protesters.meanMood / this.mz.protesters.alive :
             0;
-        this.mz.score = 100 * this.game.math.clamp(
-            100 * (
-                0.5 * this.mz.protesters.alive / this.mz.level.protesters.count.max +
-                0.5 * this.mz.protesters.meanMood
-            ) / this.mz.level.winningThreshold,
-            0,
-            1
-        );
+        // this.mz.score = 100 * this.game.math.clamp(
+        //     100 * (
+        //         0.5 * this.mz.protesters.alive / this.mz.level.protesters.count.max +
+        //         0.5 * this.mz.protesters.meanMood
+        //     ) / this.mz.level.winningThreshold,
+        //     0,
+        //     1
+        // );
 
         // update interface
         if (!this.mz.gameEnded) {
@@ -680,20 +680,20 @@ class Game {
             }
         }
 
-        if (this.mz.zoomLevel < desiredZoomLevel)
-        {
-            const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[desiredZoomLevel];
-            // this.game.camera.scale.x = zoom;
-            // this.game.camera.scale.y = zoom;
-            this.game.world.resize(worldWidth, worldHeight);
-            // this.mz.zoomLevel = desiredZoomLevel;
-            // this.mz.timers.resize.removeAll();
-            // this.mz.timers.resize.stop();
-            // const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
-            // for (let i=1; i<zoomSteps+1; i++)
-            //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
-            // this.mz.timers.resize.start();
-        }
+        // if (this.mz.zoomLevel < desiredZoomLevel)
+        // {
+        //     const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[desiredZoomLevel];
+        //     // this.game.camera.scale.x = zoom;
+        //     // this.game.camera.scale.y = zoom;
+        //     this.game.world.resize(worldWidth, worldHeight);
+        //     // this.mz.zoomLevel = desiredZoomLevel;
+        //     // this.mz.timers.resize.removeAll();
+        //     // this.mz.timers.resize.stop();
+        //     // const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
+        //     // for (let i=1; i<zoomSteps+1; i++)
+        //     //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
+        //     // this.mz.timers.resize.start();
+        // }
     }
 
     render() {
@@ -735,8 +735,9 @@ class Game {
         this.mz.postersToRevive.push(coords);
     }
 
-    handleFinishShooting() {
+    handleFinishShooting(journalist) {
         this.mz.protesters.toRevive += this.mz.level.protesters.count.add;
+        this.increaseScore(this.mz.level.protesters.count.add, journalist.sprite);
     }
 
     handlePause() {
@@ -969,7 +970,7 @@ class Game {
 
         let targets = []
 
-        if (this.mz.objects.star) {
+        if (this.mz.objects.star && this.mz.objects.star.sprite.alive) {
           const { x, y } = this.mz.objects.star.sprite.body.center
           targets.push({ x, y })
         }
@@ -990,9 +991,7 @@ class Game {
     }
 
     checkWin() {
-        if (this.mz.timePassed > this.mz.level.duration) {
-            this.endGame(END_GAME_TIME_OUT);
-        } else if (this.mz.score === 0) {
+        if (this.mz.score === 0) {
             this.endGame(END_GAME_PROTEST_RATE);
         } else if (this.mz.score === 100) {
             this.endGame(END_GAME_WIN);
@@ -1221,6 +1220,10 @@ class Game {
                 copSprite.mz.setMode(COP_MODE_CONVOY, { jailCoords: closestCarCoords });
             }
         }
+    }
+
+    increaseScore(points){
+        this.mz.score += points;
     }
 
     fightWin(){

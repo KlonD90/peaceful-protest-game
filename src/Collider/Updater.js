@@ -32,7 +32,7 @@ class Updater {
       if (phasing) {
         sprite.phasing = true
         var path = [moveFrom, moveTo]
-        var pathClear = equals(moveFrom, moveTo)
+        var pathClear = !equals(moveFrom, moveTo)
       } else {
         const finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true})
         var path = this._findPath({finder, from: moveFrom, to: moveTo, personalMatrix})

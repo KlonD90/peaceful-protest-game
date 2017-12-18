@@ -114,7 +114,7 @@ class Journalist extends Prefab {
     }
 
     shootingTimerCallback() {
-        this.onFinishShooting();
+        this.onFinishShooting(this);
 
         this.FOV.kill();
 
