@@ -9,7 +9,7 @@ import DroppedPoster from '../objects/DroppedPoster.js';
 import GameInterface from '../objects/GameInterface.js';
 import PauseMenu from './../objects/PauseMenu.js';
 import EndMenu from './../objects/EndMenu.js';
-import Collider from "../Collider"
+import Collider from "../Collider/Collider.js"
 
 import levelObjects from "../levelObjects.js"
 
@@ -43,7 +43,7 @@ class Game {
         // FIXME: debug
         window.game = this
 
-        this.collider = new Collider({ game: this.game, gameObject: this, scale: 40 })
+        this.collider = new Collider({ game: this.game, gameObject: this, scale: 50 })
 
         this.mz = {
             level,
@@ -71,6 +71,7 @@ class Game {
                 swat: null,
                 screen: null,
                 resize: null,
+                fight: null
             },
             objects: {
                 star: null,
