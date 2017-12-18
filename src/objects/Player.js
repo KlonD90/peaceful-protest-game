@@ -3,7 +3,9 @@ import SlotManager from './SlotManager';
 
 import {
     PROTESTER_MODE_ARRESTED,
-    PLAYER_MODE_FIGHT
+    PLAYER_MODE_FIGHT,
+    PLAYER_MODE_STUN,
+    PLAYER_MODE_NORMAL
 } from '../constants.js';
 
 const TAP_RUNNING_DELTA = 200;
@@ -58,6 +60,7 @@ class Player extends Protester {
         this.showPoster = false;
         this.isFrozen = false;
         this.isGoing = false;
+        this.stunTimer = this.game.time.create();
 
 
         this.slots = new SlotManager(this.sprite, this, slots || [
@@ -112,7 +115,7 @@ class Player extends Protester {
 
         this.circleGraphics.clear();
 
-        if (this.mode === PROTESTER_MODE_ARRESTED || this.isFrozen) {
+        if (this.mode === PROTESTER_MODE_ARRESTED || this.isFrozen || this.mode === PLAYER_MODE_STUN) {
             this.updateProgressBar(0);
             return;
         }
@@ -261,14 +264,38 @@ class Player extends Protester {
             case PLAYER_MODE_FIGHT: {
                 this.showPoster = false;
                 this.fightBar = 10;
-                this.GameObject.mz.timers.fight.add(this.handleTickFight, 200, this);
-                this.GameObject.mz.timers.fight.loop(this.handleFightLose, 5000, this);
+                this.GameObject.mz.timers.fight.stop();
+                this.GameObject.mz.timers.fight.removeAll();
+                this.GameObject.mz.timers.fight.loop(500, this.handleTickFight, this);
+                this.GameObject.mz.timers.fight.add(5000, this.handleFightLose, this);
                 this.GameObject.mz.timers.fight.start();
+                console.log(this.GameObject.mz.timers.fight);
+                break;
+            }
+            case PLAYER_MODE_STUN: {
+                this.stunTimer.stop();
+                this.stunTimer.removeAll();
+                this.stunTimer.add(5000, this.handleRecoverStun, this);
+                // this.stunTimer.loop(100, this.handleAlphaTick, this);
+                this.stunTween = this.game.add.tween(this.viewSprite)
+                this.stunTween.to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+                this.stunTween.start();
+                this.stunTimer.start();
                 break;
             }
         }
 
         super.setMode(mode, props);
+    }
+
+    handleAlphaTick(){
+    }
+
+    handleRecoverStun(){
+        this.stunTimer.stop();
+        this.stunTween.stop();
+        this.viewSprite.alpha = 1;
+        this.setMode(PLAYER_MODE_NORMAL);
     }
 
     togglePoster(on = !this.showPoster) {
@@ -360,8 +387,9 @@ class Player extends Protester {
         const y = -30;
         const width = 25;
         const height = 5;
+        const color = 0xff0000;
         this.progressBar.clear();
-        const percent = this.fightBar/100;
+        const percent = this.fightBar/20;
         if (percent !== 0) {
             this.progressBar.lineStyle(1, 0xffff000, 1);
             this.progressBar.drawRect(-width / 2, y - height / 2, width, height);
@@ -369,7 +397,7 @@ class Player extends Protester {
             this.progressBar.moveTo(-width / 2, y);
             this.progressBar.lineTo(Math.round(width * (-0.5 + percent)), y);
         }
-        if (percent >= 100)
+        if (percent >= 1)
         {
             this.handleFightWin();
         }
@@ -382,13 +410,18 @@ class Player extends Protester {
     }
 
     handleFightWin(){
+        this.progressBar.clear();
+        this.setMode(PLAYER_MODE_NORMAL);
         this.clearTimers();
-        alert('win');
+        this.GameObject.fightWin();
+        // this.game.winCop();
     }
 
     handleFightLose(){
+        this.progressBar.clear();
+        this.setMode(PLAYER_MODE_STUN);
+        this.GameObject.fightLose();
         this.clearTimers();
-        alert('lose');
     }
 
     clearTimers(){

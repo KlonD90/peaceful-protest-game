@@ -58,7 +58,7 @@ class Cop extends Prefab {
                 // clean up previous state
                 if (this.mode === COP_MODE_PURSUE) {
                     this.target = null;
-                } else if (this.mode === COP_MODE_CONVOY) {
+                } else if (this.mode === COP_MODE_CONVOY || this.mode == COP_MODE_FIGHT) {
                     this.target = null;
                     this.returnCoords = null;
                     this.FOV.revive();

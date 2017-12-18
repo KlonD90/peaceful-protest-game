@@ -42,7 +42,7 @@ export default {
             speed: {
                 value: 60
             },
-            mood: 1,
+            mood: 0.6,
             moodUp: 0.001,
             moodDown: 0.0001,
             poster: {

@@ -30,13 +30,14 @@ import {
     JOURNALIST_MODE_SHOOTING,
     JOURNALIST_MODE_WANDER,
     PLAYER_MODE_FIGHT,
+    PLAYER_MODE_STUN,
     PROTESTER_MODE_FOLLOW
 } from '../constants.js';
 
 import {
     getFormattedTime
 } from '../utils.js';
-import {COP_MODE_FIGHT, JOURNALIST_MODE_FOLLOW} from "../constants";
+import {COP_MODE_FIGHT, JOURNALIST_MODE_FOLLOW, PROTESTER_MODE_WANDER} from "../constants";
 
 class Game {
     init(level) {
@@ -214,6 +215,7 @@ class Game {
 
         this.mz.timers.screen = this.game.time.create(false);
         this.mz.timers.resize = this.game.time.create(false);
+        this.mz.timers.fight = this.game.time.create(false);
 
         // swat
         if (this.mz.level.swat) {
@@ -454,7 +456,9 @@ class Game {
             const copSprite = this.mz.arrays.cops[i];
             const cop = copSprite.mz;
 
-            if (cop.mode === COP_MODE_CONVOY && this.mz.objects.player.mode !== PLAYER_MODE_FIGHT && this.mz.objects.player.mode !== PROTESTER_MODE_ARRESTED)
+            if (cop.mode === COP_MODE_CONVOY && this.mz.objects.player.mode !== PLAYER_MODE_FIGHT
+                && this.mz.objects.player.mode !== PLAYER_MODE_STUN
+                && this.mz.objects.player.mode !== PROTESTER_MODE_ARRESTED)
             {
                 const playerCenter = this.mz.objects.player.sprite.body.center;
                 const diffCop = Math.abs(copSprite.x - playerCenter.x)+Math.abs(copSprite.y - playerCenter.y);
@@ -860,7 +864,7 @@ class Game {
         this.mz.groups.cars.forEach(carSprite => {
             const carCoords = {
                 x: (carSprite.body.x + carSprite.body.width) / 2,
-                y: carSprite.body.y + carSprite.body.height + 250
+                y: carSprite.body.y + carSprite.body.height + 40
             };
             const distanceToCarSq = this.getDistanceSq(copSprite, carCoords);
             if (distanceToCarSq < minDistanceSq) {
@@ -897,6 +901,40 @@ class Game {
         if (protesterSprite.name !== 'player') {
             this.mz.protesters.arrested++;
         }
+    }
+
+    unarrest(copSprite){
+        let protesterSprite = null;
+        for (let j = 0; j < copSprite.children.length; j++) {
+            if (copSprite.getChildAt(j) !== copSprite.mz.viewSprite && copSprite.getChildAt(j).mz) {
+                protesterSprite = copSprite.getChildAt(j);
+                break;
+            }
+        }
+        protesterSprite.mz.mood = 0.1;
+        protesterSprite.mz.setMode(PROTESTER_MODE_WANDER);
+        copSprite.removeChild(protesterSprite);
+        this.mz.groups.d.add(protesterSprite);
+        // this.beatUpProtester(protesterSprite);
+
+        // copSprite.removeChild(protesterSprite);
+
+        if (protesterSprite.name === 'player') {
+            this.game.camera.follow(copSprite);
+        }
+
+        if (protesterSprite.name !== 'player') {
+            this.mz.protesters.arrested--;
+            protesterSprite.mz.setMode(PROTESTER_MODE_WANDER);
+            protesterSprite.body.enable = true;
+            protesterSprite.revive(1);
+            const x = copSprite.x + 30;
+            const y = copSprite.y + 30;
+            protesterSprite.x = x;
+            protesterSprite.y = y;
+            protesterSprite.reset(x, y);
+        }
+        console.log('protester', protesterSprite);
     }
 
     launchSWAT() {
@@ -1140,6 +1178,43 @@ class Game {
         this.game.camera.scale.x -= 0.002
         this.game.camera.scale.y -= 0.002
         this.game.world.resize(this.game.world.width+10, this.game.world.height+10);
+    }
+
+    fightLose(){
+        for (let i = 0; i < this.mz.cops.alive; i++) {
+            const copSprite = this.mz.arrays.cops[i];
+            const cop = copSprite.mz;
+            if (cop.mode === COP_MODE_FIGHT)
+            {
+                let closestCarCoords = null;
+                let minDistanceSq = Infinity;
+                this.mz.groups.cars.forEach(carSprite => {
+                    const carCoords = {
+                        x: (carSprite.body.x + carSprite.body.width) / 2,
+                        y: carSprite.body.y + carSprite.body.height + 40
+                    };
+                    const distanceToCarSq = this.getDistanceSq(copSprite, carCoords);
+                    if (distanceToCarSq < minDistanceSq) {
+                        closestCarCoords = carCoords;
+                        minDistanceSq = distanceToCarSq;
+                    }
+                });
+
+                copSprite.mz.setMode(COP_MODE_CONVOY, { jailCoords: closestCarCoords });
+            }
+        }
+    }
+
+    fightWin(){
+        for (let i = 0; i < this.mz.cops.alive; i++) {
+            const copSprite = this.mz.arrays.cops[i];
+            const cop = copSprite.mz;
+            if (cop.mode === COP_MODE_FIGHT)
+            {
+                this.unarrest(copSprite);
+                cop.setMode(COP_MODE_WANDER);
+            }
+        }
     }
 }
 

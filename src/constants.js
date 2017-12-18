@@ -69,3 +69,5 @@ export const I18N_STATS_ARRESTED = 'statsArrested';
 export const I18N_STATS_LEFT = 'statsLeft';
 
 export const PLAYER_MODE_FIGHT = 'fight';
+export const PLAYER_MODE_NORMAL = 'normal';
+export const PLAYER_MODE_STUN = 'stun';

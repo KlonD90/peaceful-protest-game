@@ -77,7 +77,7 @@ class Updater {
       this._applyPersonalMatrix(true, { personalMatrix, target, matrix })
     }
 
-    console.log(matrix, mshow(matrix))
+    // console.log(matrix, mshow(matrix))
 
     return matrix
   }
