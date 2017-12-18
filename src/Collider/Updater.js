@@ -25,18 +25,27 @@ class Updater {
 
     collider.entities.forEach(({ move, sprite, object, personalMatrix }) => {
       if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
+      const { target, phasing, follow, callback } = move[0]
       const moveFrom = converter.rCoordsToMCoords(sprite.body.center)
-      const moveTo = converter.rCoordsToMCoords(move[0].target)
+      const moveTo = converter.rCoordsToMCoords(target)
 
-      const finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true})
-      const path = this._findPath({finder, from: moveFrom, to: moveTo, personalMatrix})
+      if (phasing) {
+        sprite.phasing = true
+        var path = [moveFrom, moveTo]
+        var pathClear = equals(moveFrom, moveTo)
+      } else {
+        const finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true})
+        var path = this._findPath({finder, from: moveFrom, to: moveTo, personalMatrix})
+        var pathClear = path[2] || mget(this.matrix, path[1]) === false
+      }
 
-      if (path[2] || mget(this.matrix, path[1]) === false) {
+      if (pathClear) {
         const nextTarget = converter.mCoordsToRCoords(path[1])
         collider.invokeRawMoving(object, nextTarget)
       } else {
-        if (move[0].follow) return void sprite.body.stop();
-        if (move[0].callback) move[0].callback()
+        if (follow) return void sprite.body.stop();
+        if (callback) callback()
+        sprite.phasing = false
         move.shift()
       }
     })
@@ -68,6 +77,8 @@ class Updater {
       this._applyPersonalMatrix(true, { personalMatrix, target, matrix })
     }
 
+    console.log(matrix, mshow(matrix))
+
     return matrix
   }
 
@@ -85,7 +96,7 @@ class Updater {
 
     personalMatrix.forEach(point => {
         const [x2, y2] = point;
-        mset(matrix, [Math.min(x1 + x2, maxX), Math.min(y1 + y2, maxY)], true)
+        mset(matrix, [Math.min(x1 + x2, maxX), Math.min(y1 + y2, maxY)], value)
     })
   }
 
@@ -116,6 +127,16 @@ function mzero (maxX: number, maxY: number): Matrix {
     }
   }
   return matrix
+}
+
+function mshow(matrix: Matrix): string {
+  return matrix.map(row => row.map(x => x ? 1 : 0).join()).join("\n")
+}
+
+function equals(a: MCoords, b: MCoords): boolean {
+  const [xa, ya] = a
+  const [xb, yb] = b
+  return (xa === xb) && (ya === yb)
 }
 
 export default Updater

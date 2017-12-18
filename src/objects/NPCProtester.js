@@ -148,9 +148,9 @@ class NPCProtester extends Protester {
                     this.moveTo(null);
                 }
 
-                const { coords } = props;
+                const { coords, phasing = false } = props;
                 if (coords) {
-                    this.moveTo(coords, { callback: () => this.wander() });
+                    this.moveTo(coords, { callback: () => this.wander(), phasing });
                 } else {
                     this.wander();
                 }
@@ -269,7 +269,7 @@ class NPCProtester extends Protester {
 
         console.log('next coords', nextCoords);
 
-        this.setMode(PROTESTER_MODE_WANDER, { coords: nextCoords });
+        this.setMode(PROTESTER_MODE_WANDER, { coords: nextCoords, phasing: true });
     }
 
     reset(){
