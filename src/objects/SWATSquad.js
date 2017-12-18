@@ -122,7 +122,8 @@ class SWATSquad {
       if (protester instanceof Star) {
         console.log("Arrested star")
         const paddyWagon = pickRandomElementFromArray(this.gameObject.mz.levelObjects.paddyWagon)
-        const callback = () => paddyWagon.setState(PADDY_WAGON_MODE_LEAVE)
+        const { x, y } = this.gameObject.randomOffscreenCoords()
+        const callback = () => paddyWagon.body.velocity = new Phaser.Point(x, y)
         this.moveTargets.unshift({ ...paddyWagon.sprite.body.center, callback })
       }
     }
