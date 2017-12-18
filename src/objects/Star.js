@@ -63,7 +63,7 @@ export class Star extends Protester {
       case Star.STATE.MOVE_IN: {
         this.restTimer.stop();
         this.revive()
-        this.moveTo(this.GameObject.getRandomCoordinates(), { callback: () => this.setState(Star.STATE.AGITATE) })
+        this.moveTo(this.GameObject.getRandomCoordinates(), { callback: () => this.setState(Star.STATE.AGITATE), phasing: true })
         this.state = { type: Star.STATE.MOVE_IN }
         break;
       }

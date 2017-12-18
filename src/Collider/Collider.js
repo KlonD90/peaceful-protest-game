@@ -40,21 +40,21 @@ export class Collider {
   moveEntity (
     object: EntityObject,
     target: RCoords,
-    { callback = () => {}, follow = false, reset = true }: MoveOpts  = {}
+    { callback = () => {}, phasing = false, follow = false, reset = true }: MoveOpts  = {}
   ) {
     const entity = this.entities.find(x => x.object === object)
     if (!entity && target) throw new Error(`object not registered (${object})`)
     if (!entity) return
 
     if (reset) entity.move = []
-    if (target) entity.move.push({ target, callback, follow })
+    if (target) entity.move.push({ target, callback, follow, phasing })
   }
 
   moveToFactory () {
     const collider = this
     // Use old syntax to explicitly allow context changing
-    return function moveTo (target: RCoords,  { callback, follow, reset }: MoveOpts = {}) {
-      collider.moveEntity(this, target, { callback, follow, reset })
+    return function moveTo (target: RCoords,  opts: MoveOpts = {}) {
+      collider.moveEntity(this, target, opts)
     }
   }
 
