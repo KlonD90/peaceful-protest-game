@@ -103,7 +103,7 @@ class Game {
                 npcProtesters: null,
                 levelObjects: null
             },
-            zoomLevel: 0
+            zoomLevel: -1
         };
     }
 
@@ -229,12 +229,12 @@ class Game {
         }
 
         // shield
-        this.mz.objects.shield = new Shield({
-            game: this.game,
-            speed: {
-                value: 300
-            }
-        });
+        // this.mz.objects.shield = new Shield({
+        //     game: this.game,
+        //     speed: {
+        //         value: 300
+        //     }
+        // });
 
         // press
         const onFinishShooting = this.handleFinishShooting.bind(this);
@@ -305,8 +305,11 @@ class Game {
         this.game.input.onDown.add(this.handleUnpause, this);
 
         this.mz.events.keys.esc = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC);
-
-
+        this.game.camera.width = 600;
+        this.game.camera.height = 300;
+        // this.game.camera.scale.x = 2;
+        // this.game.camera.scale.y = 2;
+        this.game.camera.setBoundsToWorld()
     }
 
     update() {
@@ -440,7 +443,7 @@ class Game {
         }
 
         // update shield
-        this.mz.objects.shield.update();
+        // this.mz.objects.shield.update();
 
         // update cops
         if (this.mz.cops.alive < this.mz.arrays.cops.length) {
@@ -570,19 +573,19 @@ class Game {
             }
 
             // vs shield
-            if (this.mz.gameEnded) {
-                this.game.physics.arcade.collide(
-                    protesterSprite,
-                    this.mz.objects.shield.sprite,
-                    protesterSprite => {
-                        protesterSprite.body.collideWorldBounds = false;
-                        if (protesterSprite.health === 1) {
-                            this.beatUpProtester(protesterSprite);
-                        }
-                        protesterSprite.mz.dropPosterRnd();
-                    }
-                );
-            }
+            // if (this.mz.gameEnded) {
+            //     this.game.physics.arcade.collide(
+            //         protesterSprite,
+            //         this.mz.objects.shield.sprite,
+            //         protesterSprite => {
+            //             protesterSprite.body.collideWorldBounds = false;
+            //             if (protesterSprite.health === 1) {
+            //                 this.beatUpProtester(protesterSprite);
+            //             }
+            //             protesterSprite.mz.dropPosterRnd();
+            //         }
+            //     );
+            // }
         }
 
         // player collisions
@@ -665,16 +668,31 @@ class Game {
 
         this.mz.objects.star && this.mz.objects.star.update()
 
-        const desiredZoomLevel = Math.round(this.mz.protesters.alive/10 - 0.7);
+
+        const zoomLevels = [[10, 1, 800, 600], [20, 0.7, 2000, 800]];
+        let desiredZoomLevel = -1;
+        for (let l =0; l< zoomLevels.length; l++)
+        {
+            const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[l];
+            if (this.mz.protesters.alive > countProtester)
+            {
+                desiredZoomLevel = l;
+            }
+        }
+
         if (this.mz.zoomLevel < desiredZoomLevel)
         {
-            this.mz.zoomLevel = desiredZoomLevel;
-            this.mz.timers.resize.removeAll();
-            this.mz.timers.resize.stop();
-            const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
-            for (let i=1; i<zoomSteps+1; i++)
-                this.mz.timers.resize.add(i*300, this.cameraZoom, this);
-            this.mz.timers.resize.start();
+            const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[desiredZoomLevel];
+            // this.game.camera.scale.x = zoom;
+            // this.game.camera.scale.y = zoom;
+            this.game.world.resize(worldWidth, worldHeight);
+            // this.mz.zoomLevel = desiredZoomLevel;
+            // this.mz.timers.resize.removeAll();
+            // this.mz.timers.resize.stop();
+            // const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
+            // for (let i=1; i<zoomSteps+1; i++)
+            //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
+            // this.mz.timers.resize.start();
         }
     }
 
@@ -1031,11 +1049,11 @@ class Game {
                     this.mz.arrays.protesters.forEach(sprite => {
                         sprite.mz.moodDown(1);
                     });
-                    this.launchShield();
+                    // this.launchShield();
                     break;
                 }
                 case END_GAME_PROTEST_RATE: {
-                    this.launchShield();
+                    // this.launchShield();
                     break;
                 }
                 case END_GAME_PLAYER_KILLED: {
@@ -1177,7 +1195,7 @@ class Game {
     cameraZoom(){
         this.game.camera.scale.x -= 0.002
         this.game.camera.scale.y -= 0.002
-        this.game.world.resize(this.game.world.width+10, this.game.world.height+10);
+        // this.game.world.resize(this.game.world.width+10, this.game.world.height+10);
     }
 
     fightLose(){

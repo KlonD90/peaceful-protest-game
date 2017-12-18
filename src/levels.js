@@ -2,7 +2,7 @@ export default {
     level1: {
         id: 'level1',
         worldWidth: 600,
-        worldHeight: 600,
+        worldHeight: 300,
         duration: 3 * 60, // s
         winningThreshold: 100,
         cops: {
@@ -23,7 +23,7 @@ export default {
             }
         },
         press: {
-            count: 1,
+            count: 3,
             speed: {
                 value: 50
             },

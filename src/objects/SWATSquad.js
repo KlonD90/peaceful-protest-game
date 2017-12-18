@@ -124,7 +124,7 @@ class SWATSquad {
         const paddyWagon = pickRandomElementFromArray(this.gameObject.mz.levelObjects.paddyWagon)
         const { x, y } = this.gameObject.randomOffscreenCoords()
         const callback = () => paddyWagon.body.velocity = new Phaser.Point(x, y)
-        this.moveTargets.unshift({ ...paddyWagon.sprite.body.center, callback })
+        this.moveTargets.unshift({ ...paddyWagon.body.center, callback })
       }
     }
 }
