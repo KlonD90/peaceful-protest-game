@@ -43,7 +43,7 @@ class Game {
         // FIXME: debug
         window.game = this
 
-        this.collider = new Collider({ game: this.game, gameObject: this, scale: 40 })
+        this.collider = new Collider({ game: this.game, gameObject: this, scale: 20 })
 
         this.mz = {
             level,

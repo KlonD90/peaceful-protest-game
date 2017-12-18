@@ -1,6 +1,6 @@
 // @flow
 
-import type { PersonalMatrix, RCoords } from "./Collider.js"
+import type { PersonalMatrix, RCoords } from "./Collider"
 
 import Prefab from "./objects/Prefab.js"
 import PaddyWagonClass from "./objects/PaddyWagon.js"

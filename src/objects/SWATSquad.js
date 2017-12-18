@@ -121,7 +121,7 @@ class SWATSquad {
     onArrest (protester) {
       if (protester instanceof Star) {
         console.log("Arrested star")
-        const paddyWagon = pickRandomElementFromArray(this.GameObject.levelObjects.paddyWagon)
+        const paddyWagon = pickRandomElementFromArray(this.gameObject.levelObjects.paddyWagon)
         const callback = () => paddyWagon.setState(PADDY_WAGON_MODE_LEAVE)
         this.moveTargets.unshift({ ...paddyWagon.sprite.body.center, callback })
       }
