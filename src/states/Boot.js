@@ -20,7 +20,8 @@ class Boot {
         this.state.start('Loading', true, false, {
             assets: [
                 ['pack', 'initial', null, pack],
-                ['pack', 'help' + (Phaser.Device.desktop ? 'Desktop' : 'Touch'), null, pack]
+                ['pack', 'help' + (Phaser.Device.desktop ? 'Desktop' : 'Touch'), null, pack],
+                ['pack', 'helpDesktop2', null, pack]
             ],
             nextState: ['StartMenu']
         });
