@@ -32,7 +32,8 @@ class Player extends Protester {
         this.sprite.input.priorityID = 1;
 
         this.sprite.body.collideWorldBounds = true;
-        this.sprite.body.mass = 30;
+        this.sprite.body.mass = 4;
+        this.sprite.body.setSize(37, 37);
         this.direction = 0;
 
         this.power = 1;
@@ -254,6 +255,7 @@ class Player extends Protester {
     setMode(mode, props = {}) {
         switch (mode) {
             case PROTESTER_MODE_ARRESTED: {
+                this.sprite.body.immovable = true;
                 this.togglePoster(false);
 
                 this.sprite.body.collideWorldBounds = false;
@@ -269,18 +271,26 @@ class Player extends Protester {
                 this.GameObject.mz.timers.fight.loop(500, this.handleTickFight, this);
                 this.GameObject.mz.timers.fight.add(5000, this.handleFightLose, this);
                 this.GameObject.mz.timers.fight.start();
+                this.sprite.body.immovable = true;
                 console.log(this.GameObject.mz.timers.fight);
                 break;
             }
             case PLAYER_MODE_STUN: {
+                this.sprite.body.immovable = true;
                 this.stunTimer.stop();
                 this.stunTimer.removeAll();
                 this.stunTimer.add(5000, this.handleRecoverStun, this);
+                if (this.stunTween)
+                    this.stunTween.stop();
                 // this.stunTimer.loop(100, this.handleAlphaTick, this);
                 this.stunTween = this.game.add.tween(this.viewSprite)
-                this.stunTween.to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+                this.stunTween.to( { alpha: 0 }, 500, Phaser.Easing.Linear.None, true, 0, 500, true);
                 this.stunTween.start();
                 this.stunTimer.start();
+                break;
+            }
+            default: {
+                this.sprite.body.immovable = true;
                 break;
             }
         }
@@ -292,6 +302,7 @@ class Player extends Protester {
     }
 
     handleRecoverStun(){
+        this.stunTimer.removeAll();
         this.stunTimer.stop();
         this.stunTween.stop();
         this.viewSprite.alpha = 1;

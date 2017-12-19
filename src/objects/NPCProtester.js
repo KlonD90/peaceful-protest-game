@@ -46,7 +46,7 @@ class NPCProtester extends Protester {
         this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.1;
         this.nodDone = false;
         this.slot = null;
-        this.sprite.body.setCircle(18);
+        this.sprite.body.setSize(37, 37);
 
         // initially dead
         this.kill();
@@ -112,10 +112,10 @@ class NPCProtester extends Protester {
             }
         }
 
-        if (this.shownPoster && !this.shownPoster)
+        if (this.showPoster && !this.shownPoster)
         {
             this.shownPoster = true;
-            this.GameObject.increaseScore(10, this.sprite);
+            this.GameObject.increaseScore(5, this.sprite);
         }
 
         this.sprite.tint = 0xffffff;

@@ -18,6 +18,7 @@ export const COP_MODE_WANDER = 'wander';
 export const COP_MODE_PURSUE = 'pursue';
 export const COP_MODE_CONVOY = 'convoy';
 export const COP_MODE_FIGHT = 'fight';
+export const COP_MODE_STUN = 'stun';
 
 export const SWAT_MODE_HIDE = 'hide';
 export const SWAT_MODE_HUNT = 'hunt';

@@ -16,7 +16,7 @@ class GameInterface {
         });
         this.group.add(this.score.group);
 
-        this.textTimer = this.game.add.text(
+        this.textScore = this.game.add.text(
             this.game.width - 20,
             20,
             '',
@@ -25,9 +25,9 @@ class GameInterface {
                 fill: '#fff'
             }
         );
-        this.textTimer.anchor.set(1, 0);
-        this.textTimer.setShadow(2, 2, 'rgba(0, 0, 0, .8)', 0);
-        this.group.add(this.textTimer);
+        this.textScore.anchor.set(1, 0);
+        this.textScore.setShadow(2, 2, 'rgba(0, 0, 0, .8)', 0);
+        this.group.add(this.textScore);
 
         this.buttonSound = this.game.add.button(
             10,
@@ -66,8 +66,8 @@ class GameInterface {
         });
     }
 
-    updateTimer(time) {
-        this.textTimer.setText(time);
+    updateScore(score) {
+        this.textScore.setText(score);
     }
 
     handleClickSound() {

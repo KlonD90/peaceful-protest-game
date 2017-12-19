@@ -6,6 +6,7 @@ import {
     COP_MODE_PURSUE,
     COP_MODE_CONVOY,
     COP_MODE_FIGHT,
+    COP_MODE_STUN,
     FOV_MODE_CAPTURE,
     FOV_MODE_NORMAL,
 } from '../constants.js';
@@ -26,7 +27,9 @@ class Cop extends Prefab {
         this.attractionStrength = 0;
         this.returnCoords = null;
 
-        this.sprite.body.setCircle(20);
+        this.sprite.body.immovable = true;
+        this.sprite.body.setSize(37, 37);
+        this.stunTimer = this.game.time.create();
 
 
         if (!alive) {
@@ -58,7 +61,7 @@ class Cop extends Prefab {
                 // clean up previous state
                 if (this.mode === COP_MODE_PURSUE) {
                     this.target = null;
-                } else if (this.mode === COP_MODE_CONVOY || this.mode == COP_MODE_FIGHT) {
+                } else if (this.mode === COP_MODE_CONVOY || this.mode === COP_MODE_FIGHT || this.mode === COP_MODE_STUN) {
                     this.target = null;
                     this.returnCoords = null;
                     this.FOV.revive();
@@ -77,14 +80,14 @@ class Cop extends Prefab {
                     this.stopWandering();
                 }
                 this.target = target;
-                this.moveTo(target);
+                this.moveTo(target, {phasing: true});
                 break;
             }
             case COP_MODE_CONVOY: {
                 const { jailCoords } = props;
                 this.FOV.kill();
                 this.returnCoords = { x: this.sprite.x, y: this.sprite.y };
-                this.moveTo(jailCoords, {callback: () => this.handleCovoyEnd()})
+                this.moveTo(jailCoords, {callback: () => this.handleCovoyEnd(), phasing: true})
                 break;
             }
             case COP_MODE_ENTER: {
@@ -99,14 +102,37 @@ class Cop extends Prefab {
                 break;
             }
             case COP_MODE_FIGHT: {
+                this.stopWandering();
                 this.jailTarget = this.moveTargets;
                 // this.FOV.kill();
                 this.moveTo(null);
                 break;
             }
+            case COP_MODE_STUN: {
+                this.stopWandering();
+                this.stunTimer.stop();
+                this.stunTimer.removeAll();
+                if (this.stunTween)
+                    this.stunTween.stop();
+                this.stunTween = this.game.add.tween(this.viewSprite);
+                this.stunTween.to( { alpha: 0 }, 500, Phaser.Easing.Linear.None, true, 0, 500, true);
+                this.stunTween.start();
+                this.stunTimer.add(5000, this.handleRecoverStun, this);
+                this.stunTimer.start();
+                break;
+            }
         }
 
         super.setMode(mode);
+    }
+
+    handleRecoverStun(){
+        this.stunTimer.removeAll();
+        this.stunTimer.stop();
+        this.stunTween.stop();
+        this.viewSprite.alpha = 1;
+        this.setMode(COP_MODE_WANDER);
+        alert('cop return from stun');
     }
 
     handleCovoyEnd() {
@@ -153,10 +179,10 @@ class Cop extends Prefab {
     }
 
     revive(rtl) {
-        const offset = this.game.rnd.between(-100, 100);
-        const wagon = this.GameObject.mz.levelObjects.paddyWagon[0];
+        const offset = 100;
+        const wagon = this.GameObject.pickRandomWagon();
         const x = Math.round(wagon.body.center.x)+offset;
-        const y = wagon.y + wagon.body.height + 150;
+        const y = wagon.y + wagon.body.height + 30;
         this.sprite.x = x;
         this.sprite.y = y;
         this.sprite.body.reset(x, y);

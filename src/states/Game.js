@@ -37,7 +37,7 @@ import {
 import {
     getFormattedTime
 } from '../utils.js';
-import {COP_MODE_FIGHT, JOURNALIST_MODE_FOLLOW, PROTESTER_MODE_WANDER} from "../constants";
+import {COP_MODE_FIGHT, COP_MODE_STUN, JOURNALIST_MODE_FOLLOW, PROTESTER_MODE_WANDER} from "../constants";
 
 class Game {
     init(level) {
@@ -91,7 +91,8 @@ class Game {
                 cops: [],
                 press: [],
                 borders: [],
-                droppedPosters: []
+                droppedPosters: [],
+                wagons: [],
             },
             groups: {
                 d: null,
@@ -105,9 +106,11 @@ class Game {
             },
             zoomLevel: -1
         };
+        this.mz.score = 0;
     }
 
     create() {
+        this.mz.score = 0;
         // this.game.time.advancedTiming = true;
 
         this.game.stage.backgroundColor = '#ccc';
@@ -156,6 +159,7 @@ class Game {
         for (let key in levelObjects) {
             const { speed, personalMatrix, sprite, positions, objectClass, immovable, group, ...extras } = levelObjects[key]
             this.mz.levelObjects[key] = positions.map(({ x, y, angle }, i) => {
+
                 const levelObject = this.game.add.sprite(x, y, sprite, 0);
                 levelObject.spriteName = sprite+i;
                 // levelObject.anchor.set(0.5);
@@ -181,6 +185,10 @@ class Game {
                     levelObject.body.immovable = true;
                 }
                 this.collider.addEntity({ sprite: levelObject, object: this.game })
+                if (key === 'paddyWagon')
+                {
+                    this.mz.arrays.wagons.push(levelObject);
+                }
                 return levelObject;
             })
         }
@@ -268,6 +276,7 @@ class Game {
                 this.mz.objects.player.togglePoster();
             }
         });
+        this.updateScore();
 
 
         // bottom borders
@@ -281,9 +290,9 @@ class Game {
         //     this.mz.arrays.borders.push(borderBottom);
         // }
 
-        this.mz.objects.timer = this.game.time.create();
-        this.mz.objects.timer.loop(Phaser.Timer.SECOND, this.updateTimer, this);
-        this.mz.objects.timer.start();
+        // this.mz.objects.timer = this.game.time.create();
+        // this.mz.objects.timer.loop(Phaser.Timer.SECOND, this.updateScore, this);
+        // this.mz.objects.timer.start();
 
         // pause menu
         this.mz.objects.pauseMenu = new PauseMenu({ game: this.game });
@@ -309,6 +318,7 @@ class Game {
         // this.game.camera.height = 300;
         // this.game.camera.scale.x = 2;
         // this.game.camera.scale.y = 2;
+
         this.game.camera.setBoundsToWorld()
     }
 
@@ -327,7 +337,7 @@ class Game {
 
         // update protesters
         const lastTickMeanMood = this.mz.protesters.meanMood;
-        this.mz.score = 0;
+
         this.mz.protesters.meanMood = 0;
         this.mz.protesters.alive = 0;
         const posterProtesters = this.mz.arrays.protesters.filter(x => x.mz.showPoster && x.mz.isAgitator);
@@ -642,8 +652,28 @@ class Game {
           this.mz.objects.player.sprite
         );
         this.game.physics.arcade.collide(
+            this.mz.levelObjects.paddyWagon,
+            this.mz.arrays.protesters
+        );
+        this.game.physics.arcade.collide(
             this.mz.objects.player.sprite,
             this.mz.objects.star.sprite
+        );
+
+        const pursueTarget = (copSprite, protesterSprite) => !(
+            copSprite.mz.target === protesterSprite && copSprite.mz.mode === COP_MODE_PURSUE
+        );
+        this.game.physics.arcade.collide(
+            this.mz.arrays.cops,
+            this.mz.arrays.protesters,
+            null,
+            pursueTarget
+        );
+        this.game.physics.arcade.collide(
+            this.mz.arrays.cops,
+            this.mz.objects.player,
+            null,
+            pursueTarget
         );
 
         // update posters
@@ -756,17 +786,27 @@ class Game {
         }
     }
 
-    updateTimer() {
-        this.mz.timePassed++;
-        this.mz.objects.interface.updateTimer(Math.round(this.mz.score));
+    updateScore() {
+        this.mz.objects.interface.updateScore(this.mz.score);
     }
 
     createCops() {
         const totalCount = this.mz.level.cops.count[this.mz.level.cops.count.length - 1][1];
         this.mz.cops.alive = this.getCopsRequiredNumber();
         for (let i = 0; i < totalCount; i++) {
+            let x, y;
+            if (i < this.mz.cops.alive) {
+                const offset = 100;
+                const wagon = this.pickRandomWagon();
+                x = Math.round(wagon.body.center.x) + offset;
+                y = wagon.y + wagon.body.height + 30;
+            } else {
+                const randCoords = this.getRandomCoordinates();
+                x = randCoords.x;
+                y = randCoords.y;
+            }
             const cop = this.createPrefab(Cop, {
-              ...this.getRandomCoordinates,
+              x, y,
               alive: i < this.mz.cops.alive,
               fov: {
                   group: this.mz.groups.copsFOV,
@@ -991,9 +1031,9 @@ class Game {
     }
 
     checkWin() {
-        if (this.mz.score === 0) {
+        if (this.mz.protesters.alive <= 0) {
             this.endGame(END_GAME_PROTEST_RATE);
-        } else if (this.mz.score === 100) {
+        } else if (this.mz.score >= 500) {
             this.endGame(END_GAME_WIN);
         } else if (
             this.mz.objects.player.mode === PROTESTER_MODE_ARRESTED ||
@@ -1023,7 +1063,7 @@ class Game {
 
         this.game.camera.unfollow();
         this.mz.objects.interface.kill();
-        this.mz.objects.timer.stop();
+        // this.mz.objects.timer.stop();
         this.mz.events.fieldClickHandler.kill();
 
         // pause
@@ -1125,44 +1165,47 @@ class Game {
         const spriteWidth = 1035;
         if (this.mz.screenAttacked)
         {
-            console.log(this.mz.objects.screenAttack);
-            // this.mz.screenAttacked = true;
-            // this.mz.objects.screenAttack = this.game.add.sprite(this.game.camera.width / 2, this.game.camera.height / 2, 'klyaksa');
-            // this.mz.objects.screenAttack.fixedToCamera = false;
-            // const scaleWidth = this.game.camera.width / this.mz.objects.screenAttack.width;
-            // const scaleHeight = this.game.camera.heigh / this.mz.objects.screenAttack.height;
-            // const leastScale = scaleWidth > scaleHeight ? scaleHeight : scaleWidth;
-            // this.mz.objects.screenAttack.scale.setTo(leastScale);
-            this.mz.objects.screenAttack.alpha = 1;
+            // this.mz.objects.screenAttack;
             this.mz.timers.screen.stop();
             this.mz.timers.screen.removeAll();
             this.mz.timers.screen.add(awaitStop, this.screenAttackStop, this);
-            for (let i=0; i<alphaStops; i++)
-            {
-                this.mz.timers.screen.add(alphaStep * (i +1), this.screenAttackAlpha, this);
-            }
+            // for (let i=0; i<alphaStops; i++)
+            // {
+            //     this.mz.timers.screen.add(alphaStep * (i +1), this.screenAttackAlpha, this);
+            // }
             this.mz.timers.screen.start();
         }
         else
         {
             this.mz.screenAttacked = true;
-            const scaleWidth = this.game.camera.width / spriteWidth;
-            const scaleHeight = this.game.camera.height / spriteHeight;
-            const leastScale = scaleWidth > scaleHeight ? scaleHeight : scaleWidth;
-            this.mz.objects.screenAttack = this.game.add.sprite(this.game.camera.width / 2 - (spriteWidth/2), this.game.camera.height / 2 - (spriteHeight/2), 'klyaksa');
+            this.mz.objects.screenAttack = this.game.add.graphics();;
             this.mz.objects.screenAttack.fixedToCamera = true;
-            console.log(this.mz.objects.screenAttack);
-            this.mz.objects.screenAttack.scale.setTo(2.5);
-
-            this.mz.objects.screenAttack.x = (this.game.camera.width  /2 - this.mz.objects.screenAttack.width /2 );
-            this.mz.objects.screenAttack.y = (this.game.camera.height  /2 - this.mz.objects.screenAttack.height /2 );
+            this.mz.objects.screenAttack.reset(0, 0);
+            this.mz.objects.screenAttack.beginFill(0x00ff00, 1);
+            this.mz.objects.screenAttack.lineTo(this.game.camera.width, 0)
+                .lineTo(this.game.camera.width, this.game.camera.height)
+                .lineTo(0, this.game.camera.height)
+                .lineTo(0, 0)
+                .endFill();
+            // this.mz.objects.screenAttack.scale.setTo(2.5);
+//	A mask is a Graphics object
+            var mask = this.game.add.graphics(0, 0);
+            //	Shapes drawn to the Graphics object must be filled.
+            mask.beginFill(0xffffff);
+            //	Here we'll draw a circle
+            mask.drawCircle(100, 100, 100);
+            mask.x = this.mz.objects.player.sprite.x - 100;
+            mask.y = this.mz.objects.player.sprite.y - 100;
+            for (let group of this.mz.groups ){
+                group.mask = mask;
+            }
             console.log('x', this.game.camera.width/2, this.mz.objects.screenAttack.width/2);
             console.log(this.mz.objects.screenAttack);
             this.mz.timers.screen.add(awaitStop, this.screenAttackStop, this);
-            for (let i=0; i<alphaStops; i++)
-            {
-                this.mz.timers.screen.add(alphaStep * (i +1), this.screenAttackAlpha, this);
-            }
+            // for (let i=0xx; i<alphaStops; i++)
+            // {
+            //     this.mz.timers.screen.add(alphaStep * (i +1), this.screenAttackAlpha, this);
+            // }
             this.mz.timers.screen.start();
         }
     }
@@ -1170,6 +1213,9 @@ class Game {
     screenAttackStop(){
         this.mz.objects.screenAttack.destroy();
         this.mz.objects.screenAttack = null;
+        for (let group of this.mz.groups ){
+            group.mask = null;
+        }
         this.mz.screenAttacked = false;
     }
 
@@ -1224,6 +1270,7 @@ class Game {
 
     increaseScore(points){
         this.mz.score += points;
+        this.updateScore();
     }
 
     fightWin(){
@@ -1233,9 +1280,15 @@ class Game {
             if (cop.mode === COP_MODE_FIGHT)
             {
                 this.unarrest(copSprite);
-                cop.setMode(COP_MODE_WANDER);
+                cop.setMode(COP_MODE_STUN);
+                this.increaseScore(10, copSprite);
             }
         }
+
+    }
+
+    pickRandomWagon(){
+        return this.mz.arrays.wagons[Math.floor(Math.random()*this.mz.arrays.wagons.length)];
     }
 }
 
