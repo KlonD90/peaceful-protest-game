@@ -290,7 +290,7 @@ class Player extends Protester {
                 break;
             }
             default: {
-                this.sprite.body.immovable = true;
+                this.sprite.body.immovable = false;
                 break;
             }
         }

@@ -202,7 +202,8 @@ class NPCProtester extends Protester {
                             this.nodDone = true;
                             this.GameObject.screenAttack();
                             this.moveTo(null);
-                        }
+                        },
+                        phasing: true
                     }
                 );
                 break;
