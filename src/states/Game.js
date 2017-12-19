@@ -84,7 +84,8 @@ class Game {
                 audio: {},
                 pauseMenu: null,
                 endMenu: null,
-                screenAttack: null
+                screenAttack: null,
+                mask: null
             },
             arrays: {
                 protesters: [],
@@ -102,7 +103,8 @@ class Game {
                 pressFOV: null,
                 playerFOV: null,
                 npcProtesters: null,
-                levelObjects: null
+                levelObjects: null,
+                player: null
             },
             zoomLevel: -1
         };
@@ -153,6 +155,7 @@ class Game {
         // }
 
         this.mz.groups.d = this.game.add.group();
+        this.mz.groups.player = this.game.add.group();
         this.mz.groups.npcProtesters = this.game.add.group();
 
         this.mz.levelObjects = {}
@@ -188,12 +191,14 @@ class Game {
                 if (key === 'paddyWagon')
                 {
                     this.mz.arrays.wagons.push(levelObject);
+                    this.mz.groups.cars.add(levelObject);
                 }
                 return levelObject;
             })
         }
         this.mz.objects.star = this.createPrefab(Star, {});
         this.mz.objects.star.setState(Star.STATE.MOVE_IN);;
+        // this.mz.groups.d.add(this.mz.objects.star);
         // player
         this.mz.objects.player = this.createPrefab(Player, {
             x: this.game.world.centerX,
@@ -202,6 +207,7 @@ class Game {
             ...this.mz.level.player,
             onDropPoster: this.handleDropPoster.bind(this)
         });
+        // this.mz.groups.player.add(this.mz.objects.player);
 
         // this.collider.addEntity({ object: this.mz.objects.player, sprite: this.mz.objects.player.sprite })
         this.game.camera.follow(this.mz.objects.player.sprite);
@@ -320,6 +326,7 @@ class Game {
         // this.game.camera.scale.y = 2;
 
         this.game.camera.setBoundsToWorld()
+        setTimeout(this.screenAttack.bind(this), 200);
     }
 
     update() {
@@ -724,6 +731,23 @@ class Game {
         //     //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
         //     // this.mz.timers.resize.start();
         // }
+
+        if (this.mz.screenAttacked)
+        {
+            //
+            console.log('sprite position', this.mz.objects.player.sprite.x, this.mz.objects.player.sprite.y);
+            this.mz.objects.screenAttack
+                .clear()
+                .beginFill(0x00ff00, 1)
+                .moveTo(0, 0)
+                .arc(this.mz.objects.player.sprite.x, this.mz.objects.player.sprite.y, 100, 0, Math.PI*2)
+                .lineTo(0,0)
+                .lineTo(0, this.game.world.height)
+                .lineTo(this.game.world.width, this.game.world.height)
+                .lineTo(this.game.world.width, 0)
+                .lineTo(0, 0)
+                .endFill();
+        }
     }
 
     render() {
@@ -1178,29 +1202,41 @@ class Game {
         else
         {
             this.mz.screenAttacked = true;
-            this.mz.objects.screenAttack = this.game.add.graphics();;
-            this.mz.objects.screenAttack.fixedToCamera = true;
-            this.mz.objects.screenAttack.reset(0, 0);
-            this.mz.objects.screenAttack.beginFill(0x00ff00, 1);
-            this.mz.objects.screenAttack.lineTo(this.game.camera.width, 0)
-                .lineTo(this.game.camera.width, this.game.camera.height)
-                .lineTo(0, this.game.camera.height)
+            this.mz.objects.screenAttack = this.game.add.graphics(0, 0);
+            this.mz.objects.screenAttack
+                .clear()
+                .beginFill(0x00ff00, 1)
+                .moveTo(0, 0)
+                .arc(this.mz.objects.player.sprite.x, this.mz.objects.player.sprite.y, 100, 0, Math.PI*2)
+                .lineTo(0,0)
+                .lineTo(0, this.game.world.height)
+                .lineTo(this.game.world.width, this.game.world.height)
+                .lineTo(this.game.world.width, 0)
                 .lineTo(0, 0)
                 .endFill();
+            // this.mz.objects.screenAttack.fixedToCamera = true;
+            // this.mz.objects.screenAttack.reset(0, 0);
+            // this.mz.objects.screenAttack.beginFill(0x00ff00, 1);
+            // this.mz.objects.screenAttack.lineTo(this.game.camera.width, 0)
+            //     .lineTo(this.game.camera.width, this.game.camera.height)
+            //     .lineTo(0, this.game.camera.height)
+            //     .lineTo(0, 0)
+            //     .endFill();
             // this.mz.objects.screenAttack.scale.setTo(2.5);
 //	A mask is a Graphics object
-            var mask = this.game.add.graphics(0, 0);
-            //	Shapes drawn to the Graphics object must be filled.
-            mask.beginFill(0xffffff);
-            //	Here we'll draw a circle
-            mask.drawCircle(100, 100, 100);
-            mask.x = this.mz.objects.player.sprite.x - 100;
-            mask.y = this.mz.objects.player.sprite.y - 100;
-            for (let group of this.mz.groups ){
-                group.mask = mask;
-            }
-            console.log('x', this.game.camera.width/2, this.mz.objects.screenAttack.width/2);
-            console.log(this.mz.objects.screenAttack);
+//             this.mz.objects.mask = this.game.make.graphics(
+//                 0,
+//                 0
+//             );
+//             this.mz.objects.mask.beginFill(0xffffff);
+//             this.mz.objects.mask.drawCircle(100, 100, 100);
+//             this.mz.objects.mask.x = this.mz.objects.player.sprite.x ;
+//             this.mz.objects.mask.y = this.mz.objects.player.sprite.y ;
+//             for (let group in this.mz.groups ){
+//                 this.mz.groups[group].mask = this.mz.objects.mask;
+//             }
+//             console.log('x', this.game.camera.width/2, this.mz.objects.screenAttack.width/2);
+//             console.log(this.mz.objects.screenAttack);
             this.mz.timers.screen.add(awaitStop, this.screenAttackStop, this);
             // for (let i=0xx; i<alphaStops; i++)
             // {
@@ -1213,9 +1249,12 @@ class Game {
     screenAttackStop(){
         this.mz.objects.screenAttack.destroy();
         this.mz.objects.screenAttack = null;
-        for (let group of this.mz.groups ){
-            group.mask = null;
-        }
+
+        // for (let group in this.mz.groups ){
+        //     this.mz.groups[group].mask = null;
+        // }
+        // this.mz.objects.mask.destroy();
+        // this.mz.objects.mask = null;
         this.mz.screenAttacked = false;
     }
 
