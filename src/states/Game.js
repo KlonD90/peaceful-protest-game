@@ -10,6 +10,7 @@ import GameInterface from '../objects/GameInterface.js';
 import PauseMenu from './../objects/PauseMenu.js';
 import EndMenu from './../objects/EndMenu.js';
 import Collider from "../Collider/Collider.js"
+import HelpInfo from '../objects/HelpInfo.js';
 
 import levelObjects from "../levelObjects.js"
 
@@ -135,6 +136,10 @@ class Game {
         this.mz.objects.audio.applause = this.game.add.audio('applause');
         this.mz.objects.audio.boo = this.game.add.audio('boo');
         this.mz.objects.audio.pick = this.game.add.audio('pick');
+
+        HelpInfo.setGame(game);
+        HelpInfo.show('help1', 1);
+        // var s = this.game.add.sprite(80, 0, 'help1');
 
 
 
@@ -717,20 +722,20 @@ class Game {
             }
         }
 
-        // if (this.mz.zoomLevel < desiredZoomLevel)
-        // {
-        //     const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[desiredZoomLevel];
-        //     // this.game.camera.scale.x = zoom;
-        //     // this.game.camera.scale.y = zoom;
-        //     this.game.world.resize(worldWidth, worldHeight);
-        //     // this.mz.zoomLevel = desiredZoomLevel;
-        //     // this.mz.timers.resize.removeAll();
-        //     // this.mz.timers.resize.stop();
-        //     // const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
-        //     // for (let i=1; i<zoomSteps+1; i++)
-        //     //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
-        //     // this.mz.timers.resize.start();
-        // }
+        if (this.mz.zoomLevel < desiredZoomLevel)
+        {
+            const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[desiredZoomLevel];
+            // this.game.camera.scale.x = zoom;
+            // this.game.camera.scale.y = zoom;
+            this.game.world.resize(worldWidth, worldHeight);
+            // this.mz.zoomLevel = desiredZoomLevel;
+            // this.mz.timers.resize.removeAll();
+            // this.mz.timers.resize.stop();
+            // const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
+            // for (let i=1; i<zoomSteps+1; i++)
+            //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
+            // this.mz.timers.resize.start();
+        }
 
         if (this.mz.screenAttacked)
         {
