@@ -103,13 +103,11 @@ class NPCProtester extends Protester {
                     this.setMode(PROTESTER_MODE_FOLLOW, {slot})
                 }
             }
-            else
-            {
-                if (this.following.target === Player.instance.sprite)
-                {
-                    this.showPoster = Player.instance.showPoster;
-                }
-            }
+        }
+
+        if (this.following && this.following.target === Player.instance.sprite)
+        {
+            this.showPoster = Player.instance.showPoster;
         }
 
         if (this.showPoster && !this.shownPoster)
@@ -144,7 +142,6 @@ class NPCProtester extends Protester {
     }
 
     setMode(mode, props = {}) {
-        console.log(mode);
         switch (mode) {
             case PROTESTER_MODE_WANDER: {
                 this.setSpeed(this.speed.value);
@@ -195,12 +192,14 @@ class NPCProtester extends Protester {
                     this.stopWandering();
                 }
                 console.log(this.GameObject);
+                this.target = this.GameObject.mz.objects.player.sprite;
                 this.moveTo(
                     this.GameObject.mz.objects.player.sprite,
                     {
                         callback: () => {
                             this.nodDone = true;
                             this.GameObject.screenAttack();
+                            this.target = null;
                             this.moveTo(null);
                         },
                         phasing: true
@@ -226,8 +225,6 @@ class NPCProtester extends Protester {
             }
         }
 
-
-        console.log(this)
         super.setMode(mode, props);
     }
 
@@ -275,7 +272,6 @@ class NPCProtester extends Protester {
 
         super.revive();
 
-        console.log('next coords', nextCoords);
 
         this.setMode(PROTESTER_MODE_WANDER, { coords: nextCoords, phasing: true });
     }

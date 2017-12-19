@@ -32,7 +32,7 @@ class Player extends Protester {
         this.sprite.input.priorityID = 1;
 
         this.sprite.body.collideWorldBounds = true;
-        this.sprite.body.mass = 4;
+        this.sprite.body.mass = 7;
         this.sprite.body.setSize(37, 37);
         this.direction = 0;
 
@@ -253,6 +253,7 @@ class Player extends Protester {
     }
 
     setMode(mode, props = {}) {
+        console.log('player mode', mode);
         switch (mode) {
             case PROTESTER_MODE_ARRESTED: {
                 this.sprite.body.immovable = true;
@@ -268,7 +269,7 @@ class Player extends Protester {
                 this.fightBar = 10;
                 this.GameObject.mz.timers.fight.stop();
                 this.GameObject.mz.timers.fight.removeAll();
-                this.GameObject.mz.timers.fight.loop(500, this.handleTickFight, this);
+                this.GameObject.mz.timers.fight.loop(300, this.handleTickFight, this);
                 this.GameObject.mz.timers.fight.add(5000, this.handleFightLose, this);
                 this.GameObject.mz.timers.fight.start();
                 this.sprite.body.immovable = true;
@@ -276,6 +277,9 @@ class Player extends Protester {
                 break;
             }
             case PLAYER_MODE_STUN: {
+                this.showPoster = false;
+                this.GameObject.mz.timers.fight.stop();
+                this.GameObject.mz.timers.fight.removeAll();
                 this.sprite.body.immovable = true;
                 this.stunTimer.stop();
                 this.stunTimer.removeAll();
@@ -287,6 +291,17 @@ class Player extends Protester {
                 this.stunTween.to( { alpha: 0 }, 500, Phaser.Easing.Linear.None, true, 0, 500, true);
                 this.stunTween.start();
                 this.stunTimer.start();
+                break;
+            }
+            case PLAYER_MODE_NORMAL: {
+                this.showPoster = false;
+                this.stunTimer.removeAll();
+                this.stunTimer.stop();
+                if (this.stunTween)
+                    this.stunTween.stop();
+                this.viewSprite.alpha = 1;
+                this.sprite.body.immovable = false;
+                this.sprite.body.enable = true;
                 break;
             }
             default: {
@@ -302,10 +317,6 @@ class Player extends Protester {
     }
 
     handleRecoverStun(){
-        this.stunTimer.removeAll();
-        this.stunTimer.stop();
-        this.stunTween.stop();
-        this.viewSprite.alpha = 1;
         this.setMode(PLAYER_MODE_NORMAL);
     }
 
@@ -421,18 +432,19 @@ class Player extends Protester {
     }
 
     handleFightWin(){
+        this.clearTimers();
         this.progressBar.clear();
         this.setMode(PLAYER_MODE_NORMAL);
-        this.clearTimers();
+
         this.GameObject.fightWin();
         // this.game.winCop();
     }
 
     handleFightLose(){
+        this.clearTimers();
         this.progressBar.clear();
         this.setMode(PLAYER_MODE_STUN);
         this.GameObject.fightLose();
-        this.clearTimers();
     }
 
     clearTimers(){

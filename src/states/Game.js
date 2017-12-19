@@ -37,7 +37,10 @@ import {
 import {
     getFormattedTime
 } from '../utils.js';
-import {COP_MODE_FIGHT, COP_MODE_STUN, JOURNALIST_MODE_FOLLOW, PROTESTER_MODE_WANDER} from "../constants";
+import {
+    COP_MODE_FIGHT, COP_MODE_STUN, JOURNALIST_MODE_FOLLOW, PROTESTER_MODE_NOD,
+    PROTESTER_MODE_WANDER
+} from "../constants";
 
 class Game {
     init(level) {
@@ -476,20 +479,27 @@ class Game {
             const copSprite = this.mz.arrays.cops[i];
             const cop = copSprite.mz;
 
-            if (cop.mode === COP_MODE_CONVOY && this.mz.objects.player.mode !== PLAYER_MODE_FIGHT
+            if (
+                cop.mode === COP_MODE_CONVOY
+                && this.mz.objects.player.mode !== PLAYER_MODE_FIGHT
                 && this.mz.objects.player.mode !== PLAYER_MODE_STUN
-                && this.mz.objects.player.mode !== PROTESTER_MODE_ARRESTED)
-            {
+                && this.mz.objects.player.mode !== PROTESTER_MODE_ARRESTED
+            ) {
                 const playerCenter = this.mz.objects.player.sprite.body.center;
-                const diffCop = Math.abs(copSprite.x - playerCenter.x)+Math.abs(copSprite.y - playerCenter.y);
-                if (diffCop < 100)
+                const diffCop = Math.abs(copSprite.body.center.x - playerCenter.x)+Math.abs(copSprite.body.center.y - playerCenter.y);
+                if (diffCop < 40)
                 {
                     this.mz.objects.player.setMode(PLAYER_MODE_FIGHT);
                     cop.setMode(COP_MODE_FIGHT);
                 }
             }
 
-            if (cop.mode !== COP_MODE_CONVOY && cop.mode !== COP_MODE_ENTER && cop.mode !== COP_MODE_FIGHT  && cop.mode !== COP_MODE_STUN) {
+            if (
+                cop.mode !== COP_MODE_CONVOY
+                && cop.mode !== COP_MODE_ENTER
+                && cop.mode !== COP_MODE_FIGHT
+                && cop.mode !== COP_MODE_STUN
+            ) {
                 // set attraction point and strength
                 cop.attractionPoint = { ...this.mz.objects.player.sprite.body.center };
                 let attractionStrength = 0;
@@ -566,7 +576,9 @@ class Game {
                     !copSprite.alive ||
                     copSprite.mz.target !== protesterSprite ||
                     !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) ||
-                    protesterSprite.mz.mode === PLAYER_MODE_FIGHT
+                    protesterSprite.mz.mode === PLAYER_MODE_FIGHT ||
+                    copSprite.mz.mode === COP_MODE_STUN ||
+                    copSprite.mz.mode === COP_MODE_FIGHT
                 ) {
                     continue;
                 }
@@ -635,11 +647,14 @@ class Game {
             sprite && sprite.mz && sprite.mz.mode && sprite.mz.mode === PROTESTER_MODE_FOLLOW &&
             sprite.mz.following && sprite.mz.following.target === this.mz.objects.player.sprite
         );
+        const pursueTarget = (mode) => (copSprite, protesterSprite) => !(
+            copSprite.mz.target === protesterSprite && copSprite.mz.mode === mode
+        );
         this.game.physics.arcade.collide(
             this.mz.objects.player.sprite,
             this.mz.arrays.protesters,
             null,
-            (sprite1, sprite2) => checkFollowPlayer(sprite1) && checkFollowPlayer(sprite2)
+            (sprite1, sprite2) => pursueTarget(PROTESTER_MODE_NOD)(sprite2, sprite1) && (checkFollowPlayer(sprite1) && checkFollowPlayer(sprite2))
         );
         // this.game.physics.arcade.collide(
         //     this.mz.objects.player.sprite,
@@ -666,21 +681,17 @@ class Game {
             this.mz.objects.player.sprite,
             this.mz.objects.star.sprite
         );
-
-        const pursueTarget = (copSprite, protesterSprite) => !(
-            copSprite.mz.target === protesterSprite && copSprite.mz.mode === COP_MODE_PURSUE
-        );
         this.game.physics.arcade.collide(
             this.mz.arrays.cops,
             this.mz.arrays.protesters,
             null,
-            pursueTarget
+            pursueTarget(COP_MODE_PURSUE)
         );
         this.game.physics.arcade.collide(
             this.mz.arrays.cops,
             this.mz.objects.player,
             null,
-            pursueTarget
+            pursueTarget(COP_MODE_PURSUE)
         );
 
         // update posters
@@ -820,10 +831,10 @@ class Game {
         for (let i = 0; i < totalCount; i++) {
             let x, y;
             if (i < this.mz.cops.alive) {
-                const offset = 100;
+                const offset = 60;
                 const wagon = this.pickRandomWagon();
                 x = Math.round(wagon.body.center.x) + offset;
-                y = wagon.y + wagon.body.height + 30;
+                y = wagon.y + wagon.body.height + 15;
             } else {
                 const randCoords = this.getRandomCoordinates();
                 x = randCoords.x;
@@ -994,8 +1005,8 @@ class Game {
                 break;
             }
         }
+        console.log('protester sprite', protesterSprite);
         protesterSprite.mz.mood = 0.1;
-        protesterSprite.mz.setMode(PROTESTER_MODE_WANDER);
         copSprite.removeChild(protesterSprite);
         this.mz.groups.d.add(protesterSprite);
         // this.beatUpProtester(protesterSprite);
@@ -1008,14 +1019,17 @@ class Game {
 
         if (protesterSprite.name !== 'player') {
             this.mz.protesters.arrested--;
-            protesterSprite.mz.setMode(PROTESTER_MODE_WANDER);
+            protesterSprite.mz.kill();
             protesterSprite.body.enable = true;
-            protesterSprite.revive(1);
             const x = copSprite.x + 30;
             const y = copSprite.y + 30;
-            protesterSprite.x = x;
-            protesterSprite.y = y;
-            protesterSprite.reset(x, y);
+            protesterSprite.mz.revive({x, y, nextCoords: {x, y}});
+            protesterSprite.visible = true;
+            const slot = Player.instance.slots.take(this);
+            if (slot) {
+                protesterSprite.mz.setMode(PROTESTER_MODE_FOLLOW, {slot})
+            }
+            // protesterSprite.mz.setMode(PROTESTER_MODE_WANDER);
         }
         console.log('protester', protesterSprite);
     }
@@ -1323,7 +1337,6 @@ class Game {
                 this.increaseScore(10, copSprite);
             }
         }
-
     }
 
     pickRandomWagon(){

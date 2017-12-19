@@ -7,8 +7,8 @@ export default {
         winningThreshold: 100,
         cops: {
             count: [
-                [10, 1],
-                // [50, 2],
+                [10, 0],
+                [50, 1],
                 // [60, 3],
                 [90, 4],
                 [100, 5]
