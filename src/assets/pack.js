@@ -54,31 +54,31 @@ const pack = {
             frameHeight: 50
         }
     ],
-    helpDesktop2: [
+    helpTips: [
         {
             type: 'image',
-            key: 'help1',
+            key: 'space_pozor',
             url: require('./info01.png'),
             frameWidth: 338,
             frameHeight: 74,
         },
         {
             type: 'image',
-            key: 'help2',
+            key: 'space_fight',
             url: require('./info02.png'),
             frameWidth: 338,
             frameHeight: 74,
         },
         {
             type: 'image',
-            key: 'help3',
+            key: 'shift_run',
             url: require('./info03.png'),
             frameWidth: 338,
             frameHeight: 74,
         },
         {
             type: 'image',
-            key: 'help4',
+            key: 'journalists',
             url: require('./info04.png'),
             frameWidth: 338,
             frameHeight: 74,

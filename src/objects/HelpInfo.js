@@ -1,14 +1,13 @@
+
+/* run setGame before calling show\hide methods */
+/* helpName = asset key */
 class HelpInfo {
     constructor() {
         this.sprites = {};
-
-        window._helpInfoTestOnly = this;
     }
     
     setGame(game) {
         this.game = game;
-        console.log('game', game);
-        window._game = game;
     }
 
     addSprite(helpName) {
@@ -28,6 +27,7 @@ class HelpInfo {
                 {alpha: 1}, time, Phaser.Easing.Linear.None, true
             );
     }
+
     fadeOut(sprite, time=1000) {
         const tween = this.game.add.tween(sprite)
             .to(
@@ -36,26 +36,34 @@ class HelpInfo {
         tween.add.onComplete(() => {
             sprite.kill();
         }, this.game);
+
         return tween;
     }
-
+    
     show(helpName, anim=false) {
         if (typeof this.game === 'undefined') {
             throw new Error('HelpInfo don\'t have game instance');
         }
 
         const sprite = this.addSprite(helpName);
-        window._sprite = sprite;
         if (anim) {
             sprite.alpha = 0;
-            this.fadeIn(sprite);
+            this.fadeIn(sprite, anim);
         }
     }
 
     hide(helpName, anim = false) {
+        if (typeof helpName === 'undefined') {
+          Object.keys(this.sprites).forEach(
+            (key) => this.sprites[key] && this.sprites[key].kill() 
+          );
+
+          return;
+        }
+
         const currentSprite = this.sprites[helpName];
         if (anim) {
-            this.fadeOut(currentSprite);
+            this.fadeOut(currentSprite, anim);
         } else {
             currentSprite.kill();
         }

@@ -137,9 +137,6 @@ class Game {
         this.mz.objects.audio.boo = this.game.add.audio('boo');
         this.mz.objects.audio.pick = this.game.add.audio('pick');
 
-        HelpInfo.setGame(game);
-        HelpInfo.show('help1', 1);
-        // var s = this.game.add.sprite(80, 0, 'help1');
 
 
 

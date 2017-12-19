@@ -21,7 +21,7 @@ class Boot {
             assets: [
                 ['pack', 'initial', null, pack],
                 ['pack', 'help' + (Phaser.Device.desktop ? 'Desktop' : 'Touch'), null, pack],
-                ['pack', 'helpDesktop2', null, pack]
+                ['pack', 'helpTips', null, pack]
             ],
             nextState: ['StartMenu']
         });
