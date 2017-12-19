@@ -54,6 +54,36 @@ const pack = {
             frameHeight: 50
         }
     ],
+    helpDesktop2: [
+        {
+            type: 'image',
+            key: 'help1',
+            url: require('./info01.png'),
+            frameWidth: 338,
+            frameHeight: 74,
+        },
+        {
+            type: 'image',
+            key: 'help2',
+            url: require('./info02.png'),
+            frameWidth: 338,
+            frameHeight: 74,
+        },
+        {
+            type: 'image',
+            key: 'help3',
+            url: require('./info03.png'),
+            frameWidth: 338,
+            frameHeight: 74,
+        },
+        {
+            type: 'image',
+            key: 'help4',
+            url: require('./info04.png'),
+            frameWidth: 338,
+            frameHeight: 74,
+        },
+    ],
     levelCommon: [
         {
             type: 'spritesheet',
