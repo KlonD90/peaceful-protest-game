@@ -96,7 +96,7 @@ class Updater {
 
     personalMatrix.forEach(point => {
         const [x2, y2] = point;
-        mset(matrix, [Math.min(x1 + x2, maxX), Math.min(y1 + y2, maxY)], value)
+        mset(matrix, [Math.max(Math.min(x1 + x2, maxX), 0), Math.max(Math.min(y1 + y2, maxY), 0)], value)
     })
   }
 

@@ -331,7 +331,7 @@ class Game {
         // this.game.camera.scale.y = 2;
 
         this.game.camera.setBoundsToWorld()
-        setTimeout(this.screenAttack.bind(this), 200);
+        // setTimeout(this.screenAttack.bind(this), 200);
     }
 
     update() {
@@ -494,7 +494,7 @@ class Game {
                 }
             }
 
-            if (cop.mode !== COP_MODE_CONVOY && cop.mode !== COP_MODE_ENTER && cop.mode !== COP_MODE_FIGHT) {
+            if (cop.mode !== COP_MODE_CONVOY && cop.mode !== COP_MODE_ENTER && cop.mode !== COP_MODE_FIGHT  && cop.mode !== COP_MODE_STUN) {
                 // set attraction point and strength
                 cop.attractionPoint = { ...this.mz.objects.player.sprite.body.center };
                 let attractionStrength = 0;
@@ -743,9 +743,9 @@ class Game {
             console.log('sprite position', this.mz.objects.player.sprite.x, this.mz.objects.player.sprite.y);
             this.mz.objects.screenAttack
                 .clear()
-                .beginFill(0x00ff00, 1)
+                .beginFill(0x67c079, 0.95)
                 .moveTo(0, 0)
-                .arc(this.mz.objects.player.sprite.x, this.mz.objects.player.sprite.y, 100, 0, Math.PI*2)
+                .arc(this.mz.objects.player.sprite.x, this.mz.objects.player.sprite.y, 50, 0, Math.PI*2)
                 .lineTo(0,0)
                 .lineTo(0, this.game.world.height)
                 .lineTo(this.game.world.width, this.game.world.height)
@@ -1210,9 +1210,9 @@ class Game {
             this.mz.objects.screenAttack = this.game.add.graphics(0, 0);
             this.mz.objects.screenAttack
                 .clear()
-                .beginFill(0x00ff00, 1)
+                .beginFill(0x67c079, 0.95)
                 .moveTo(0, 0)
-                .arc(this.mz.objects.player.sprite.x, this.mz.objects.player.sprite.y, 100, 0, Math.PI*2)
+                .arc(this.mz.objects.player.sprite.x, this.mz.objects.player.sprite.y, 50, 0, Math.PI*2)
                 .lineTo(0,0)
                 .lineTo(0, this.game.world.height)
                 .lineTo(this.game.world.width, this.game.world.height)
