@@ -719,20 +719,20 @@ class Game {
             }
         }
 
-        if (this.mz.zoomLevel < desiredZoomLevel)
-        {
-            const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[desiredZoomLevel];
-            // this.game.camera.scale.x = zoom;
-            // this.game.camera.scale.y = zoom;
-            this.game.world.resize(worldWidth, worldHeight);
-            // this.mz.zoomLevel = desiredZoomLevel;
-            // this.mz.timers.resize.removeAll();
-            // this.mz.timers.resize.stop();
-            // const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
-            // for (let i=1; i<zoomSteps+1; i++)
-            //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
-            // this.mz.timers.resize.start();
-        }
+        // if (this.mz.zoomLevel < desiredZoomLevel)
+        // {
+        //     const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[desiredZoomLevel];
+        //     // this.game.camera.scale.x = zoom;
+        //     // this.game.camera.scale.y = zoom;
+        //     this.game.world.resize(worldWidth, worldHeight);
+        //     // this.mz.zoomLevel = desiredZoomLevel;
+        //     // this.mz.timers.resize.removeAll();
+        //     // this.mz.timers.resize.stop();
+        //     // const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
+        //     // for (let i=1; i<zoomSteps+1; i++)
+        //     //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
+        //     // this.mz.timers.resize.start();
+        // }
 
         if (this.mz.screenAttacked)
         {
