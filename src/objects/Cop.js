@@ -29,7 +29,7 @@ class Cop extends Prefab {
 
         this.sprite.body.immovable = true;
         this.sprite.body.setSize(37, 37);
-        this.stunTimer = this.game.time.create();
+        this.stunTimer = this.game.time.create(false);
 
 
         if (!alive) {

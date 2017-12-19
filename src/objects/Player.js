@@ -61,7 +61,7 @@ class Player extends Protester {
         this.showPoster = false;
         this.isFrozen = false;
         this.isGoing = false;
-        this.stunTimer = this.game.time.create();
+        this.stunTimer = this.game.time.create(false);
 
 
         this.slots = new SlotManager(this.sprite, this, slots || [
