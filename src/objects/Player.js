@@ -7,6 +7,7 @@ import {
     PLAYER_MODE_STUN,
     PLAYER_MODE_NORMAL
 } from '../constants.js';
+import HelpInfo from "./HelpInfo";
 
 const TAP_RUNNING_DELTA = 200;
 
@@ -148,6 +149,11 @@ class Player extends Protester {
                 areMovingKeysDown && this.keys.shift.isDown ||
                 this.tapDelta < TAP_RUNNING_DELTA
             ) {
+                if (this.GameObject.mz.advices.space_pozor && this.GameObject.mz.advices.shift_run === false)
+                {
+                    HelpInfo.hide('shift_run');
+                    this.GameObject.mz.advices.shift_run = true;
+                }
                 if (this.stamina > 0) {
                     this.stamina -= 1;
                     newSpeed *= this.speed.running;
@@ -244,6 +250,13 @@ class Player extends Protester {
 
         if (this.keys.space.justDown && this.mode !== PLAYER_MODE_FIGHT) {
             this.togglePoster();
+            if (this.GameObject.mz.advices.space_pozor === false)
+            {
+                HelpInfo.hide('space_pozor');
+                this.GameObject.mz.advices.space_pozor = true;
+                HelpInfo.show('shift_run');
+            }
+
         }
 
     }
@@ -273,10 +286,12 @@ class Player extends Protester {
                 this.GameObject.mz.timers.fight.add(5000, this.handleFightLose, this);
                 this.GameObject.mz.timers.fight.start();
                 this.sprite.body.immovable = true;
+                HelpInfo.show('space_fight')
                 console.log(this.GameObject.mz.timers.fight);
                 break;
             }
             case PLAYER_MODE_STUN: {
+                HelpInfo.hide('space_fight')
                 this.showPoster = false;
                 this.GameObject.mz.timers.fight.stop();
                 this.GameObject.mz.timers.fight.removeAll();
@@ -294,6 +309,7 @@ class Player extends Protester {
                 break;
             }
             case PLAYER_MODE_NORMAL: {
+                HelpInfo.hide('space_fight')
                 this.showPoster = false;
                 this.stunTimer.removeAll();
                 this.stunTimer.stop();

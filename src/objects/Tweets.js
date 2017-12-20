@@ -5,6 +5,7 @@ const data = {
     name: "Денис Стяжкин",
     text: "#Москва на Белорусской задержали уже 10 человек",
     nickname: "styazshkin",
+    type: "arrest"
   },
   1: {
     id: 1,
@@ -340,7 +341,7 @@ class Tweets {
 
       const timer = this.game.time.create(true);
       window._timer = timer;
-      timer.loop(500, () => {
+      timer.loop(5000, () => {
         console.log('n.kozh visible timer end');
         group.killAll();
         group.destroy();

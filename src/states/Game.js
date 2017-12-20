@@ -12,6 +12,7 @@ import EndMenu from './../objects/EndMenu.js';
 import Collider from "../Collider/Collider.js"
 import HelpInfo from '../objects/HelpInfo.js';
 import Camera from '../objects/Camera';
+import Tweet from '../objects/Tweets';
 
 import levelObjects from "../levelObjects.js"
 
@@ -113,12 +114,18 @@ class Game {
                 levelObjects: null,
                 player: null
             },
-            zoomLevel: -1
+            zoomLevel: -1,
+            advices: {
+                space_pozor: false,
+                shift_run: false,
+            },
+            tweet: null
         };
         this.mz.score = 0;
     }
 
     create() {
+        this.mz.tweet = new Tweet(this.game);
         this.mz.score = 0;
         // this.game.time.advancedTiming = true;
 
@@ -338,6 +345,8 @@ class Game {
 
         this.game.camera.setBoundsToWorld();
         this.customCamera = new Camera(this.game.camera, this.game);
+        HelpInfo.setGame(this.game);
+        HelpInfo.show('space_pozor');
         // setTimeout(this.screenAttack.bind(this), 200);
     }
 

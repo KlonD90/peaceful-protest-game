@@ -1,5 +1,6 @@
 import Prefab from './Prefab.js';
 import FOV from './FOV.js';
+
 import {
     COP_MODE_ENTER,
     COP_MODE_WANDER,
@@ -140,6 +141,9 @@ class Cop extends Prefab {
         }
 
         this.setMode(COP_MODE_WANDER, { coords: this.returnCoords });
+        const tweets = this.GameObject.mz.tweet.find({type: 'arrest'});
+        const tweet = tweets[Math.floor(tweets.length * Math.random())];
+        this.GameObject.mz.tweet.tweet(tweet.text, 'tw_'+tweet.nickname);
     }
 
     handleFightWin() {
