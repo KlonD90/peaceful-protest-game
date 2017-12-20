@@ -150,7 +150,7 @@ const pack = {
       },
       {
         type: 'image',
-        key: 'tw_',
+        key: 'tw_galiamina',
         url: require('./tweets/galiamina.jpg'),
         frameWidth: 400,
         frameHeight: 400
