@@ -1,8 +1,8 @@
 export default {
     level1: {
         id: 'level1',
-        worldWidth: 600,
-        worldHeight: 300,
+        worldWidth: 1200,
+        worldHeight: 800,
         duration: 3 * 60, // s
         winningThreshold: 100,
         cops: {

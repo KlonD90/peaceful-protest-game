@@ -166,6 +166,7 @@ class NPCProtester extends Protester {
                     this.stopWandering();
                 }
                 const { slot } = props;
+                this.dismissSlotsTaken();
                 this.following = slot
                 if (slot.target === Player.instance.sprite)
                 {
