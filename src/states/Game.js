@@ -10,6 +10,7 @@ import GameInterface from '../objects/GameInterface.js';
 import PauseMenu from './../objects/PauseMenu.js';
 import EndMenu from './../objects/EndMenu.js';
 import Collider from "../Collider/Collider.js"
+import HelpInfo from '../objects/HelpInfo.js';
 import Camera from '../objects/Camera';
 
 import levelObjects from "../levelObjects.js"
@@ -141,6 +142,7 @@ class Game {
         this.mz.objects.audio.applause = this.game.add.audio('applause');
         this.mz.objects.audio.boo = this.game.add.audio('boo');
         this.mz.objects.audio.pick = this.game.add.audio('pick');
+
 
 
 
