@@ -308,6 +308,7 @@ class Tweets {
   }
 
   pushToQueue(tweet, options) {
+    console.log('n.kozh pushToQueue called start');
     this.queue.push({
       tweetData: {
         text: tweet.text,
@@ -319,19 +320,26 @@ class Tweets {
         fadeIn: options.fadeIn || 1000 
       }
     });
+    console.log('n.kozh pushToQueue called end');
   }
 
   startQueue() {
+    console.log('n.kozh start Queue executing status', this.executing);
     if (this.executing) return;
-    this.executing = true;
-
+    
     // const [h] = this.queue;
     const h = this.queue.shift();
-    console.log('n.kozh start tweet', h);
     window._h = h;
+    console.log('n.kozh before h')
+    console.log('n.kozh h ', h);
+    console.log('n.kozh after h');
+    // console.log('h.kozh queue len', this.queue.length);
     if (h) this.processTask(h.tweetData, h.anim);
   }
   processTask(tweet, aOptions) {
+    this.executing = true;
+
+    console.log('n.kozh start tweet', tweet);
     var self = this; //wtf for arrow key
     const { text, image } = tweet;
     const {tween, group} = this.createHiddenTweet(text, image, aOptions);
@@ -403,6 +411,7 @@ class Tweets {
   }
 
   _tweet(tweet, options={}) {
+    console.log('n.kozh _tweet called');
     this.pushToQueue(
       {
         text: tweet.text,
@@ -414,7 +423,7 @@ class Tweets {
 
   tweet(text, image, options) {
     window._Tweets = this;
-    console.log('n.kozh', text, image)
+    console.log('n.kozh tweet called', text, image)
     this._tweet({
       text, image,
     }, options);
