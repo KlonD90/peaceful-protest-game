@@ -7,7 +7,7 @@ export default {
         winningThreshold: 100,
         cops: {
             count: [
-                [10, 0],
+                [4, 0],
                 [50, 1],
                 // [60, 3],
                 [90, 4],
@@ -23,7 +23,12 @@ export default {
             }
         },
         press: {
-            count: 3,
+            count: [
+                [4, 0],
+                [50, 1],
+                [60, 2],
+                [100, 3]
+            ],
             speed: {
                 value: 50
             },
@@ -36,13 +41,13 @@ export default {
         protesters: {
             count: {
                 start: 10,
-                max: 30,
+                max: 50,
                 add: 8
             },
             speed: {
                 value: 60
             },
-            mood: 0.6,
+            mood: 0.7,
             moodUp: 0.001,
             moodDown: 0.0001,
             poster: {

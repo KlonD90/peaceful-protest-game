@@ -98,6 +98,8 @@ class Game {
                 borders: [],
                 droppedPosters: [],
                 wagons: [],
+                enterWagons: [],
+                awaitWagons: [],
             },
             groups: {
                 d: null,
@@ -194,14 +196,15 @@ class Game {
                 this.collider.addEntity({ sprite: levelObject, object: this.game })
                 if (key === 'paddyWagon')
                 {
-                    this.mz.arrays.wagons.push(levelObject);
                     this.mz.groups.cars.add(levelObject);
+                    this.mz.arrays.awaitWagons.push(levelObject);
                 }
+
+                // levelObject.body.velocity = new Phaser.Point({x: 300, y: 0})
                 return levelObject;
             })
         }
-        this.mz.objects.star = this.createPrefab(Star, {});
-        this.mz.objects.star.setState(Star.STATE.MOVE_IN);;
+
         // this.mz.groups.d.add(this.mz.objects.star);
         // player
         this.mz.objects.player = this.createPrefab(Player, {
@@ -256,8 +259,9 @@ class Game {
         // });
 
         // press
-        const onFinishShooting = this.handleFinishShooting.bind(this);
-        for (let i = 0; i < this.mz.level.press.count; i++) {
+        this.onFinishShooting = this.handleFinishShooting.bind(this);
+        const pressRequired = this.getPressRequiredNumber();
+        for (let i = this.mz.arrays.press.length; i < pressRequired; i++) {
             const journalist = this.createPrefab(Journalist, {
                 ...this.getRandomCoordinates(),
                 fov: {
@@ -267,8 +271,8 @@ class Game {
                 },
                 speed: this.mz.level.press.speed,
                 shootingDuration: this.mz.level.press.duration,
-                cooldownDuration: this.mz.level.press.duration * this.mz.level.press.count * 2,
-                onFinishShooting,
+                cooldownDuration: this.mz.level.press.duration * pressRequired * 2,
+                onFinishShooting: this.onFinishShooting,
                 spriteName: `journalist${i}`
             });
             this.mz.arrays.press.push(journalist.sprite);
@@ -469,13 +473,41 @@ class Game {
         // this.mz.objects.shield.update();
 
         // update cops
-        if (this.mz.cops.alive < this.mz.arrays.cops.length) {
+        const copsRequired = this.getCopsRequiredNumber();
+        if (this.mz.cops.alive < this.mz.arrays.cops.length && this.mz.arrays.wagons.length) {
             // revive if necessary
-            const copsRequired = this.getCopsRequiredNumber();
+
             if (copsRequired > this.mz.cops.alive) {
                 this.reviveCops(copsRequired - this.mz.cops.alive);
                 this.mz.cops.alive = copsRequired;
             }
+        }
+
+        if (copsRequired > this.mz.cops.alive && this.mz.arrays.wagons.length === 0 && this.mz.arrays.enterWagons.length === 0 )
+        {
+            this.handleEnterWagon(this.mz.arrays.awaitWagons[0], 300, 0)
+        }
+
+        this.handleEnteringWagons();
+
+        const pressRequired = this.getPressRequiredNumber();
+        for (let i = this.mz.arrays.press.length; i < pressRequired; i++) {
+            const journalist = this.createPrefab(Journalist, {
+                ...this.getRandomCoordinates(),
+                fov: {
+                    group: this.mz.groups.pressFOV,
+                    distance: this.mz.level.press.fov.distance,
+                    angle: this.mz.level.press.fov.angle
+                },
+                speed: this.mz.level.press.speed,
+                shootingDuration: this.mz.level.press.duration,
+                cooldownDuration: this.mz.level.press.duration * pressRequired * 2,
+                onFinishShooting: this.onFinishShooting,
+                spriteName: `journalist${i}`
+            });
+            this.mz.arrays.press.push(journalist.sprite);
+            this.mz.groups.d.add(journalist.sprite);
+            journalist.setMode(JOURNALIST_MODE_WANDER);
         }
 
         for (let i = 0; i < this.mz.cops.alive; i++) {
@@ -680,6 +712,7 @@ class Game {
             this.mz.levelObjects.paddyWagon,
             this.mz.arrays.protesters
         );
+        if (this.mz.objects.star)
         this.game.physics.arcade.collide(
             this.mz.objects.player.sprite,
             this.mz.objects.star.sprite
@@ -877,6 +910,17 @@ class Game {
         for (let i = 0; i < this.mz.level.cops.count.length; i++) {
             if (this.mz.score <= this.mz.level.cops.count[i][0]) {
                 result = this.mz.level.cops.count[i][1];
+                break;
+            }
+        }
+        return result;
+    }
+
+    getPressRequiredNumber() {
+        let result = 0;
+        for (let i = 0; i < this.mz.level.press.count.length; i++) {
+            if (this.mz.score <= this.mz.level.press.count[i][0]) {
+                result = this.mz.level.press.count[i][1];
                 break;
             }
         }
@@ -1347,8 +1391,42 @@ class Game {
         }
     }
 
+    handleEnterWagon(wagon, x, y){
+        this.game.physics.arcade.moveToXY(wagon, x, y, 60);
+        this.mz.arrays.enterWagons.push({wagon: wagon, x, y});
+        this.mz.arrays.awaitWagons.splice(this.mz.arrays.awaitWagons.findIndex(x => x === wagon), 1);
+    }
+
+    handleGotPlaceWagon(wagon){
+        this.mz.arrays.wagons.push(wagon);
+        wagon.body.stop();
+
+    }
+
+    handleEnteringWagons(){
+        for (let i =0; i<this.mz.arrays.enterWagons.length; i++)
+        {
+            const w = this.mz.arrays.enterWagons[i];
+            if (w)
+            {
+                const diff = Math.sqrt(Math.pow(w.wagon.x - w.x, 2) + Math.pow(w.wagon.y - w.y, 2));
+                if (diff < 20)
+                {
+                    this.handleGotPlaceWagon(w.wagon);
+                    this.mz.arrays.enterWagons.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+    }
+
     pickRandomWagon(){
-        return this.mz.arrays.wagons[Math.floor(Math.random()*this.mz.arrays.wagons.length)];
+        return this.mz.arrays.wagons.length ? this.mz.arrays.wagons[Math.floor(Math.random()*this.mz.arrays.wagons.length)] : null;
+    }
+
+    createStar(){
+        this.mz.objects.star = this.createPrefab(Star, {});
+        this.mz.objects.star.setState(Star.STATE.MOVE_IN);
     }
 }
 
