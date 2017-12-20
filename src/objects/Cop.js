@@ -132,7 +132,6 @@ class Cop extends Prefab {
         this.stunTween.stop();
         this.viewSprite.alpha = 1;
         this.setMode(COP_MODE_WANDER);
-        alert('cop return from stun');
     }
 
     handleCovoyEnd() {

@@ -1,14 +1,14 @@
 export default {
     level1: {
         id: 'level1',
-        worldWidth: 600,
-        worldHeight: 300,
+        worldWidth: 1200,
+        worldHeight: 800,
         duration: 3 * 60, // s
         winningThreshold: 100,
         cops: {
             count: [
-                [60, 1],
-                // [50, 2],
+                [10, 0],
+                [50, 1],
                 // [60, 3],
                 [90, 4],
                 [100, 5]

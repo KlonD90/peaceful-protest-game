@@ -11,6 +11,7 @@ import PauseMenu from './../objects/PauseMenu.js';
 import EndMenu from './../objects/EndMenu.js';
 import Collider from "../Collider/Collider.js"
 import HelpInfo from '../objects/HelpInfo.js';
+import Camera from '../objects/Camera';
 
 import levelObjects from "../levelObjects.js"
 
@@ -38,7 +39,10 @@ import {
 import {
     getFormattedTime
 } from '../utils.js';
-import {COP_MODE_FIGHT, COP_MODE_STUN, JOURNALIST_MODE_FOLLOW, PROTESTER_MODE_WANDER} from "../constants";
+import {
+    COP_MODE_FIGHT, COP_MODE_STUN, JOURNALIST_MODE_FOLLOW, PROTESTER_MODE_NOD,
+    PROTESTER_MODE_WANDER
+} from "../constants";
 
 class Game {
     init(level) {
@@ -213,6 +217,7 @@ class Game {
 
         // this.collider.addEntity({ object: this.mz.objects.player, sprite: this.mz.objects.player.sprite })
         this.game.camera.follow(this.mz.objects.player.sprite);
+
         this.mz.groups.d.add(this.mz.objects.player.sprite);
 
         // top borders
@@ -327,7 +332,8 @@ class Game {
         // this.game.camera.scale.x = 2;
         // this.game.camera.scale.y = 2;
 
-        this.game.camera.setBoundsToWorld()
+        this.game.camera.setBoundsToWorld();
+        this.customCamera = new Camera(this.game.camera, this.game);
         // setTimeout(this.screenAttack.bind(this), 200);
     }
 
@@ -478,20 +484,27 @@ class Game {
             const copSprite = this.mz.arrays.cops[i];
             const cop = copSprite.mz;
 
-            if (cop.mode === COP_MODE_CONVOY && this.mz.objects.player.mode !== PLAYER_MODE_FIGHT
+            if (
+                cop.mode === COP_MODE_CONVOY
+                && this.mz.objects.player.mode !== PLAYER_MODE_FIGHT
                 && this.mz.objects.player.mode !== PLAYER_MODE_STUN
-                && this.mz.objects.player.mode !== PROTESTER_MODE_ARRESTED)
-            {
+                && this.mz.objects.player.mode !== PROTESTER_MODE_ARRESTED
+            ) {
                 const playerCenter = this.mz.objects.player.sprite.body.center;
-                const diffCop = Math.abs(copSprite.x - playerCenter.x)+Math.abs(copSprite.y - playerCenter.y);
-                if (diffCop < 100)
+                const diffCop = Math.abs(copSprite.body.center.x - playerCenter.x)+Math.abs(copSprite.body.center.y - playerCenter.y);
+                if (diffCop < 40)
                 {
                     this.mz.objects.player.setMode(PLAYER_MODE_FIGHT);
                     cop.setMode(COP_MODE_FIGHT);
                 }
             }
 
-            if (cop.mode !== COP_MODE_CONVOY && cop.mode !== COP_MODE_ENTER && cop.mode !== COP_MODE_FIGHT  && cop.mode !== COP_MODE_STUN) {
+            if (
+                cop.mode !== COP_MODE_CONVOY
+                && cop.mode !== COP_MODE_ENTER
+                && cop.mode !== COP_MODE_FIGHT
+                && cop.mode !== COP_MODE_STUN
+            ) {
                 // set attraction point and strength
                 cop.attractionPoint = { ...this.mz.objects.player.sprite.body.center };
                 let attractionStrength = 0;
@@ -568,7 +581,9 @@ class Game {
                     !copSprite.alive ||
                     copSprite.mz.target !== protesterSprite ||
                     !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) ||
-                    protesterSprite.mz.mode === PLAYER_MODE_FIGHT
+                    protesterSprite.mz.mode === PLAYER_MODE_FIGHT ||
+                    copSprite.mz.mode === COP_MODE_STUN ||
+                    copSprite.mz.mode === COP_MODE_FIGHT
                 ) {
                     continue;
                 }
@@ -637,11 +652,14 @@ class Game {
             sprite && sprite.mz && sprite.mz.mode && sprite.mz.mode === PROTESTER_MODE_FOLLOW &&
             sprite.mz.following && sprite.mz.following.target === this.mz.objects.player.sprite
         );
+        const pursueTarget = (mode) => (copSprite, protesterSprite) => !(
+            copSprite.mz.target === protesterSprite && copSprite.mz.mode === mode
+        );
         this.game.physics.arcade.collide(
             this.mz.objects.player.sprite,
             this.mz.arrays.protesters,
             null,
-            (sprite1, sprite2) => checkFollowPlayer(sprite1) && checkFollowPlayer(sprite2)
+            (sprite1, sprite2) => pursueTarget(PROTESTER_MODE_NOD)(sprite2, sprite1) && (checkFollowPlayer(sprite1) && checkFollowPlayer(sprite2))
         );
         // this.game.physics.arcade.collide(
         //     this.mz.objects.player.sprite,
@@ -668,21 +686,17 @@ class Game {
             this.mz.objects.player.sprite,
             this.mz.objects.star.sprite
         );
-
-        const pursueTarget = (copSprite, protesterSprite) => !(
-            copSprite.mz.target === protesterSprite && copSprite.mz.mode === COP_MODE_PURSUE
-        );
         this.game.physics.arcade.collide(
             this.mz.arrays.cops,
             this.mz.arrays.protesters,
             null,
-            pursueTarget
+            pursueTarget(COP_MODE_PURSUE)
         );
         this.game.physics.arcade.collide(
             this.mz.arrays.cops,
             this.mz.objects.player,
             null,
-            pursueTarget
+            pursueTarget(COP_MODE_PURSUE)
         );
 
         // update posters
@@ -708,7 +722,7 @@ class Game {
         this.mz.objects.star && this.mz.objects.star.update()
 
 
-        const zoomLevels = [[10, 1, 800, 600], [20, 0.7, 2000, 800]];
+        const zoomLevels = [[30, 1, 2000, 800]];
         let desiredZoomLevel = -1;
         for (let l =0; l< zoomLevels.length; l++)
         {
@@ -719,20 +733,20 @@ class Game {
             }
         }
 
-        // if (this.mz.zoomLevel < desiredZoomLevel)
-        // {
-        //     const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[desiredZoomLevel];
-        //     // this.game.camera.scale.x = zoom;
-        //     // this.game.camera.scale.y = zoom;
-        //     this.game.world.resize(worldWidth, worldHeight);
-        //     // this.mz.zoomLevel = desiredZoomLevel;
-        //     // this.mz.timers.resize.removeAll();
-        //     // this.mz.timers.resize.stop();
-        //     // const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
-        //     // for (let i=1; i<zoomSteps+1; i++)
-        //     //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
-        //     // this.mz.timers.resize.start();
-        // }
+        if (this.mz.zoomLevel < desiredZoomLevel)
+        {
+            const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[desiredZoomLevel];
+            // this.game.camera.scale.x = zoom;
+            // this.game.camera.scale.y = zoom;
+            this.game.world.resize(worldWidth, worldHeight);
+            // this.mz.zoomLevel = desiredZoomLevel;
+            // this.mz.timers.resize.removeAll();
+            // this.mz.timers.resize.stop();
+            // const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
+            // for (let i=1; i<zoomSteps+1; i++)
+            //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
+            // this.mz.timers.resize.start();
+        }
 
         if (this.mz.screenAttacked)
         {
@@ -822,10 +836,10 @@ class Game {
         for (let i = 0; i < totalCount; i++) {
             let x, y;
             if (i < this.mz.cops.alive) {
-                const offset = 100;
+                const offset = 60;
                 const wagon = this.pickRandomWagon();
                 x = Math.round(wagon.body.center.x) + offset;
-                y = wagon.y + wagon.body.height + 30;
+                y = wagon.y + wagon.body.height + 15;
             } else {
                 const randCoords = this.getRandomCoordinates();
                 x = randCoords.x;
@@ -948,8 +962,8 @@ class Game {
         let minDistanceSq = Infinity;
         this.mz.groups.cars.forEach(carSprite => {
             const carCoords = {
-                x: (carSprite.body.x + carSprite.body.width) / 2,
-                y: carSprite.body.y + carSprite.body.height + 40
+                x: (carSprite.body.x + carSprite.body.width) / 2 + 60,
+                y: carSprite.body.y + carSprite.body.height + 20
             };
             const distanceToCarSq = this.getDistanceSq(copSprite, carCoords);
             if (distanceToCarSq < minDistanceSq) {
@@ -996,8 +1010,8 @@ class Game {
                 break;
             }
         }
+        console.log('protester sprite', protesterSprite);
         protesterSprite.mz.mood = 0.1;
-        protesterSprite.mz.setMode(PROTESTER_MODE_WANDER);
         copSprite.removeChild(protesterSprite);
         this.mz.groups.d.add(protesterSprite);
         // this.beatUpProtester(protesterSprite);
@@ -1010,14 +1024,17 @@ class Game {
 
         if (protesterSprite.name !== 'player') {
             this.mz.protesters.arrested--;
-            protesterSprite.mz.setMode(PROTESTER_MODE_WANDER);
+            protesterSprite.mz.kill();
             protesterSprite.body.enable = true;
-            protesterSprite.revive(1);
             const x = copSprite.x + 30;
             const y = copSprite.y + 30;
-            protesterSprite.x = x;
-            protesterSprite.y = y;
-            protesterSprite.reset(x, y);
+            protesterSprite.mz.revive({x, y, nextCoords: {x, y}});
+            protesterSprite.visible = true;
+            const slot = Player.instance.slots.take(this);
+            if (slot) {
+                protesterSprite.mz.setMode(PROTESTER_MODE_FOLLOW, {slot})
+            }
+            // protesterSprite.mz.setMode(PROTESTER_MODE_WANDER);
         }
         console.log('protester', protesterSprite);
     }
@@ -1059,7 +1076,7 @@ class Game {
     checkWin() {
         if (this.mz.protesters.alive <= 0) {
             this.endGame(END_GAME_PROTEST_RATE);
-        } else if (this.mz.score >= 500) {
+        } else if (this.mz.score >= 100) {
             this.endGame(END_GAME_WIN);
         } else if (
             this.mz.objects.player.mode === PROTESTER_MODE_ARRESTED ||
@@ -1278,9 +1295,14 @@ class Game {
       return game
     }
 
-    cameraZoom(){
-        this.game.camera.scale.x -= 0.002
-        this.game.camera.scale.y -= 0.002
+    cameraZoom(zoom, duration){
+        game.camera.scale.x += zoomAmount;
+        game.camera.scale.y += zoomAmount;
+
+        game.camera.bounds.x = size.x * game.camera.scale.x;
+        game.camera.bounds.y = size.y * game.camera.scale.y;
+        game.camera.bounds.width = size.width * game.camera.scale.x;
+        game.camera.bounds.height = size.height * game.camera.scale.y;
         // this.game.world.resize(this.game.world.width+10, this.game.world.height+10);
     }
 
@@ -1325,7 +1347,6 @@ class Game {
                 this.increaseScore(10, copSprite);
             }
         }
-
     }
 
     pickRandomWagon(){
