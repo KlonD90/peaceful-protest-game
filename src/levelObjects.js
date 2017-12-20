@@ -17,7 +17,7 @@ export const PaddyWagon: LevelObject = {
   group: 'cars',
   immovable: true,
   positions: [
-    { x: 300, y: 0, angle: 90 },
+    { x: 0, y: 0, angle: 90 },
     // { x: 615, y: 230 },
   ],
 }

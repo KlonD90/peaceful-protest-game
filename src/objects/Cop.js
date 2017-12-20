@@ -92,13 +92,12 @@ class Cop extends Prefab {
             }
             case COP_MODE_ENTER: {
                 const { coords } = props;
-                this.moveTo(coords[0]);
 
                 const callback = () => {
                     this.FOV.revive();
                     this.setMode(COP_MODE_WANDER);
                 }
-                this.moveTo(coords[1], { callback, reset: false })
+                this.moveTo(coords, { callback, reset: false, phasing: true })
                 break;
             }
             case COP_MODE_FIGHT: {
@@ -181,7 +180,7 @@ class Cop extends Prefab {
         const offset = 100;
         const wagon = this.GameObject.pickRandomWagon();
         const x = Math.round(wagon.body.center.x)+offset;
-        const y = wagon.y + wagon.body.height + 30;
+        const y = wagon.y + wagon.body.height - 20;
         this.sprite.x = x;
         this.sprite.y = y;
         this.sprite.body.reset(x, y);
@@ -191,7 +190,7 @@ class Cop extends Prefab {
         this.FOV.revive();
 
         super.revive();
-        this.setMode(COP_MODE_WANDER);
+        this.setMode(COP_MODE_ENTER, {coords: {x, y: y + 50}});
     }
 
     kill() {
