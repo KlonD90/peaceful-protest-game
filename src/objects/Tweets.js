@@ -304,7 +304,8 @@ class Tweets {
       console.log('n.kozh tweets_ids', tweets_ids);
       if (tweets_ids.length == 0) {
         console.warn('Твиты такого типа уже все показаны');
-        return {type: 'tweets_end', msg: 'Твиты такого типа уже все показаны'}
+        // return {type: 'tweets_end', msg: 'Твиты такого типа уже все показаны'}
+        return null
       }
 
       const tweet_id = tweets_ids[this.game.rnd.integerInRange(0, tweets_ids.length-1)];
@@ -323,6 +324,8 @@ class Tweets {
       name: tweet.name,
       image: 'tw_'+tweet.nickname
     }, options);
+
+    return tweet;
   }
 
   _tweet(tweet, options={}) {
