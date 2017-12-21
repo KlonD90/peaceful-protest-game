@@ -40,7 +40,7 @@ module.exports = {
                 }
             },
             {
-                test: /\.(jpg|png|mp3|jpeg|gif)$/,
+                test: /\.(jpg|png|mp3|jpeg|gif|css)$/,
                 loader: 'file-loader',
                 query: {
                     outputPath: 'assets/'
