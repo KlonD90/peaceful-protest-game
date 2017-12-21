@@ -32,6 +32,10 @@ class Cop extends Prefab {
         this.sprite.body.setSize(37, 37);
         this.stunTimer = this.game.time.create(false);
 
+        const fpsAnimation = 3;
+        this.viewSprite.animations.add('walk', [1, 2], fpsAnimation, true);
+
+
 
         if (!alive) {
             this.kill();
@@ -53,6 +57,8 @@ class Cop extends Prefab {
             angle: this.sprite.body.angle,
             mode: this.mode === COP_MODE_PURSUE ? FOV_MODE_CAPTURE : FOV_MODE_NORMAL
         });
+
+        this.updateAnimation();
     }
 
     setMode(mode, props = {}) {
@@ -143,7 +149,8 @@ class Cop extends Prefab {
         this.setMode(COP_MODE_WANDER, { coords: this.returnCoords });
         // const tweets = this.GameObject.mz.tweet.find({type: 'arrest'});
         // const tweet = tweets[Math.floor(tweets.length * Math.random())];
-        this.GameObject.mz.tweet.rTweet({type: 'arrest'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
+        if (Math.random() < 0.3)
+            this.GameObject.mz.tweet.rTweet({type: 'arrest'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
     }
 
     handleFightWin() {

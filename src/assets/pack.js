@@ -320,6 +320,13 @@ const pack = {
         },
         {
             type: 'spritesheet',
+            key: 'nod',
+            url: require('./nod.png'),
+            frameWidth: 31,
+            frameHeight: 37
+        },
+        {
+            type: 'spritesheet',
             key: 'podskazka_plakat',
             url: require('./soundButtons.png'),
             frameWidth: 50,
@@ -426,8 +433,28 @@ const pack = {
         },
         {
             type: 'spritesheet',
-            key: 'protester_sprite',
-            url: require('./guy.png'),
+            key: 'npc_01',
+            url: require('./npc_01.png'),
+            frameWidth: 31,
+            frameHeight: 37,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'npc_02',
+            url: require('./npc_02.png'),
+            frameWidth: 31,
+            frameHeight: 37,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'npc_03',
+            url: require('./npc_03.png'),
             frameWidth: 31,
             frameHeight: 37,
             frameMax: 3,
@@ -439,7 +466,7 @@ const pack = {
             key: 'cop_sprite',
             url: require('./cop.png'),
             frameWidth: 31,
-            frameHeight: 37,
+            frameHeight: 36,
             frameMax: 3,
             margin: 0,
             spacing: 0

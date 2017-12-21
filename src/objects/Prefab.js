@@ -33,6 +33,7 @@ class Prefab {
         console.log(this.viewSprite);
 
         this.stayingTimer = this.game.time.create(false);
+        this.curAnimationState = 'stop';
 
         this.mode = null;
         this.moveTo = moveTo
@@ -168,6 +169,62 @@ class Prefab {
         this.moveTo(null);
 
         this.sprite.kill();
+    }
+
+    updateAnimation(){
+        const velocity = this.sprite.body.velocity;
+        let newState = 'stop';
+        if (velocity.x != 0 || velocity.y != 0)
+        {
+            if (this.canRun)
+            {
+                if (Math.sqrt(velocity.x*velocity.x + velocity.y*velocity.y) < this.speed.value * (this.speed.running-0.1))
+                {
+                    newState = 'walk';
+                }
+                else
+                {
+                    newState = 'run';
+                }
+            }
+            else
+            {
+                newState = 'walk';
+            }
+        }
+        if (newState != this.curAnimationState)
+        {
+            this.curAnimationState = newState;
+            console.log('new state');
+            if (newState === 'stop')
+            {
+                this.viewSprite.animations.stop(null, true);
+                this.viewSprite.frame = 0;
+            }
+            else
+                this.viewSprite.animations.play(newState);
+        }
+    }
+
+    changeViewSprite(spriteKey, canWalk = 0){
+        this.sprite.removeChild(this.viewSprite);
+        this.viewSprite.kill();
+        this.viewSprite.destroy();
+
+        this.viewSprite = this.game.add.sprite(0, 0, spriteKey, 0);
+        this.viewSprite.mz = this;
+        this.sprite.addChild(this.viewSprite);
+
+        this.game.physics.arcade.enable(this.viewSprite);
+        this.viewSprite.anchor.set(0.5);
+        this.viewSprite.reset(0, 0)
+
+        this.curAnimationState = 'stop';
+
+        if (canWalk && canWalk > 0)
+        {
+            this.viewSprite.animations.add('walk', [1, 2], canWalk, true);
+        }
     }
 }
 

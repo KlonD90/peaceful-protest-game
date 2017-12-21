@@ -6,7 +6,7 @@ import {
 
 import Star from "./Star.js"
 
-const SQUAD_DENSITY = 40;
+const SQUAD_DENSITY = 35;
 const SQUAD_DISCIPLINE = 0.4;
 const TURN_FREQUENCY = 30;
 
@@ -36,6 +36,9 @@ class SWATSquad {
 
             this.sprites.push(swatSprite);
             group.add(swatSprite);
+            const fpsAnimation = 5;
+            swatSprite.animations.add('walk', [1, 2], fpsAnimation, true);
+            swatSprite.animations.play('walk');
         }
     }
 
@@ -61,12 +64,14 @@ class SWATSquad {
                     const angle = this.game.math.angleBetweenPoints(firstSprite, moveTarget) +
                         (this.updateIndex === 0 ? 1 : -1) * this.game.rnd.realInRange(0, SQUAD_DISCIPLINE);
                     this.game.physics.arcade.velocityFromRotation(angle, this.speed.current, firstSprite.body.velocity);
+                    firstSprite.rotation = angle-(Math.PI/2);
                 }
 
                 for (let i = 1; i < this.sprites.length; i++) {
                     const swatSprite = this.sprites[i];
                     const angleToTarget = this.game.math.angleBetweenPoints(swatSprite, this.sprites[i - 1]);
                     this.game.physics.arcade.velocityFromRotation(angleToTarget, this.speed.current, swatSprite.body.velocity);
+                    swatSprite.rotation = angleToTarget-(Math.PI/2);
                 }
 
                 if (this.updateIndex === 2 * TURN_FREQUENCY - 1) {

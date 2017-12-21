@@ -18,6 +18,7 @@ class NPCProtester extends Protester {
         onLeft,
         ...prefabOptions
     }) {
+        const spriteKey =
         super(prefabOptions);
 
         this.group = group;
@@ -47,6 +48,16 @@ class NPCProtester extends Protester {
         this.nodDone = false;
         this.slot = null;
         this.sprite.body.setSize(37, 37);
+
+
+        const fpsAnimation = 3;
+        this.viewSprite.animations.add('walk', [1, 2], fpsAnimation, true);
+
+
+        if (this.isNOD)
+        {
+            this.changeViewSprite('nod', 3);
+        }
 
         // initially dead
         this.kill();
@@ -134,6 +145,7 @@ class NPCProtester extends Protester {
         }
 
         super.update();
+        this.updateAnimation();
     }
 
     handleLeft() {
@@ -282,6 +294,14 @@ class NPCProtester extends Protester {
         this.isFollower = Math.random() < 0.1;
         this.isNOD = !this.isFollower && Math.random() < 0.03;
         this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.1;
+        if (this.isNOD)
+        {
+            this.changeViewSprite('nod', 3);
+        }
+        else
+        {
+            this.changeViewSprite('npc_0'+(Math.floor(Math.random()*3)+1), 3);
+        }
         this.nodDone = false;
         this.slot = null;
         this.shownPoster = false;

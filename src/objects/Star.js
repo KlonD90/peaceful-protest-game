@@ -36,7 +36,7 @@ export class Star extends Protester {
     console.log(prefabOptions)
     super({
       ...GameObject.getRandomCoordinates(),
-      spriteKey: `protester1`,
+      spriteKey: `star`,
       spriteName: `star`,
       speed: { value: fullConfig.speed },
       ...prefabOptions, GameObject,
@@ -49,6 +49,7 @@ export class Star extends Protester {
 
 
     this.restTimer = this.game.time.create(false);
+    this.viewSprite.animations.add('walk', [1, 2], 3, true);
     this.kill()
   }
 
@@ -111,6 +112,7 @@ export class Star extends Protester {
 
     this.updateStarGraphic()
     super.update()
+    this.updateAnimation()
   }
 
   updateStarGraphic(){

@@ -7,15 +7,15 @@ class Protester extends Prefab {
     constructor({ onDropPoster, ...prefabOptions }) {
         super(prefabOptions);
 
-        this.injurySprite = this.viewSprite.addChild(
-            this.game.make.sprite(
-                -15,
-                -this.sprite.height / 2 - 2,
-                'injury'
-            )
-        );
-        this.injurySprite.bringToTop();
-        this.injurySprite.visible = false;
+        // this.injurySprite = this.viewSprite.addChild(
+        //     this.game.make.sprite(
+        //         -15,
+        //         -this.sprite.height / 2 - 2,
+        //         'injury'
+        //     )
+        // );
+        // this.injurySprite.bringToTop();
+        // this.injurySprite.visible = false;
 
         this.posterSprite = this.viewSprite.addChild(this.game.make.sprite(-10, 11, 'poster', 0));
         this.posterSprite.bringToTop();
@@ -29,7 +29,7 @@ class Protester extends Prefab {
     }
 
     update() {
-        this.injurySprite.visible = this.sprite.health !== 1;
+        // this.injurySprite.visible = this.sprite.health !== 1;
         this.posterSprite.visible = this.posterSprite.alive && this.showPoster;
     }
 
@@ -58,6 +58,17 @@ class Protester extends Prefab {
             this.posterSprite.kill();
             this.onDropPoster && this.onDropPoster({ x: this.sprite.x, y: this.sprite.y });
         }
+    }
+
+    changeViewSprite(spriteKey, canWalk = 0)
+    {
+        super.changeViewSprite(spriteKey, canWalk);
+        this.posterSprite = this.viewSprite.addChild(this.game.make.sprite(-10, 11, 'poster', 0));
+        this.posterSprite.bringToTop();
+        this.posterSprite.anchor.set(0.5, 1);
+        this.posterSprite.visible = false;
+        this.showPoster = false;
+        this.dropPoster = 1;
     }
 }
 

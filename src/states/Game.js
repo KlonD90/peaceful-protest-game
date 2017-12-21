@@ -128,6 +128,7 @@ class Game {
 
     create() {
         this.mz.tweet = new Tweet(this.game);
+        this.mz.tweet.resetShowedTweets();
         this.mz.score = 0;
         // this.game.time.advancedTiming = true;
 
@@ -732,10 +733,12 @@ class Game {
             this.mz.arrays.protesters
         );
         if (this.mz.objects.star)
-        this.game.physics.arcade.collide(
-            this.mz.objects.player.sprite,
-            this.mz.objects.star.sprite
-        );
+        {
+            this.game.physics.arcade.collide(
+                this.mz.objects.player.sprite,
+                this.mz.objects.star.sprite
+            );
+        }
         this.game.physics.arcade.collide(
             this.mz.arrays.cops,
             this.mz.arrays.protesters,
@@ -1419,7 +1422,6 @@ class Game {
     handleGotPlaceWagon(wagon){
         this.mz.arrays.wagons.push(wagon);
         wagon.body.stop();
-
     }
 
     handleEnteringWagons(){

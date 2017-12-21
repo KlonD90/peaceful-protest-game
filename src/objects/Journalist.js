@@ -37,6 +37,7 @@ class Journalist extends Prefab {
 
         this.target = null;
         this.following = null;
+        this.viewSprite.animations.add('walk', [1, 2], 3, true);
     }
 
     update() {
@@ -57,6 +58,7 @@ class Journalist extends Prefab {
             angle: this.sprite.body.angle,
             mode: this.mode === JOURNALIST_MODE_SHOOTING ? FOV_MODE_CAPTURE : FOV_MODE_NORMAL
         });
+        this.updateAnimation()
     }
 
     setMode(mode, props = {}) {
@@ -111,6 +113,7 @@ class Journalist extends Prefab {
 
     turnTo({ x, y }) {
         this.sprite.body.angle = this.game.math.angleBetweenPoints(this.sprite, { x, y });
+        this.viewSprite.rotation = this.sprite.body.angle-(Math.PI/2);
     }
 
     shootingTimerCallback() {

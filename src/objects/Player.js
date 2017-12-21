@@ -64,9 +64,12 @@ class Player extends Protester {
         this.isGoing = false;
         this.stunTimer = this.game.time.create(false);
 
+        this.isWalking = false;
+        this.isRunning = false;
+
 
         this.slots = new SlotManager(this.sprite, this, slots || [
-            { x: -30, y: 0 } ,
+            { x: -30, y: 0 },
             { x: -30, y: 30},
             { x: -30, y: -30},
             { x: -30, y: -60},
@@ -103,11 +106,13 @@ class Player extends Protester {
         this.viewSprite.animations.add('run', [1, 2], fpsAnimation*this.speed.running, true);
         this.fightBar = 0;
 
-
+        this.canRun = true;
 
 
         Player.instance = this
     }
+
+
 
     update() {
         this.resetRadius();
@@ -118,12 +123,14 @@ class Player extends Protester {
         this.circleGraphics.clear();
 
         if (this.mode === PROTESTER_MODE_ARRESTED || this.isFrozen || this.mode === PLAYER_MODE_STUN) {
+            this.updateAnimation();
             this.updateProgressBar(0);
             return;
         }
 
         if (this.mode === PLAYER_MODE_FIGHT)
         {
+            this.updateAnimation();
             if (this.keys.space.justDown)
             {
                 this.fightBar+=1;
@@ -157,37 +164,17 @@ class Player extends Protester {
                 if (this.stamina > 0) {
                     this.stamina -= 1;
                     newSpeed *= this.speed.running;
-                    if (!this.isRunning)
-                    {
-                        this.isRunning = true;
-                        this.viewSprite.animations.play('run');
-                    }
                 } else {
                     this.cooldownTimer.add(this.staminaCooldown, () => {
                         this.cooldownTimer.stop(true);
                     });
                     this.cooldownTimer.start();
-                    if (this.isRunning)
-                    {
-                        this.isRunning = false;
-                        this.viewSprite.animations.play('walk');
-                    }
                 }
             } else if (this.stamina < this.maxStamina) {
                 this.stamina += 1;
-                if (this.isRunning)
-                {
-                    this.isRunning = false;
-                    this.viewSprite.animations.play('walk');
-                }
             }
         } else {
             this.stamina = this.maxStamina * this.cooldownTimer.ms / this.staminaCooldown;
-            if (this.isRunning)
-            {
-                this.isRunning = false;
-                this.viewSprite.animations.play('walk');
-            }
         }
 
         if (this.stamina < this.maxStamina) {
@@ -233,11 +220,6 @@ class Player extends Protester {
             console.log('direction', this.direction);
             // this.sprite.frame = 2;
             this.resetClickSpeed(true);
-            if (!this.isGoing)
-            {
-                this.isGoing = true;
-                this.viewSprite.animations.play('walk');
-            }
         } else if (
             this.keys.up.justUp ||
             this.keys.down.justUp ||
@@ -258,6 +240,7 @@ class Player extends Protester {
             }
 
         }
+        this.updateAnimation();
 
     }
 
