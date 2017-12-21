@@ -295,7 +295,7 @@ const pack = {
             key: 'star',
             url: require('./star.png'),
             frameHeight: 30,
-            frameHeight: 30
+            frameWidth: 30
         },
         {
             type: 'spritesheet',
@@ -310,6 +310,13 @@ const pack = {
             url: require('./soundButtons.png'),
             frameWidth: 50,
             frameHeight: 50
+        },
+        {
+            type: 'spritesheet',
+            key: 'omon',
+            url: require('./omon.png'),
+            frameWidth: 31,
+            frameHeight: 37
         },
         {
             type: 'spritesheet',

@@ -119,7 +119,9 @@ class Game {
                 space_pozor: false,
                 shift_run: false,
             },
-            tweet: null
+            tweet: null,
+            limitScore: level.scoreWin,
+            starScore: level.star.score
         };
         this.mz.score = 0;
     }
@@ -869,7 +871,7 @@ class Game {
     }
 
     updateScore() {
-        this.mz.objects.interface.updateScore(this.mz.score);
+        this.mz.objects.interface.updateScore(`${this.mz.score} / ${this.mz.limitScore}`);
     }
 
     createCops() {
@@ -1129,7 +1131,7 @@ class Game {
     checkWin() {
         if (this.mz.protesters.alive <= 0) {
             this.endGame(END_GAME_PROTEST_RATE);
-        } else if (this.mz.score >= 100) {
+        } else if (this.mz.score >= this.mz.limitScore) {
             this.endGame(END_GAME_WIN);
         } else if (
             this.mz.objects.player.mode === PROTESTER_MODE_ARRESTED ||

@@ -12,10 +12,10 @@ class HelpInfo {
 
     addSprite(helpName) {
         const { width, height } = game.game;
-        const centerX = (width/2)-169;
+        const centerX = (width/2);
 
         const sprite = this.sprites[helpName] = this.game.add.sprite(
-            centerX, height-130, helpName
+            centerX, height-10, helpName
         );
         sprite.fixedToCamera = true
         return sprite;
@@ -46,6 +46,18 @@ class HelpInfo {
         }
 
         const sprite = this.addSprite(helpName);
+        sprite.anchor.set(0.5, 1);
+        const minWidth = sprite.width;
+        const maxWidth = 600;
+        let posibleWidth =  this.game.camera.width - 100;
+        if (posibleWidth < minWidth)
+            posibleWidth = minWidth;
+        if (posibleWidth > maxWidth)
+            posibleWidth = maxWidth;
+        const scale = posibleWidth/minWidth;
+        sprite.width = sprite.width * scale;
+        sprite.height = sprite.height * scale;
+
         if (anim) {
             sprite.alpha = 0;
             this.fadeIn(sprite, anim);
