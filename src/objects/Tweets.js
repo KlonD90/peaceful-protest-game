@@ -259,6 +259,29 @@ const MARGIN_LEFT = 25;
 const AVATAR_TEXT_SPACING = 20;
 
 
+function largange(arr, x) {
+  var n = 0;
+  for(let i=0; i<arr.length; i++) {
+    const curr = arr[i];
+    const {x:currX, y: currY} = curr;
+    var a = 1;
+    var z = '';
+    for(let j=0; j<arr.length; j++) {
+      if(i === j) continue;
+      const {x: xj, y: yj} = arr[j];
+      // console.log('j', j, 'i', i)
+      z += (`*(x - x${j})/(x${i}-x${j})`)
+      a *= (x-xj)/(currX-xj);
+    }
+    // console.log(`for x${i}: `);
+    // console.log('z', z);
+    // console.log('a', a);
+    a = a*currY;
+    n += a;
+  }
+  return n;
+}
+
 const getTextStyle = width => ({
   font: '16px William Text',
   // text.font = 'Revalia';
@@ -462,28 +485,127 @@ class Tweets {
 
     const { width, height } = this.game;
     const bounds = tweetGroup.getBounds();
+    const { height: groupH } = tweetGroup;
+    // debugger;
     // debugger;
     // const bitmap = this.game.add.bitmapData(width, (height - bounds.y));
     // const bitmap = this.game.add.bitmapData(width, bounds.height+(MARGIN_BOTTOM*2));
-    const bitmap = this.game.add.bitmapData(width, bounds.height+(MARGIN_BOTTOM*2));
+    // const bitmapH = bounds.height+(MARGIN_BOTTOM*2)+20;
+    const bitmapH = groupH+(MARGIN_BOTTOM*2)+40;
+    const bitmap = this.game.add.bitmapData(width, bitmapH);
     bitmap.fixedToCamera = true;
     // const bounds = group.getBounds();
     // bitmap.addToWorld(50, 50, 0, 0);
-    var y = 0;
-    for(var i=0; i<100; i++)   {
-      const c = Phaser.Color.interpolateColor(0, 0, 100, i, (100-i)/100);
-      bitmap.rect(0, y, width, 2, 'rgba(0,0,0,'+ 0.9*(i/100) +')');
-      y+=2;
+    const aplhaIterp = [
+      {x: 0, y: 0},
+      {x: bitmapH*30/100, y: 0.3},
+      {x: bitmapH*80/100, y: 0.5},
+      {x: bitmapH, y: 0.7},
+
+    ]
+    console.log('aplhaIterp', aplhaIterp);
+    // var y = 0;
+    for (let y=0; y<(bitmapH); y+=2) {
+      console.log('interp Y', y, 'interp',largange(aplhaIterp, y));
+  
+      // bitmap.rect(0, y, width, 1, 'rgba(0,0,0,'+ 1 +')');
+      bitmap.rect(0, y, width, 2, 'rgba(0,0,0,'+ largange(aplhaIterp, y) +')');
+      // y += 1; 
     }
+    // console.log('n.kozh 123', bounds.height);
+    // setTimeout(function() {
+    //   console.log('n.kozh 123', bounds.height);
+    // }, 1000)
+    // for();
+
+    // let alphaStart = 1;
+    // let alphaEnd = 0.3;
+    // console.log('iters bounds h', bounds);
+    // console.log('iters bitmapH', bitmapH);
+    // let alphaStart = 1;
+    // let alphaEnd = 0.3;
+    // let iters = bitmapH*15/100;
+    // let alphaStep = (alphaStart - alphaEnd)/(iters/2);
+    // console.log('iters', iters);
+    // for(let i=0, alpha = alphaStart; i<(iters/2); i++) {
+    //   console.log('iters', iters);
+    //   console.log('alphaStep', alphaStep);
+    //   console.log('iters y', y);
+    //   alpha -= alphaStep;
+    //   bitmap.rect(0, y, width, 1, 'rgba(0,0,0,'+ alpha +')');
+    //   y +=2;
+    // }
+
+
+    // alphaStart = 0.3;
+    // alphaEnd = 0.3;
+    // iters = bitmapH*70/100;
+    // alphaStep = (alphaStart - alphaEnd)/(iters/2);
+    // console.log('iters', iters);
+    
+    // for(let i=0, alpha=alphaStart; i<iters/2; i++) {
+    //   console.log('iters', iters);
+    //   // const alpha -= alphaStep;
+    //   bitmap.rect(0, y, width, 2, 'rgba(0,0,0,'+ alpha +')');
+    //   y +=2;
+    // }
+
+    // alphaStart = 0.3;
+    // alphaEnd = 1;
+    // iters = bitmapH*15/100;
+    // alphaStep = (alphaStart - alphaEnd)/(iters/2);
+    // console.log('iters', iters);
+    // for(let i=0, alpha=alphaStart; i<iters/2; i++) {
+    //   console.log('iters', iters);
+    //   alpha -= alphaStep;
+    //   bitmap.rect(0, y, width, 2, 'rgba(0,0,0,'+ alpha +')');
+    //   y +=2;
+    // }
+    /*
+    // for(var i=0; i<100; i++)   {
+    const prevAlpha = 1;
+    const alphaStep = 0.04
+    for(var i=0; i<bitmapH; i++)   {
+      const percentOfHeight = i*100/bitmapH;
+      let alpha = 0;
+      // console.log('percentOfHeight', percentOfHeight);
+      if (percentOfHeight < 30) {
+        alpha = prevAlpha + alphaStep;
+      } else {
+        alpha = prevAlpha
+      } 
+      // i - ?
+      // bitmapH - 100
+      // let alpha = 0.7*(i/100);
+      // let alpha = 0.7*(i/100);
+      // const c = Phaser.Color.interpolateColor(0, 0, 100, i, (100-i)/100);
+      // if (alpha < 0.05) alpha = 0.05  
+      // bitmap.rect(0, y, width, 1, 'rgba(0,0,0,'+ 0.8*(i/100) +')');
+      bitmap.rect(0, y, width, 1, 'rgba(0,0,0,'+ alpha +')');
+      y+=1;
+    }
+    */
     window._bitmap = bitmap;
     // var spriteBg = this.game.add.sprite(0, bounds.y, bitmap);
-    var spriteBg = this.game.add.sprite(0, height-MARGIN_BOTTOM, bitmap);
+    // var spriteBg = this.game.add.sprite(0, height-MARGIN_BOTTOM, bitmap);
+    var spriteBg = this.game.add.sprite(0, height-MARGIN_BOTTOM-20, bitmap);
     spriteBg.fixedToCamera = true;
 
     // this.background = spriteBg;
     return spriteBg;
   }
 
+  higlightHashTag(textGameObj, text, style) {
+    const {originalColor, higlightedColor} = style;
+    const hashRegExp = /#[A-zА-я_]*/g;
+    let res;
+    while(res = hashRegExp.exec(text)) {
+      const {index, 0: group} = res;
+
+      textGameObj.addColor(higlightedColor, index);
+      textGameObj.addColor(originalColor, index + group.length);
+    }
+  }
 
   createHiddenTweet(text, image, name, options, style) {
     // window._tweenObj = this;
@@ -538,6 +660,12 @@ class Tweets {
       textGameObject.fontSize = style.fontSize;
     }
 
+      // this.higlightHashTag(textGameObject, text, {
+      //   originalColor: 'white',
+      //   // higlightedColor: '#4ca2d4',
+      //   // higlightedColor: '#0066ff'
+      //   higlightedColor: '#1DA1F2'
+      // });
     
 
     const avatar = this.game.add.sprite(
@@ -577,13 +705,14 @@ class Tweets {
 
     // tweet.y = newY;
 
-    const bg = this.createTwBackground(tweet);
     // tweet.add(bg);
 
     avatar.bringToTop();
     textGameObject.bringToTop();
     if (name) nameGameObject.bringToTop();
 
+
+    const bg = this.createTwBackground(tweet);
     const all = this.game.add.group();
     all.alpha = 0;
     all.add(bg);
