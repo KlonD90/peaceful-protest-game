@@ -356,6 +356,12 @@ class Game {
         // update background
         this.mz.objects.bgTile.tilePosition.set(-this.game.camera.x, -this.game.camera.y);
 
+        if (!this.mz.objects.star && this.mz.starScore <= this.mz.score)
+        {
+            this.createStar();
+        }
+
+
         this.collider.update()
 
         if (!this.mz.gameEnded) {
@@ -1423,7 +1429,7 @@ class Game {
             if (w)
             {
                 const diff = Math.sqrt(Math.pow(w.wagon.x - w.x, 2) + Math.pow(w.wagon.y - w.y, 2));
-                if (diff < 20)
+                if (diff < 10)
                 {
                     this.handleGotPlaceWagon(w.wagon);
                     this.mz.arrays.enterWagons.splice(i, 1);
