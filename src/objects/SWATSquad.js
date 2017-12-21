@@ -27,7 +27,7 @@ class SWATSquad {
 
         this.sprites = [];
         for (let i = 0; i < count; i++) {
-            const swatSprite = this.game.add.sprite(-100, -100, 'swat', 0);
+            const swatSprite = this.game.add.sprite(-100, -100, 'omon', 0);
             swatSprite.anchor.set(0.5);
             swatSprite.visible = false;
             swatSprite.mz = this

@@ -119,7 +119,9 @@ class Game {
                 space_pozor: false,
                 shift_run: false,
             },
-            tweet: null
+            tweet: null,
+            limitScore: level.scoreWin,
+            starScore: level.star.score
         };
         this.mz.score = 0;
     }
@@ -353,6 +355,12 @@ class Game {
     update() {
         // update background
         this.mz.objects.bgTile.tilePosition.set(-this.game.camera.x, -this.game.camera.y);
+
+        if (!this.mz.objects.star && this.mz.starScore <= this.mz.score)
+        {
+            this.createStar();
+        }
+
 
         this.collider.update()
 
@@ -764,31 +772,31 @@ class Game {
         this.mz.objects.star && this.mz.objects.star.update()
 
 
-        const zoomLevels = [[30, 1, 2000, 800]];
-        let desiredZoomLevel = -1;
-        for (let l =0; l< zoomLevels.length; l++)
-        {
-            const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[l];
-            if (this.mz.protesters.alive > countProtester)
-            {
-                desiredZoomLevel = l;
-            }
-        }
-
-        if (this.mz.zoomLevel < desiredZoomLevel)
-        {
-            const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[desiredZoomLevel];
-            // this.game.camera.scale.x = zoom;
-            // this.game.camera.scale.y = zoom;
-            this.game.world.resize(worldWidth, worldHeight);
-            // this.mz.zoomLevel = desiredZoomLevel;
-            // this.mz.timers.resize.removeAll();
-            // this.mz.timers.resize.stop();
-            // const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
-            // for (let i=1; i<zoomSteps+1; i++)
-            //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
-            // this.mz.timers.resize.start();
-        }
+        // const zoomLevels = [[30, 1, 2000, 800]];
+        // let desiredZoomLevel = -1;
+        // for (let l =0; l< zoomLevels.length; l++)
+        // {
+        //     const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[l];
+        //     if (this.mz.protesters.alive > countProtester)
+        //     {
+        //         desiredZoomLevel = l;
+        //     }
+        // }
+        //
+        // if (this.mz.zoomLevel < desiredZoomLevel)
+        // {
+        //     const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[desiredZoomLevel];
+        //     // this.game.camera.scale.x = zoom;
+        //     // this.game.camera.scale.y = zoom;
+        //     this.game.world.resize(worldWidth, worldHeight);
+        //     // this.mz.zoomLevel = desiredZoomLevel;
+        //     // this.mz.timers.resize.removeAll();
+        //     // this.mz.timers.resize.stop();
+        //     // const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
+        //     // for (let i=1; i<zoomSteps+1; i++)
+        //     //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
+        //     // this.mz.timers.resize.start();
+        // }
 
         if (this.mz.screenAttacked)
         {
@@ -869,7 +877,7 @@ class Game {
     }
 
     updateScore() {
-        this.mz.objects.interface.updateScore(this.mz.score);
+        this.mz.objects.interface.updateScore(`${this.mz.score} / ${this.mz.limitScore}`);
     }
 
     createCops() {
@@ -1129,7 +1137,7 @@ class Game {
     checkWin() {
         if (this.mz.protesters.alive <= 0) {
             this.endGame(END_GAME_PROTEST_RATE);
-        } else if (this.mz.score >= 100) {
+        } else if (this.mz.score >= this.mz.limitScore) {
             this.endGame(END_GAME_WIN);
         } else if (
             this.mz.objects.player.mode === PROTESTER_MODE_ARRESTED ||
@@ -1421,7 +1429,7 @@ class Game {
             if (w)
             {
                 const diff = Math.sqrt(Math.pow(w.wagon.x - w.x, 2) + Math.pow(w.wagon.y - w.y, 2));
-                if (diff < 20)
+                if (diff < 10)
                 {
                     this.handleGotPlaceWagon(w.wagon);
                     this.mz.arrays.enterWagons.splice(i, 1);

@@ -5,6 +5,7 @@ export default {
         worldHeight: 800,
         duration: 3 * 60, // s
         winningThreshold: 100,
+        scoreWin: 1000,
         cops: {
             count: [
                 [4, 0],
@@ -75,6 +76,9 @@ export default {
             frequency: 15000,
             scoreThreshold: 60
         },
+        star: {
+            score: 40
+        }
     },
     level2: {
         id: 'level2',

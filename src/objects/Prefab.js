@@ -13,7 +13,7 @@ class Prefab {
             ...speed
         };
 
-        this.viewSprite = this.game.add.sprite(x, y, spriteKey, 0)
+        this.viewSprite = this.game.add.sprite(x, y, spriteKey, 0);
         this.sprite = this.game.add.sprite(x, y);
         this.sprite.mz = this;
         this.viewSprite.mz = this;
