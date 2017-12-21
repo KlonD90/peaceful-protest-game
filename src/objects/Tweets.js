@@ -292,7 +292,8 @@ class Tweets {
 
   rTweet(selector, options) {
     const tweets = this.find(selector);
-    const tweet = tweets[~~Math.random()*tweets.length];
+    this.game.rnd.integerInRange(100, 200)
+    const tweet = tweets[this.game.rnd.integerInRange(0, tweets.length-1)];
     console.log('n.kozh rTweet called', tweet);
     this._tweet({
       text: tweet.text,
