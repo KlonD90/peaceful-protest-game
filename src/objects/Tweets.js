@@ -342,7 +342,7 @@ class Tweets {
       },
       anim: {
         visible: options.visible || 1000,
-        fadeOut: options.fadeOut || 1000,
+        fadeOut: options.fadeOut || 500,
         fadeIn: options.fadeIn || 1000 
       },
       custom: {
@@ -398,7 +398,7 @@ class Tweets {
         /* скрываем содержимое твита */
         const ntween = this.game.add.tween(tweetGroup)
         ntween.to({
-          y: -300, alpha: 0
+          y: -100, alpha: 0
         // }, 800, Phaser.Easing.Default, true)
         }, aOptions.fadeOut, Phaser.Easing.Default, true)
         ntween.onComplete.add(() => {
@@ -482,7 +482,7 @@ class Tweets {
           fill: '#fcfcfc',
         });
       // debugger;
-      nameGameObject.font = 'Graphik LC';
+      nameGameObject.font = 'Graphik LC, Arial';
       nameGameObject.fixedToCamera = true;
       // window._nameGameObject = nameGameObject;
 
@@ -493,7 +493,7 @@ class Tweets {
         getTextStyle(width),
       );
 
-      textGameObject.font = 'William Text';
+      textGameObject.font = 'William Text, Arial';
       textGameObject.fixedToCamera = true;
     } else {
       textGameObject = this.game.add.text(
@@ -503,7 +503,7 @@ class Tweets {
         getTextStyle(width),
       );
 
-      textGameObject.font = 'William Text';
+      textGameObject.font = 'William Text, Arial';
       textGameObject.fixedToCamera = true;
     }
 
