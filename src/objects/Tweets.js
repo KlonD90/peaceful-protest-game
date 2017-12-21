@@ -272,6 +272,7 @@ class Tweets {
     this.game = game;
     this.queue = [];
     this.executing = false;
+    this.showedTweet = [];
   }
 
   find(selector) {
@@ -290,10 +291,32 @@ class Tweets {
     });
   }
 
+  resetShowedTweets() {
+    this.showedTweet = [];
+  }
+
   rTweet(selector, options) {
     const tweets = this.find(selector);
-    this.game.rnd.integerInRange(100, 200)
-    const tweet = tweets[this.game.rnd.integerInRange(0, tweets.length-1)];
+    let tweet;
+    if (tweets.length > 1) {
+      // debugger;
+      const tweets_ids = tweets.map(tw => tw.id).filter(id => this.showedTweet.indexOf(id) < 0);
+      console.log('n.kozh tweets_ids', tweets_ids);
+      if (tweets_ids.length == 0) {
+        console.warn('Твиты такого типа уже все показаны');
+        return {type: 'tweets_end', msg: 'Твиты такого типа уже все показаны'}
+      }
+
+      const tweet_id = tweets_ids[this.game.rnd.integerInRange(0, tweets_ids.length-1)];
+      this.showedTweet.push(tweet_id);
+      tweet = tweets.find(tw => tw.id === tweet_id);
+    } else {
+      tweet = tweets[0];
+    }
+    // this.game.rnd.integerInRange(100, 200)
+    // const randomTweet = this.game.rnd.integerInRange(0, tweets.length-1);
+    // if ()
+    // const tweet = tweets[this.game.rnd.integerInRange(0, tweets.length-1)];
     console.log('n.kozh rTweet called', tweet);
     this._tweet({
       text: tweet.text,
