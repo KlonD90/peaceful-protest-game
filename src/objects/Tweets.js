@@ -272,6 +272,7 @@ class Tweets {
     this.game = game;
     this.queue = [];
     this.executing = false;
+    this.showedTweet = [];
   }
 
   find(selector) {
@@ -290,15 +291,41 @@ class Tweets {
     });
   }
 
+  resetShowedTweets() {
+    this.showedTweet = [];
+  }
+
   rTweet(selector, options) {
     const tweets = this.find(selector);
-    const tweet = tweets[~~Math.random()*tweets.length];
+    let tweet;
+    if (tweets.length > 1) {
+      // debugger;
+      const tweets_ids = tweets.map(tw => tw.id).filter(id => this.showedTweet.indexOf(id) < 0);
+      console.log('n.kozh tweets_ids', tweets_ids);
+      if (tweets_ids.length == 0) {
+        console.warn('Твиты такого типа уже все показаны');
+        // return {type: 'tweets_end', msg: 'Твиты такого типа уже все показаны'}
+        return null
+      }
+
+      const tweet_id = tweets_ids[this.game.rnd.integerInRange(0, tweets_ids.length-1)];
+      this.showedTweet.push(tweet_id);
+      tweet = tweets.find(tw => tw.id === tweet_id);
+    } else {
+      tweet = tweets[0];
+    }
+    // this.game.rnd.integerInRange(100, 200)
+    // const randomTweet = this.game.rnd.integerInRange(0, tweets.length-1);
+    // if ()
+    // const tweet = tweets[this.game.rnd.integerInRange(0, tweets.length-1)];
     console.log('n.kozh rTweet called', tweet);
     this._tweet({
       text: tweet.text,
       name: tweet.name,
       image: 'tw_'+tweet.nickname
     }, options);
+
+    return tweet;
   }
 
   _tweet(tweet, options={}) {
@@ -342,7 +369,7 @@ class Tweets {
       },
       anim: {
         visible: options.visible || 1000,
-        fadeOut: options.fadeOut || 1000,
+        fadeOut: options.fadeOut || 500,
         fadeIn: options.fadeIn || 1000 
       },
       custom: {
@@ -398,7 +425,7 @@ class Tweets {
         /* скрываем содержимое твита */
         const ntween = this.game.add.tween(tweetGroup)
         ntween.to({
-          y: -300, alpha: 0
+          y: -100, alpha: 0
         // }, 800, Phaser.Easing.Default, true)
         }, aOptions.fadeOut, Phaser.Easing.Default, true)
         ntween.onComplete.add(() => {
@@ -482,7 +509,7 @@ class Tweets {
           fill: '#fcfcfc',
         });
       // debugger;
-      nameGameObject.font = 'Graphik LC';
+      nameGameObject.font = 'Graphik LC, Arial';
       nameGameObject.fixedToCamera = true;
       // window._nameGameObject = nameGameObject;
 
@@ -493,7 +520,7 @@ class Tweets {
         getTextStyle(width),
       );
 
-      textGameObject.font = 'William Text';
+      textGameObject.font = 'William Text, Arial';
       textGameObject.fixedToCamera = true;
     } else {
       textGameObject = this.game.add.text(
@@ -503,7 +530,7 @@ class Tweets {
         getTextStyle(width),
       );
 
-      textGameObject.font = 'William Text';
+      textGameObject.font = 'William Text, Arial';
       textGameObject.fixedToCamera = true;
     }
 
