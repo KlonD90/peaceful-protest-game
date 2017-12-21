@@ -53,7 +53,7 @@ const data = {
     id: 7,
     name: "Александр Паль",
     text: "В автозаке тепло.",
-    nickname: "tw_fb_pal",
+    nickname: "fb_pal",
     type: "arrest"
   },
 
@@ -247,7 +247,7 @@ const data = {
 
 
 /* отступ твита снизу. Если текст выше аватарки от текста, если аватарка выше от аватарки */
-const MARGIN_BOTTOM = 25;
+const MARGIN_BOTTOM = 5;
 
 /* размер аватарки, это квадрат */
 const AVATAR_SIZE = 48;
@@ -260,13 +260,13 @@ const AVATAR_TEXT_SPACING = 20;
 
 
 const getTextStyle = width => ({
-  font: '16px Arial',
+  font: '16px William Text',
+  // text.font = 'Revalia';
   fill: 'white',
   wordWrap: true, 
-  wordWrapWidth: width - (MARGIN_LEFT + AVATAR_SIZE + AVATAR_TEXT_SPACING)
+  wordWrapWidth: width - (MARGIN_LEFT + AVATAR_SIZE + AVATAR_TEXT_SPACING),
+  // backgroundColor: 'rgba(0,255,0,0.25)',
 });
-
-
 class Tweets {
   constructor(game) {
     this.game = game;
@@ -292,8 +292,33 @@ class Tweets {
 
   rTweet(selector, options) {
     const tweets = this.find(selector);
-    const tweet = tweets[~~Math.random()*tweets.length]
-    this.showTweet(tweet.text, 'tw_'+tweet.nickname, option);
+    const tweet = tweets[~~Math.random()*tweets.length];
+    console.log('n.kozh rTweet called', tweet);
+    this._tweet({
+      text: tweet.text,
+      name: tweet.name,
+      image: 'tw_'+tweet.nickname
+    }, options);
+  }
+
+  _tweet(tweet, options={}) {
+    console.log('n.kozh _tweet called', tweet);
+    this.pushToQueue(
+      {
+        text: tweet.text,
+        image: tweet.image,
+        name: tweet.name,
+      }, options);
+
+    this.startQueue();
+  }
+
+  tweet(text, image, options) {
+    window._Tweets = this;
+    console.log('n.kozh tweet called', text, image)
+    this._tweet({
+      text, image,
+    }, options);
   }
 
   calcGroupPosition(textGameObject) {
@@ -304,7 +329,7 @@ class Tweets {
       y = -(textGameObject._height + MARGIN_BOTTOM)
     }
 
-    return y;
+    return y-20;
   }
 
   pushToQueue(tweet, options) {
@@ -313,11 +338,15 @@ class Tweets {
       tweetData: {
         text: tweet.text,
         image: tweet.image,
+        name: tweet.name,
       },
       anim: {
         visible: options.visible || 1000,
         fadeOut: options.fadeOut || 1000,
         fadeIn: options.fadeIn || 1000 
+      },
+      custom: {
+        fontSize: options.fontSize
       }
     });
     console.log('n.kozh pushToQueue called end');
@@ -334,27 +363,64 @@ class Tweets {
     console.log('n.kozh h ', h);
     console.log('n.kozh after h');
     // console.log('h.kozh queue len', this.queue.length);
-    if (h) this.processTask(h.tweetData, h.anim);
+    if (h) this.processTask(h.tweetData, h.anim, h.custom);
   }
-  processTask(tweet, aOptions) {
+  processTask(tweet, aOptions, style) {
     this.executing = true;
 
     console.log('n.kozh start tweet', tweet);
     var self = this; //wtf for arrow key
-    const { text, image } = tweet;
-    const {tween, group} = this.createHiddenTweet(text, image, aOptions);
+    const { text, image, name } = tweet;
+    const {tween, group, tweetGroup, bg} = this.createHiddenTweet(text, image, name, aOptions, style);
     window._tween = tween;
+    // return;
     tween.onComplete.add(() => {
       console.log('n.kozh tween complete');
 
+
       const timer = this.game.time.create(true);
       window._timer = timer;
-      timer.loop(5000, () => {
+      timer.loop(aOptions.visible, () => {
         console.log('n.kozh visible timer end');
-        group.killAll();
-        group.destroy();
-        this.executing = false;
-        this.startQueue();
+        const ntimer = this.game.time.create(true);
+
+        /* запускаем следующий твит */
+        // ntimer.loop(400, () => {
+        ntimer.loop(aOptions.fadeOut*0.7, () => {
+          console.log('n.kozh show next tweet');
+          this.executing = false;
+          this.startQueue();
+          ntimer.destroy();
+        }, this.game);
+        ntimer.start();
+
+
+        /* скрываем содержимое твита */
+        const ntween = this.game.add.tween(tweetGroup)
+        ntween.to({
+          y: -300, alpha: 0
+        // }, 800, Phaser.Easing.Default, true)
+        }, aOptions.fadeOut, Phaser.Easing.Default, true)
+        ntween.onComplete.add(() => {
+          tweetGroup.killAll();
+          tweetGroup.destroy();
+        });
+        ntween.start()
+
+        /* скрываем подложку твита */
+        const bgtween = this.game.add.tween(bg)
+        bgtween.to({
+          alpha: 0
+        }, aOptions.fadeOut*1.2, Phaser.Easing.Default, true)
+        bgtween.onComplete.add(() => {
+          // group.killAll();
+          // group.destroy();
+          // this.executing = false;
+          // this.startQueue();
+        });
+        bgtween.start()
+        
+
         timer.destroy();
       }, this.game);
       timer.start();
@@ -364,70 +430,151 @@ class Tweets {
   
   }
 
+  createTwBackground(tweetGroup) {
+    // if (this.background) return this.background;
 
-  createHiddenTweet(text, image, options) {
+    const { width, height } = this.game;
+    const bounds = tweetGroup.getBounds();
+    // debugger;
+    // const bitmap = this.game.add.bitmapData(width, (height - bounds.y));
+    // const bitmap = this.game.add.bitmapData(width, bounds.height+(MARGIN_BOTTOM*2));
+    const bitmap = this.game.add.bitmapData(width, bounds.height+(MARGIN_BOTTOM*2));
+    bitmap.fixedToCamera = true;
+    // const bounds = group.getBounds();
+    // bitmap.addToWorld(50, 50, 0, 0);
+    var y = 0;
+    for(var i=0; i<100; i++)   {
+      const c = Phaser.Color.interpolateColor(0, 0, 100, i, (100-i)/100);
+      bitmap.rect(0, y, width, 2, 'rgba(0,0,0,'+ 0.9*(i/100) +')');
+      y+=2;
+    }
+    window._bitmap = bitmap;
+    // var spriteBg = this.game.add.sprite(0, bounds.y, bitmap);
+    var spriteBg = this.game.add.sprite(0, height-MARGIN_BOTTOM, bitmap);
+    spriteBg.fixedToCamera = true;
+
+    // this.background = spriteBg;
+    return spriteBg;
+  }
+
+
+  createHiddenTweet(text, image, name, options, style) {
     // window._tweenObj = this;
     const { width, height } = this.game;
     const tweet = this.game.add.group();
+    // tweet.fixedToCamera = true;
+
+    
     window._tweetObj = tweet;
 
     window._text = text;
     window._image = image;
 
-    const textGameObject = this.game.add.text(
-      (MARGIN_LEFT + AVATAR_SIZE + AVATAR_TEXT_SPACING), 
-      height, 
-      text, 
-      getTextStyle(width),
-    );
+
+    let nameGameObject;
+    let textGameObject;
+    if (name) {
+      nameGameObject = this.game.add.text(
+        (MARGIN_LEFT + AVATAR_SIZE + AVATAR_TEXT_SPACING),
+        height, 
+        name, {
+          font: '14px abc',
+          fill: '#fcfcfc',
+        });
+      // debugger;
+      nameGameObject.font = 'Graphik LC';
+      nameGameObject.fixedToCamera = true;
+      // window._nameGameObject = nameGameObject;
+
+      textGameObject = this.game.add.text(
+        (MARGIN_LEFT + AVATAR_SIZE + AVATAR_TEXT_SPACING), 
+        height+20, 
+        text, 
+        getTextStyle(width),
+      );
+
+      textGameObject.font = 'William Text';
+      textGameObject.fixedToCamera = true;
+    } else {
+      textGameObject = this.game.add.text(
+        (MARGIN_LEFT + AVATAR_SIZE + AVATAR_TEXT_SPACING), 
+        height, 
+        text, 
+        getTextStyle(width),
+      );
+
+      textGameObject.font = 'William Text';
+      textGameObject.fixedToCamera = true;
+    }
+
+    if (style.fontSize) {
+      textGameObject.fontSize = style.fontSize;
+    }
+
+    
 
     const avatar = this.game.add.sprite(
       0, 0, image
     );
-    avatar.alignTo(textGameObject, Phaser.LEFT_TOP, AVATAR_TEXT_SPACING)
+    if (name) {
+      avatar.alignTo(nameGameObject, Phaser.LEFT_TOP, AVATAR_TEXT_SPACING)
+    } else {
+      avatar.alignTo(textGameObject, Phaser.LEFT_TOP, AVATAR_TEXT_SPACING)
+    }
+    // avatar.alignTo(nameGameObject, Phaser.LEFT_TOP, AVATAR_TEXT_SPACING)
+    avatar.fixedToCamera = true;
     
     const mask = game.add.graphics(MARGIN_LEFT+AVATAR_SIZE/2, height+AVATAR_SIZE/2);
     mask.beginFill(0xffffff);
     mask.drawCircle(0, 0, AVATAR_SIZE);
+    mask.fixedToCamera = true;
     avatar.mask = mask;
 
     tweet.add(mask);
     tweet.add(avatar);
+    if (name) tweet.add(nameGameObject);
     tweet.add(textGameObject);
 
+    // window._mask =mask;
+    // window._avatar = avatar
+    // window._textGameObject = textGameObject;
+
+    // const bg = this.createTwBackground(tweet);
+
+    // tweet.add(bg);
 
     let newY = this.calcGroupPosition(textGameObject, tweet);
-    tweet.alpha = 0;
+    // tweet.alpha = 0;
+
+    window._group = tweet;
 
     // tweet.y = newY;
 
-    const tween = this.game.add.tween(tweet)
+    const bg = this.createTwBackground(tweet);
+    // tweet.add(bg);
+
+    avatar.bringToTop();
+    textGameObject.bringToTop();
+    if (name) nameGameObject.bringToTop();
+
+    const all = this.game.add.group();
+    all.alpha = 0;
+    all.add(bg);
+    all.add(tweet);
+
+    // debugger;
+    // const tween = this.game.add.tween(tweet)
+    const tween = this.game.add.tween(all)
     tween.to(
-      {y: newY, alpha: 1}, 1000, Phaser.Easing.Default, true
+      {y: newY, alpha: 1}, options.fadeIn, Phaser.Easing.Default, true
     )
     window._ftween = tween;
+    window._gall = all;
     // tween.start(); 
-    return {tween, group: tweet};
+    // return {tween, group: tweet};
+    return {tween, group: all, tweetGroup: tweet, bg: bg};
   }
 
-  _tweet(tweet, options={}) {
-    console.log('n.kozh _tweet called');
-    this.pushToQueue(
-      {
-        text: tweet.text,
-        image: tweet.image,
-      }, options);
-
-    this.startQueue();
-  }
-
-  tweet(text, image, options) {
-    window._Tweets = this;
-    console.log('n.kozh tweet called', text, image)
-    this._tweet({
-      text, image,
-    }, options);
-  }
 
 
 
@@ -464,6 +611,7 @@ class Tweets {
         wordWrapWidth: width - (MARGIN_LEFT + AVATAR_SIZE + AVATAR_TEXT_SPACING)
       });
     window._textGameObject = textGameObject;
+    
 
     avatar.alignTo(textGameObject, Phaser.LEFT_TOP, AVATAR_TEXT_SPACING)
 
