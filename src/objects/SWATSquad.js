@@ -8,7 +8,7 @@ import Star from "./Star.js"
 
 const SQUAD_DENSITY = 35;
 const SQUAD_DISCIPLINE = 0.4;
-const TURN_FREQUENCY = 30;
+const TURN_FREQUENCY = 10;
 
 class SWATSquad {
     // TODO: prefab???? ? ?
@@ -127,7 +127,18 @@ class SWATSquad {
       if (protester instanceof Star) {
         console.log("Arrested star")
         const paddyWagon = this.gameObject.mz.arrays.wagons[0];
-        const callback = () => {this.gameObject.handleLeaveWagon(paddyWagon, -300, 0); this.setMode(SWAT_MODE_HIDE);}
+        const callback = () => {
+            this.gameObject.handleLeaveWagon(paddyWagon, -300, 0);
+            for (let i = 0; i < this.sprites.length; i++) {
+                for (let j = 0; j < this.sprites[i].children.length; j++) {
+                    this.sprites[i].getChildAt(j).mz.kill();
+                }
+                this.sprites[i].removeChildren();
+                this.sprites[i].visible = false;
+                this.sprites[i].body.stop();
+            }
+            this.moveTargets = [{x: 0, y: 200}];
+        };
         this.moveTargets.unshift({x: paddyWagon.body.x + paddyWagon.body.width, y: paddyWagon.body.y + paddyWagon.body.height, callback })
       }
     }

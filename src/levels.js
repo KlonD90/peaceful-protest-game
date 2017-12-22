@@ -11,8 +11,8 @@ export default {
                 [4, 0],
                 [50, 1],
                 // [60, 3],
-                [90, 4],
-                [100, 5]
+                [90, 7],
+                [100, 8]
             ],
             speed: {
                 value: 50,
@@ -41,7 +41,7 @@ export default {
         },
         protesters: {
             count: {
-                start: 10,
+                start: 30,
                 max: 100,
                 add: 12
             },

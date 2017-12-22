@@ -36,6 +36,16 @@ export const PaddyWagon: LevelObject = {
     ],
 }
 
-export default {
+const data = {
     paddyWagon: PaddyWagon,
 }
+export default data;
+
+export const reset = () => {
+    for (let k in data){
+        for (let p of data[k].positions)
+        {
+            p.done = false;
+        }
+    }
+};

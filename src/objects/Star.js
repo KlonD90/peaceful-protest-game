@@ -42,8 +42,6 @@ export class Star extends Protester {
       ...prefabOptions, GameObject,
     })
 
-    this.starGraphic = this.game.add.graphics();
-    this.sprite.addChild(this.starGraphic);
 
     this.config = fullConfig
 
@@ -110,15 +108,8 @@ export class Star extends Protester {
       }
     }
 
-    this.updateStarGraphic()
     super.update()
     this.updateAnimation()
-  }
-
-  updateStarGraphic(){
-      this.starGraphic.clear()
-      this.starGraphic.lineStyle(3, 0xffff00, 1);
-      drawStar(this.starGraphic, 0, 0, 5, 30,15)
   }
 
   revive() {

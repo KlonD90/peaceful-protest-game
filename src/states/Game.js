@@ -14,7 +14,7 @@ import HelpInfo from '../objects/HelpInfo.js';
 import Camera from '../objects/Camera';
 import Tweet from '../objects/Tweets/';
 
-import levelObjects from "../levelObjects.js"
+import levelObjects, {reset as levelObjectReset} from "../levelObjects.js"
 
 import {
     FIELD_OFFSET,
@@ -313,6 +313,7 @@ class Game {
         this.customCamera = new Camera(this.game.camera, this.game);
         HelpInfo.setGame(this.game);
         HelpInfo.show('space_pozor');
+        levelObjectReset();
         // setTimeout(this.screenAttack.bind(this), 200);
     }
 
@@ -453,6 +454,8 @@ class Game {
             }
             this.mz.objects.swat.update();
         }
+
+
 
         // update shield
         // this.mz.objects.shield.update();
@@ -690,6 +693,10 @@ class Game {
         //     this.mz.arrays.protesters,
         //     this.mz.arrays.cops
         // );
+        this.game.physics.arcade.collide(
+            this.mz.objects.swat.sprites,
+            this.mz.objects.swat.sprites
+        );
         this.game.physics.arcade.collide(
           this.mz.levelObjects.paddyWagon,
           this.mz.objects.player.sprite
@@ -990,9 +997,9 @@ class Game {
     proceedToJail(protesterSprite, copSprite) {
         let closestCarCoords = null;
         let minDistanceSq = Infinity;
-        this.mz.groups.cars.forEach(carSprite => {
+        this.mz.arrays.wagons.forEach(carSprite => {
             const carCoords = {
-                x: (carSprite.body.x + carSprite.body.width) / 2 + 60,
+                x: carSprite.body.x + (carSprite.body.width / 2) + 60,
                 y: carSprite.body.y + carSprite.body.height + 20
             };
             const distanceToCarSq = this.getDistanceSq(copSprite, carCoords);
@@ -1347,10 +1354,10 @@ class Game {
             {
                 let closestCarCoords = null;
                 let minDistanceSq = Infinity;
-                this.mz.groups.cars.forEach(carSprite => {
+                this.mz.arrays.wagons.forEach(carSprite => {
                     const carCoords = {
-                        x: (carSprite.body.x + carSprite.body.width) / 2,
-                        y: carSprite.body.y + carSprite.body.height + 40
+                        x: carSprite.body.x + (carSprite.body.width / 2),
+                        y: carSprite.body.y + carSprite.body.height + 20
                     };
                     const distanceToCarSq = this.getDistanceSq(copSprite, carCoords);
                     if (distanceToCarSq < minDistanceSq) {
@@ -1424,6 +1431,38 @@ class Game {
                 break;
             }
         }
+        for (let i=0; i<this.mz.levelObjects.paddyWagon.length; i++)
+        {
+            const w = this.mz.levelObjects.paddyWagon[i];
+            if (
+                w === wagon
+            )
+            {
+                this.mz.levelObjects.paddyWagon.splice(i, 1);
+                break;
+            }
+        }
+
+        for (let cop of this.mz.arrays.cops)
+        {
+            if (cop.alive && cop.mz.mode === COP_MODE_CONVOY)
+            {
+                let closestCarCoords = null;
+                let minDistanceSq = Infinity;
+                this.mz.arrays.wagons.forEach(carSprite => {
+                    const carCoords = {
+                        x: carSprite.body.x + (carSprite.body.width / 2) + 60,
+                        y: carSprite.body.y + carSprite.body.height + 20
+                    };
+                    const distanceToCarSq = this.getDistanceSq(cop, carCoords);
+                    if (distanceToCarSq < minDistanceSq) {
+                        closestCarCoords = carCoords;
+                        minDistanceSq = distanceToCarSq;
+                    }
+                });
+                cop.mz.setMode(COP_MODE_CONVOY, { jailCoords: closestCarCoords });
+            }
+        }
     }
 
     handleLeavingWagons(){
@@ -1443,7 +1482,6 @@ class Game {
                 )
             )
             {
-                debugger;
                 this.mz.arrays.leftWagons.splice(i, 1);
                 w.destroy();
                 break;
@@ -1463,27 +1501,24 @@ class Game {
     createLevelObjects(){
         for (let key in levelObjects) {
             const { speed, personalMatrix, sprite, positions, objectClass, immovable, group, ...extras } = levelObjects[key]
-            this.mz.levelObjects[key] = positions.filter(x => !x.done && x.score <= this.mz.score).map((obj, i) => {
+            if (!this.mz.levelObjects[key])
+            {
+                this.mz.levelObjects[key] = []
+            }
+            this.mz.levelObjects[key] = this.mz.levelObjects[key].concat(positions.filter(x => !x.done && x.score <= this.mz.score).map((obj, i) => {
                 const { startX, startY, moveX, moveY, angle } = obj;
                 const levelObject = this.game.add.sprite(startX, startY, sprite, 0);
                 levelObject.spriteName = sprite+i;
-                // levelObject.anchor.set(0.5);
 
-
-                // levelObject.body.reset(x, y)
-
-                this.game.physics.arcade.enable(levelObject);
                 if (angle)
                 {
                     levelObject.angle = angle;
-
-                    if (angle === 90 || angle === -90)
-                    {
-                        levelObject.body.setSize(levelObject.height, levelObject.width, -levelObject.height, 0);
-                    }
-                    // levelObject.body.rotation = Phaser.Math.degToRad(angle);
                 }
-
+                this.game.physics.arcade.enable(levelObject);
+                if (angle === 90 || angle === -90)
+                {
+                    levelObject.body.setSize(levelObject.height, levelObject.width, -levelObject.height, 0);
+                }
                 this.mz.groups[group].add(levelObject);
 
                 if (immovable)
@@ -1499,7 +1534,7 @@ class Game {
                 }
                 obj.done = true;
                 return levelObject;
-            })
+            }));
         }
     }
 }
