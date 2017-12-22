@@ -116,9 +116,6 @@ const _show = (context, cb) => {
           c.showForm = false;
           document.body.removeChild(fragment);
           _show(context, cb);
-        })
-        .catch(() => {
-
         });
 
       return false;
@@ -153,9 +150,10 @@ const show = (type, currentScore, cb) => {
 }
 
 
+export default show;
 
 // show('success');
-show('arrested', 900, () => true);
+// show('arrested', 900, () => true);
 // show('arrested', 1200);
 
 // export show;
