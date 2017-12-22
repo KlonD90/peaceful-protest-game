@@ -12,7 +12,7 @@ import EndMenu from './../objects/EndMenu.js';
 import Collider from "../Collider/Collider.js"
 import HelpInfo from '../objects/HelpInfo.js';
 import Camera from '../objects/Camera';
-import Tweet from '../objects/Tweets';
+import Tweet from '../objects/Tweets/';
 
 import levelObjects from "../levelObjects.js"
 
