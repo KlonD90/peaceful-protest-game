@@ -1,0 +1,73 @@
+
+@font-face {
+	font-family: 'Graphik LC';
+	src: url('./font/Graphik-Bold-Cy-Web.eot');
+	src: url('./font/Graphik-Bold-Cy-Web.eot?#iefix') format('embedded-opentype'),
+		 url('./font/Graphik-Bold-Cy-Web.woff') format('woff'),
+		 url('./font/Graphik-Bold-Cy-Web.ttf') format('truetype'),
+		 url('./font/Graphik-Bold-Cy-Web.svg#Graphik-Bold-Cy') format('svg');
+	font-weight:  700;
+	font-style:   normal;
+}
+
+@font-face {
+	font-family: 'Graphik LC';
+	src: url('./font/Graphik-Regular-Cy-Web.eot');
+	src: url('./font/Graphik-Regular-Cy-Web.eot?#iefix') format('embedded-opentype'),
+		 url('./font/Graphik-Regular-Cy-Web.woff') format('woff'),
+		 url('./font/Graphik-Regular-Cy-Web.ttf') format('truetype'),
+		 url('./font/Graphik-Regular-Cy-Web.svg#Graphik-Regular-Cy') format('svg');
+	font-weight:  400;
+	font-style:   normal;
+	font-stretch: normal;
+}
+/*
+@font-face {
+	font-family: 'Fira Mono';
+	src: url('font/firamono/firamono-regular-webfont.eot');
+	src: url('font/firamono/firamono-regular-webfont.eot?#iefix') format('embedded-opentype'),
+	url('font/firamono/firamono-regular-webfont.woff2') format('woff2'),
+	url('font/firamono/firamono-regular-webfont.woff') format('woff'),
+	url('font/firamono/firamono-regular-webfont.ttf') format('truetype'),
+	url('font/firamono/firamono-regular-webfont.svg#fira_monoregular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Fira Mono';
+	src: url('font/firamono/firamono-bold-webfont.eot');
+	src: url('font/firamono/firamono-bold-webfont.eot?#iefix') format('embedded-opentype'),
+	url('font/firamono/firamono-bold-webfont.woff2') format('woff2'),
+	url('font/firamono/firamono-bold-webfont.woff') format('woff'),
+	url('font/firamono/firamono-bold-webfont.ttf') format('truetype'),
+	url('font/firamono/firamono-bold-webfont.svg#fira_monobold') format('svg');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+    font-family: 'William Text';
+    src: url('font/williamtext/WilliamTextStd-Regular.eot'); 
+    src: url('font/williamtext/WilliamTextStd-Regular.eot?#iefix') format('embedded-opentype'), 
+         url('font/williamtext/WilliamTextStd-Regular.woff') format('woff'), 
+         url('font/williamtext/WilliamTextStd-Regular.ttf') format('truetype'),
+         url('font/williamtext/WilliamTextStd-Regular.svg#WilliamTextStd') format('svg'); 
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'William Text';
+    src: url('font/williamtext/WilliamTextStd-RegularItalic.eot'); 
+    src: url('font/williamtext/WilliamTextStd-RegularItalic.eot?#iefix') format('embedded-opentype'),
+         url('font/williamtext/WilliamTextStd-RegularItalic.woff') format('woff'),
+         url('font/williamtext/WilliamTextStd-RegularItalic.ttf') format('truetype'), 
+         url('font/williamtext/WilliamTextStd-RegularItalic.svg#WilliamTextStd-RegularItalic') format('svg');
+    font-style: italic;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+*/
