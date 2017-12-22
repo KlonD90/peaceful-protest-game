@@ -102,6 +102,7 @@ class Game {
                 wagons: [],
                 enterWagons: [],
                 awaitWagons: [],
+                leftWagons: [],
             },
             groups: {
                 d: null,
@@ -177,45 +178,7 @@ class Game {
         this.mz.groups.npcProtesters = this.game.add.group();
 
         this.mz.levelObjects = {}
-        for (let key in levelObjects) {
-            const { speed, personalMatrix, sprite, positions, objectClass, immovable, group, ...extras } = levelObjects[key]
-            this.mz.levelObjects[key] = positions.map(({ x, y, angle }, i) => {
 
-                const levelObject = this.game.add.sprite(x, y, sprite, 0);
-                levelObject.spriteName = sprite+i;
-                // levelObject.anchor.set(0.5);
-
-
-                // levelObject.body.reset(x, y)
-                if (angle)
-                {
-                    levelObject.angle = angle;
-
-                    if (angle === 90 || angle === -90)
-                    {
-
-                    }
-                    // levelObject.body.rotation = Phaser.Math.degToRad(angle);
-                }
-                this.game.physics.arcade.enable(levelObject);
-                levelObject.body.setSize(levelObject.height, levelObject.width, -levelObject.height, 0);
-                this.mz.groups[group].add(levelObject);
-
-                if (immovable)
-                {
-                    levelObject.body.immovable = true;
-                }
-                this.collider.addEntity({ sprite: levelObject, object: this.game })
-                if (key === 'paddyWagon')
-                {
-                    this.mz.groups.cars.add(levelObject);
-                    this.mz.arrays.awaitWagons.push(levelObject);
-                }
-
-                // levelObject.body.velocity = new Phaser.Point({x: 300, y: 0})
-                return levelObject;
-            })
-        }
 
         // this.mz.groups.d.add(this.mz.objects.star);
         // player
@@ -362,6 +325,8 @@ class Game {
             this.createStar();
         }
 
+        this.createLevelObjects();
+
 
         this.collider.update()
 
@@ -503,12 +468,13 @@ class Game {
             }
         }
 
-        if (copsRequired > this.mz.cops.alive && this.mz.arrays.wagons.length === 0 && this.mz.arrays.enterWagons.length === 0 )
-        {
-            this.handleEnterWagon(this.mz.arrays.awaitWagons[0], 300, 0)
-        }
+        // if (copsRequired > this.mz.cops.alive && this.mz.arrays.wagons.length === 0 && this.mz.arrays.enterWagons.length === 0 )
+        // {
+        //     this.handleEnterWagon(this.mz.arrays.awaitWagons[0], 300, 0)
+        // }
 
         this.handleEnteringWagons();
+        this.handleLeavingWagons();
 
         const pressRequired = this.getPressRequiredNumber();
         for (let i = this.mz.arrays.press.length; i < pressRequired; i++) {
@@ -1224,11 +1190,14 @@ class Game {
     }
 
     checkContainWagon({x, y}){
-        for (let w of this.mz.levelObjects.paddyWagon)
+        if (this.mz.levelObjects.paddyWagon)
         {
-            console.log(w);
-            if (w.getBounds().contains(x, y))
-                return true;
+            for (let w of this.mz.levelObjects.paddyWagon)
+            {
+                console.log(w);
+                if (w.getBounds().contains(x, y))
+                    return true;
+            }
         }
         return false;
     }
@@ -1441,6 +1410,47 @@ class Game {
         }
     }
 
+    handleLeaveWagon(wagon, x, y){
+        for (let i =0; i<this.mz.arrays.wagons.length; i++)
+        {
+            const w = this.mz.arrays.wagons[i];
+            if (
+                w === wagon
+            )
+            {
+                this.mz.arrays.wagons.splice(i, 1);
+                this.game.physics.arcade.moveToXY(wagon, x, y, 60);
+                this.mz.arrays.leftWagons.push(wagon);
+                break;
+            }
+        }
+    }
+
+    handleLeavingWagons(){
+        for (let i =0; i<this.mz.arrays.leftWagons.length; i++)
+        {
+            const w = this.mz.arrays.leftWagons[i];
+            if (
+                w
+                && (
+                    (w.y + w.height < 0)
+                    ||
+                    (w.x + w.width < 0)
+                    ||
+                    (w.y - w.height > this.game.world.height)
+                    ||
+                    (w.x - w.width > this.game.world.width)
+                )
+            )
+            {
+                debugger;
+                this.mz.arrays.leftWagons.splice(i, 1);
+                w.destroy();
+                break;
+            }
+        }
+    }
+
     pickRandomWagon(){
         return this.mz.arrays.wagons.length ? this.mz.arrays.wagons[Math.floor(Math.random()*this.mz.arrays.wagons.length)] : null;
     }
@@ -1448,6 +1458,49 @@ class Game {
     createStar(){
         this.mz.objects.star = this.createPrefab(Star, {});
         this.mz.objects.star.setState(Star.STATE.MOVE_IN);
+    }
+
+    createLevelObjects(){
+        for (let key in levelObjects) {
+            const { speed, personalMatrix, sprite, positions, objectClass, immovable, group, ...extras } = levelObjects[key]
+            this.mz.levelObjects[key] = positions.filter(x => !x.done && x.score <= this.mz.score).map((obj, i) => {
+                const { startX, startY, moveX, moveY, angle } = obj;
+                const levelObject = this.game.add.sprite(startX, startY, sprite, 0);
+                levelObject.spriteName = sprite+i;
+                // levelObject.anchor.set(0.5);
+
+
+                // levelObject.body.reset(x, y)
+
+                this.game.physics.arcade.enable(levelObject);
+                if (angle)
+                {
+                    levelObject.angle = angle;
+
+                    if (angle === 90 || angle === -90)
+                    {
+                        levelObject.body.setSize(levelObject.height, levelObject.width, -levelObject.height, 0);
+                    }
+                    // levelObject.body.rotation = Phaser.Math.degToRad(angle);
+                }
+
+                this.mz.groups[group].add(levelObject);
+
+                if (immovable)
+                {
+                    levelObject.body.immovable = true;
+                }
+                this.collider.addEntity({ sprite: levelObject, object: this.game })
+                if (key === 'paddyWagon')
+                {
+                    this.mz.groups.cars.add(levelObject);
+                    this.mz.arrays.awaitWagons.push(levelObject);
+                    this.handleEnterWagon(levelObject, moveX, moveY);
+                }
+                obj.done = true;
+                return levelObject;
+            })
+        }
     }
 }
 

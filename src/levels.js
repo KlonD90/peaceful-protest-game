@@ -73,7 +73,7 @@ export default {
             speed: {
                 value: 200
             },
-            frequency: 5000,
+            frequency: 15000,
             scoreThreshold: 4
         },
         star: {

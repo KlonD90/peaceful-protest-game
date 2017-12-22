@@ -45,12 +45,13 @@ class SWATSquad {
     update() {
         if (this.mode === SWAT_MODE_HUNT) {
             const lastSprite = this.sprites[this.sprites.length - 1];
+            const firstSprite = this.sprites[0];
 
             if (
                 this.game.math.fuzzyEqual(
-                    this.game.math.distanceSq(lastSprite.x, lastSprite.y, this.moveTargets[0].x, this.moveTargets[0].y),
+                    this.game.math.distanceSq(firstSprite.x, firstSprite.y, this.moveTargets[0].x, this.moveTargets[0].y),
                     0,
-                    lastSprite.width
+                    firstSprite.width*2
                 )
             ) {
                 this.moveTargets[0].callback && this.moveTargets[0].callback()
@@ -60,7 +61,6 @@ class SWATSquad {
                 const [moveTarget, ...rest] = this.moveTargets
                 // change direction once in a while
                 if (this.updateIndex % TURN_FREQUENCY === 0) {
-                    const firstSprite = this.sprites[0];
                     const angle = this.game.math.angleBetweenPoints(firstSprite, moveTarget) +
                         (this.updateIndex === 0 ? 1 : -1) * this.game.rnd.realInRange(0, SQUAD_DISCIPLINE);
                     this.game.physics.arcade.velocityFromRotation(angle, this.speed.current, firstSprite.body.velocity);
@@ -126,10 +126,9 @@ class SWATSquad {
     onArrest (protester) {
       if (protester instanceof Star) {
         console.log("Arrested star")
-        const paddyWagon = pickRandomElementFromArray(this.gameObject.mz.levelObjects.paddyWagon)
-        const { x, y } = this.gameObject.randomOffscreenCoords()
-        const callback = () => paddyWagon.body.velocity = new Phaser.Point(x, y)
-        this.moveTargets.unshift({ ...paddyWagon.body.center, callback })
+        const paddyWagon = this.gameObject.mz.arrays.wagons[0];
+        const callback = () => {this.gameObject.handleLeaveWagon(paddyWagon, -300, 0); this.setMode(SWAT_MODE_HIDE);}
+        this.moveTargets.unshift({x: paddyWagon.body.x + paddyWagon.body.width, y: paddyWagon.body.y + paddyWagon.body.height, callback })
       }
     }
 }
