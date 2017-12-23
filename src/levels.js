@@ -25,8 +25,8 @@ export default {
         },
         press: {
             count: [
-                [4, 5],
-                [50, 6],
+                [4, 0],
+                [50, 1],
                 [60, 7],
                 [100, 8]
             ],
@@ -42,7 +42,7 @@ export default {
         },
         protesters: {
             count: {
-                start: 30,
+                start: 2,
                 max: 100,
                 add: 12
             },
@@ -75,10 +75,10 @@ export default {
                 value: 200
             },
             frequency: 15000,
-            scoreThreshold: 4
+            scoreThreshold: 400
         },
         star: {
-            score: 0
+            score: 300
         }
     },
     level2: {

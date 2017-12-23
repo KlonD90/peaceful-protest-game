@@ -262,6 +262,13 @@ const pack = {
       },
       {
         type: 'image',
+        key: 'tw_help',
+        url: require('./tweets/help.png'),
+        frameWidth: 400,
+        frameHeight: 400
+      },
+      {
+        type: 'image',
         key: 'tw_evgenyfeldman',
         url: require('./tweets/evgenyfeldman.jpg'),
         frameWidth: 400,

@@ -91,6 +91,13 @@ class Prefab {
     // }
 
     getNextCoords(bounds) {
+        let coords = this.generateCoords(bounds);
+        while (this.GameObject.checkContainWagon(coords))
+            coords = this.generateCoords(bounds);
+        return coords;
+    }
+
+    generateCoords(bounds){
         const directions = [];
         if (!bounds) {
             bounds = {

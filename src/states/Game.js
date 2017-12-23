@@ -14,6 +14,7 @@ import HelpInfo from '../objects/HelpInfo.js';
 import Camera from '../objects/Camera';
 import Tweet from '../objects/Tweets/';
 
+
 import levelObjects, {reset as levelObjectReset} from "../levelObjects.js"
 
 import {
@@ -44,13 +45,12 @@ import {
     COP_MODE_FIGHT, COP_MODE_STUN, JOURNALIST_MODE_ARRESTED, JOURNALIST_MODE_FOLLOW, PROTESTER_MODE_NOD,
     PROTESTER_MODE_WANDER
 } from "../constants";
+import ManuallyBehavior from "../objects/Tweets/ManuallyBehavior";
 
 class Game {
     init(level) {
         // FIXME: debug
         window.game = this
-
-        this.collider = new Collider({ game: this.game, gameObject: this, scale: 20 })
 
         this.mz = {
             level,
@@ -117,8 +117,16 @@ class Game {
             },
             zoomLevel: -1,
             advices: {
-                space_pozor: false,
-                shift_run: false,
+                space: null,
+                shift: null,
+                agitate: null,
+                press: null,
+                arrest: null,
+                fight: null,
+                people: null,
+                omon: null,
+                star: null,
+                nod: null
             },
             tweet: null,
             limitScore: level.scoreWin,
@@ -130,6 +138,7 @@ class Game {
     }
 
     create() {
+        this.collider = new Collider({ game: this.game, gameObject: this, scale: 20 })
         this.mz.tweet = new Tweet(this.game);
         this.mz.pressJailed = false;
         this.mz.tweet.resetShowedTweets();
@@ -314,13 +323,30 @@ class Game {
 
         this.game.camera.setBoundsToWorld();
         this.customCamera = new Camera(this.game.camera, this.game);
-        HelpInfo.setGame(this.game);
-        HelpInfo.show('space_pozor');
+        // HelpInfo.setGame(this.game);
+        this.mz.advices.space = this.mz.tweet.tweet(
+            'Чтобы поднять/опустить плакат, нажмите пробел',
+            'tw_help',
+            {behavior: ManuallyBehavior}
+        );
+        this.mz.advices.agitate = this.mz.tweet.tweet(
+            'Чтобы агитировать людей встаньте у человека с поднятым плакатом',
+            'tw_help',
+            {behavior: ManuallyBehavior}
+        );
+        this.mz.advices.shift = this.mz.tweet.tweet(
+            'Чтобы бегать нажмите shift',
+            'tw_help',
+            {behavior: ManuallyBehavior}
+        );
+
+
         levelObjectReset();
         // setTimeout(this.screenAttack.bind(this), 200);
     }
 
     update() {
+        // this.mz.pressJailed = false;
         // update background
         this.mz.objects.bgTile.tilePosition.set(-this.game.camera.x, -this.game.camera.y);
 
@@ -1133,10 +1159,11 @@ class Game {
         if (protesterSprite.name === 'player') {
             this.game.camera.follow(copSprite);
         }
-
+        const x = protesterSprite.body.center.x - copSprite.body.center.x;
+        const y = protesterSprite.body.center.y - copSprite.body.center.y;
         protesterSprite.mz.setMode(PROTESTER_MODE_ARRESTED, {
-            x: protesterSprite.body.center.x - copSprite.body.center.x,
-            y: protesterSprite.body.center.y - copSprite.body.center.y,
+            x: Math.sign(x) * Math.min(Math.abs(x), 17),
+            y: Math.sign(y) * Math.min(Math.abs(y), 17),
             by: copSprite.mz
         });
 
@@ -1153,8 +1180,10 @@ class Game {
                 break;
             }
         }
+        const prevX = protesterSprite.x;
+        const prevY = protesterSprite.y;
         console.log('protester sprite', protesterSprite);
-        protesterSprite.mz.mood = 0.1;
+
         copSprite.removeChild(protesterSprite);
         this.mz.groups.d.add(protesterSprite);
         // this.beatUpProtester(protesterSprite);
@@ -1166,11 +1195,12 @@ class Game {
         }
 
         if (protesterSprite.name !== 'player') {
+            protesterSprite.mz.mood = 0.1;
             this.mz.protesters.arrested--;
             protesterSprite.mz.kill();
             protesterSprite.body.enable = true;
-            const x = copSprite.x + 30;
-            const y = copSprite.y + 30;
+            const x = copSprite.x + prevX;
+            const y = copSprite.y + prevY;
             protesterSprite.mz.revive({x, y, nextCoords: {x, y}});
             protesterSprite.visible = true;
             const slot = Player.instance.slots.take(this);
@@ -1592,6 +1622,7 @@ class Game {
             )
             {
                 this.mz.arrays.leftWagons.splice(i, 1);
+                this.collider.removeEntityBySprite(w);
                 w.destroy();
                 break;
             }
@@ -1634,7 +1665,7 @@ class Game {
                 {
                     levelObject.body.immovable = true;
                 }
-                this.collider.addEntity({ sprite: levelObject, object: this.game })
+                this.collider.addEntity({ sprite: levelObject, object: this.game, obstacle: true })
                 if (key === 'paddyWagon')
                 {
                     this.mz.groups.cars.add(levelObject);

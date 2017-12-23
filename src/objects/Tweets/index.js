@@ -61,6 +61,10 @@ class Tweets {
   _tweet(tweet, options={}) {
     console.log('n.kozh _tweet called', tweet);
     const tweetInstance = this.createTweet(tweet, options);
+    tweetInstance.destroy.add(() => {
+      this.removeFromQueue(tweetInstance);
+    });
+    console.log('tw instance', tweetInstance);
     if (tweetInstance.behavior instanceof ManuallyBehaviour) {
       this.pushToQueue(tweetInstance, true);
     } else {
@@ -88,15 +92,11 @@ class Tweets {
       fontSize: options.fontSize
     };
 
+    const behavior = options.behavior || DefaultBehavior;
+
     const tweet = new Tweet(data, anim, custom);
     tweet.set('game', this.game);
-    tweet.set('aaa', 'bbb');
-    if (!data.name) {
-      // если нам не передали имя
-      // это означает, что для него не подходит
-      // дефолтное поведение
-      tweet.setBehavior(ManuallyBehaviour);
-    } else tweet.setBehavior(DefaultBehavior);
+    tweet.setBehavior(behavior);
 
     tweet.build();
     return tweet;
@@ -114,6 +114,12 @@ class Tweets {
     }
   }
 
+  removeFromQueue(tweetInstance){
+    for (let i=0; i<this.queue.length; i++)
+      if (this.queue[i] === tweetInstance)
+        this.queue.splice(i, 1);
+  }
+
   startQueue() {
     console.log('n.kozh start Queue executing status', this.executing);
     if (this.executing) return;
@@ -129,6 +135,7 @@ class Tweets {
     this.executing = true;
     this.currentTweet = tweet;
     tweet.show();
+
     tweet.nextTweet.add(() => {
       this.executing = false;
       this.startQueue();

@@ -94,7 +94,7 @@ class Cop extends Prefab {
                 const { jailCoords } = props;
                 this.FOV.kill();
                 this.returnCoords = { x: this.sprite.x, y: this.sprite.y };
-                this.moveTo(jailCoords, {callback: () => this.handleCovoyEnd(), phasing: true})
+                this.moveTo(jailCoords, {callback: () => this.handleCovoyEnd(), superphasing: true})
                 break;
             }
             case COP_MODE_ENTER: {

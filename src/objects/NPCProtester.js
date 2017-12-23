@@ -284,8 +284,6 @@ class NPCProtester extends Protester {
         this.mood = mood;
 
         super.revive();
-
-
         this.setMode(PROTESTER_MODE_WANDER, { coords: nextCoords, phasing: true });
     }
 

@@ -1,10 +1,12 @@
-export default class {
+export default class DefaultBehavior {
   constructor() {
     this.fl_hide = true;
+    this.showed = false;
   }
   set(k,v) {this[k] = v}
 
   show() {
+    this.showed = true;
     if (this.fl_hide === false) return;
     this.fl_hide = false;
 
@@ -33,6 +35,10 @@ export default class {
   }
 
   hide() {
+    if (!this.showed)
+    {
+        this.tweet.destroy.dispatch();
+    }
     if (this.fl_hide === true) return;
     this.fl_hide = true;
 

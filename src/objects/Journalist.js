@@ -152,6 +152,15 @@ class Journalist extends Prefab {
 
         super.kill();
     }
+
+    revive({ x, y}) {
+        this.sprite.x = x;
+        this.sprite.y = y;
+        this.sprite.body.reset(x, y);
+
+        super.revive();
+        this.setMode(JOURNALIST_MODE_WANDER);
+    }
 }
 
 export default Journalist;

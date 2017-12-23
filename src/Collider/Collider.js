@@ -28,16 +28,30 @@ export class Collider {
   }
 
   addEntity (
-    { sprite, object }: { sprite: Sprite, object: EntityObject }) {
+    { sprite, object, obstacle }: { sprite: Sprite, object: EntityObject, obstacle: boolean }) {
     this.entities.push({
       sprite,
       object,
+      obstacle: obstacle||false,
       move: [],
       personalMatrix: this.compilePersonalMatrix(sprite),
       times: 0,
       lastDecisionTime: 0,
       lastCoords: [0, 0]
+
     })
+  }
+
+  removeEntityBySprite(sprite)
+  {
+    for (let i =0; i< this.entities.length; i++)
+    {
+      if (this.entities[i].sprite === sprite)
+      {
+        this.entities.splice(i, 1)
+        break;
+      }
+    }
   }
 
   getEntityBySprite(sprite){
@@ -56,9 +70,9 @@ export class Collider {
     if (reset) entity.move = []
     if (target) {
       if (prepend)
-        entity.move.unshift({ target, callback, follow, phasing })
+        entity.move.unshift({ target, callback, follow, phasing, superphasing })
       else
-        entity.move.push({ target, callback, follow, phasing })
+        entity.move.push({ target, callback, follow, phasing, superphasing })
     }
   }
 
@@ -87,6 +101,13 @@ export class Collider {
         result.push([x - centerX, y - centerY])
     }
     return result;
+  }
+
+  updatePersonalMatrix (sprite: Sprite): MCoords[] {
+    const newMatrix = this.compilePersonalMatrix(sprite);
+    const entity = this.getEntityBySprite(sprite);
+    entity.personalMatrix = newMatrix;
+    return newMatrix;
   }
 
   invokeRawMoving (object: EntityObject, target: RCoords): void {

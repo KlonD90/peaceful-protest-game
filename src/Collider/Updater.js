@@ -14,11 +14,13 @@ const timesTimeout = 2;
 
 const matrixTimeout = 1000;
 
+const obstaclesTimeout = 5000;
+
 const savedMatrix = {
   move: {time: 0, matrix: null},
   immovable: {time: 0, matrix: null}
 };
-
+let obstacleTimer = 0;
 class Updater {
   collider: Collider
   converter: Converter
@@ -30,7 +32,13 @@ class Updater {
     this.converter = new Converter(collider)
     const now = Date.now();
     this.matrix = this._getMatrix('move', now)
-    // this.immovableMatrix = this._getMatrix('immovable', now)
+    this.immovableMatrix = this._getMatrix('immovable', now)
+    if (obstacleTimer < now)
+    {
+      obstacleTimer = now + obstaclesTimeout;
+      this.collider.entities.filter(x => x.obstacle)
+          .forEach((x) => this.collider.updatePersonalMatrix(x.sprite))
+    }
   }
 
   update (): void {
@@ -62,8 +70,16 @@ class Updater {
         var path = [moveFrom, moveTo]
         var pathClear = !equals(moveFrom, moveTo)
       } else {
+
         const finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true})
-        var path = this._findPath({finder, from: moveFrom, to: moveTo, personalMatrix})
+        if (superphasing)
+        {
+            var path = this._findImmovablePath({finder, from: moveFrom, to: moveTo})
+        }
+        else
+        {
+            var path = this._findPath({finder, from: moveFrom, to: moveTo, personalMatrix})
+        }
         var pathClear = path[2] || mget(this.matrix, path[1]) === false
       }
 
@@ -94,6 +110,18 @@ class Updater {
     return finder.findPath(...from, ...to, grid)
   }
 
+    _findImmovablePath(
+        {
+            finder, from, to, personalMatrix
+        }: {
+            finder: Finder, from: MCoords, to: MCoords
+        }): MCoords[] {
+        const matrix = this.immovableMatrix
+
+        const grid = new PF.Grid(matrix)
+        return finder.findPath(...from, ...to, grid)
+    }
+
   _getMatrix(type = 'move', time) {
       const save = savedMatrix[type];
       if (save.time < time) {
@@ -121,7 +149,8 @@ class Updater {
       const { maxX, maxY } = this.converter
       let matrix = mzero(maxX + 1, maxY + 1)
 
-      for(let { sprite, personalMatrix } of this.collider.entities) {
+      for(let { sprite, personalMatrix, obstacle } of this.collider.entities) {
+          if (!obstacle) continue;
           if (!sprite.alive) continue
           if (sprite.mz && sprite.mz.mode === null) continue
           if (!sprite.body) continue
@@ -155,6 +184,10 @@ class Updater {
 
   _cloneMatrix() {
     return this.matrix.map(line => line.map(item => item))
+  }
+
+  _printMatrix(matrix){
+    return mshow(matrix)
   }
 }
 
