@@ -7,6 +7,7 @@ import {
     JOURNALIST_MODE_SHOOTING,
     JOURNALIST_MODE_FOLLOW
 } from '../constants.js';
+import {JOURNALIST_MODE_ARRESTED} from "../constants";
 
 class Journalist extends Prefab {
     constructor({ fov, shootingDuration, cooldownDuration, onFinishShooting, ...prefabOptions }) {
@@ -94,6 +95,16 @@ class Journalist extends Prefab {
                 this.following = slot
                 this.moveTo(slot, { follow: true });
                 break;
+            }
+            case JOURNALIST_MODE_ARRESTED: {
+                if (this.mode === JOURNALIST_MODE_WANDER) {
+                    this.stopWandering();
+                    this.target = null;
+                }
+                this.moveTo(null);
+                const { x, y} = props;
+                this.sprite.x = x;
+                this.sprite.y = y;
             }
         }
 

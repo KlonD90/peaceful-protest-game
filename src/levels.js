@@ -9,7 +9,7 @@ export default {
         cops: {
             count: [
                 [4, 0],
-                [50, 1],
+                [50, 5],
                 // [60, 3],
                 [90, 7],
                 [100, 8]
@@ -25,10 +25,10 @@ export default {
         },
         press: {
             count: [
-                [4, 0],
-                [50, 1],
-                [60, 2],
-                [100, 3]
+                [4, 5],
+                [50, 6],
+                [60, 7],
+                [100, 8]
             ],
             speed: {
                 value: 50
@@ -37,6 +37,7 @@ export default {
                 distance: 150,
                 angle: 100
             },
+            score: 0,
             duration: 5 // s
         },
         protesters: {

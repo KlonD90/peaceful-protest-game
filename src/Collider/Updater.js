@@ -8,26 +8,54 @@ import type {
   Matrix, MCoords, RCoords, Sprite, Finder
 } from "./types.js"
 
+
+const decisionTimeout = 1000;
+const timesTimeout = 2;
+
+const matrixTimeout = 1000;
+
+const savedMatrix = {
+  move: {time: 0, matrix: null},
+  immovable: {time: 0, matrix: null}
+};
+
 class Updater {
   collider: Collider
   converter: Converter
   matrix: Matrix
+  immovableMatrix: Matrix
 
   constructor (collider: Collider) {
     this.collider = collider
     this.converter = new Converter(collider)
-
-    this.matrix = this._buildMatrix()
+    const now = Date.now();
+    this.matrix = this._getMatrix('move', now)
+    // this.immovableMatrix = this._getMatrix('immovable', now)
   }
 
   update (): void {
     const { collider, converter } = this
-
-    collider.entities.forEach(({ move, sprite, object, personalMatrix }) => {
+    const now = (new Date()).getTime();
+    collider.entities.forEach((entity) => {
+      const { move, sprite, object, personalMatrix, lastDecisionTime, lastCoords } = entity;
+      if (now - lastDecisionTime < decisionTimeout)
+      {
+          return;
+      }
       if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
-      const { target, phasing, follow, callback } = move[0]
+      let { target, phasing, follow, callback, superphasing } = move[0]
       const moveFrom = converter.rCoordsToMCoords(sprite.body.center)
       const moveTo = converter.rCoordsToMCoords(target)
+
+      if (moveFrom[0] === lastCoords[0] && moveFrom[1] === lastCoords[1])
+      {
+        entity.times++;
+      }
+      else
+      {
+        entity.times = 0;
+        entity.lastCoords = moveFrom;
+      }
 
       if (phasing) {
         sprite.phasing = true
@@ -66,6 +94,15 @@ class Updater {
     return finder.findPath(...from, ...to, grid)
   }
 
+  _getMatrix(type = 'move', time) {
+      const save = savedMatrix[type];
+      if (save.time < time) {
+          savedMatrix[type].matrix = type === 'move' ? this._buildMatrix() : this._buildImmovableMatrix();
+          savedMatrix[type].time = time + matrixTimeout;
+      }
+      return savedMatrix[type].matrix;
+  }
+
   _buildMatrix (): Matrix {
     const { maxX, maxY } = this.converter
     let matrix = mzero(maxX + 1, maxY + 1)
@@ -77,9 +114,25 @@ class Updater {
       this._applyPersonalMatrix(true, { personalMatrix, target, matrix })
     }
 
-    // console.log(matrix, mshow(matrix))
-
     return matrix
+  }
+
+  _buildImmovableMatrix (): Matrix {
+      const { maxX, maxY } = this.converter
+      let matrix = mzero(maxX + 1, maxY + 1)
+
+      for(let { sprite, personalMatrix } of this.collider.entities) {
+          if (!sprite.alive) continue
+          if (sprite.mz && sprite.mz.mode === null) continue
+          if (!sprite.body) continue
+          if (!sprite.body.immovable) continue
+          const target = this.converter.rCoordsToMCoords(sprite.body.center)
+          this._applyPersonalMatrix(true, { personalMatrix, target, matrix })
+      }
+
+      // console.log(matrix, mshow(matrix))
+
+      return matrix
   }
 
   _applyPersonalMatrix(value: boolean, {

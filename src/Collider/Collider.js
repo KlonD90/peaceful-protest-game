@@ -33,21 +33,33 @@ export class Collider {
       sprite,
       object,
       move: [],
-      personalMatrix: this.compilePersonalMatrix(sprite)
+      personalMatrix: this.compilePersonalMatrix(sprite),
+      times: 0,
+      lastDecisionTime: 0,
+      lastCoords: [0, 0]
     })
+  }
+
+  getEntityBySprite(sprite){
+    return this.entities.find(x => x.sprite === sprite);
   }
 
   moveEntity (
     object: EntityObject,
     target: RCoords,
-    { callback = () => {}, phasing = false, follow = false, reset = true }: MoveOpts  = {}
+    { callback = () => {}, phasing = false, follow = false, reset = true, superphasing = false, prepend = false}: MoveOpts  = {}
   ) {
     const entity = this.entities.find(x => x.object === object)
     if (!entity && target) throw new Error(`object not registered (${object})`)
     if (!entity) return
 
     if (reset) entity.move = []
-    if (target) entity.move.push({ target, callback, follow, phasing })
+    if (target) {
+      if (prepend)
+        entity.move.unshift({ target, callback, follow, phasing })
+      else
+        entity.move.push({ target, callback, follow, phasing })
+    }
   }
 
   moveToFactory () {

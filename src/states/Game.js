@@ -41,7 +41,7 @@ import {
     getFormattedTime
 } from '../utils.js';
 import {
-    COP_MODE_FIGHT, COP_MODE_STUN, JOURNALIST_MODE_FOLLOW, PROTESTER_MODE_NOD,
+    COP_MODE_FIGHT, COP_MODE_STUN, JOURNALIST_MODE_ARRESTED, JOURNALIST_MODE_FOLLOW, PROTESTER_MODE_NOD,
     PROTESTER_MODE_WANDER
 } from "../constants";
 
@@ -122,13 +122,16 @@ class Game {
             },
             tweet: null,
             limitScore: level.scoreWin,
-            starScore: level.star.score
+            starScore: level.star.score,
+            pressScore: level.press.score,
+            pressJailed: false,
         };
         this.mz.score = 0;
     }
 
     create() {
         this.mz.tweet = new Tweet(this.game);
+        this.mz.pressJailed = false;
         this.mz.tweet.resetShowedTweets();
         this.mz.score = 0;
         // this.game.time.advancedTiming = true;
@@ -417,24 +420,58 @@ class Game {
         // update journalists
         this.mz.arrays.press.forEach(journalistSprite => {
             const journalist = journalistSprite.mz;
-            let newTarget = null;
+            if (journalist.mode === JOURNALIST_MODE_ARRESTED)
+            {
+                return;
+            }
+            if (journalistSprite.alive)
+            {
+                let newTarget = null;
 
-            if (
-                !this.mz.gameEnded &&
-                journalist.FOV.isActive &&
-                this.mz.objects.player.showPoster &&
-                journalist.FOV.containsPoint(this.mz.objects.player.sprite.body.center)
-            ) {
-                newTarget = this.mz.objects.player.sprite;
+                if (
+                    !this.mz.gameEnded &&
+                    journalist.FOV.isActive &&
+                    this.mz.objects.player.showPoster &&
+                    journalist.FOV.containsPoint(this.mz.objects.player.sprite.body.center)
+                ) {
+                    newTarget = this.mz.objects.player.sprite;
+                }
+
+
+                if (this.mz.score >= this.mz.pressScore && !this.mz.pressJailed)
+                {
+                    const protesterBounds = journalistSprite.getBounds();
+
+                    // vs cops
+                    for (let j = 0; j < this.mz.arrays.cops.length; j++) {
+                        const copSprite = this.mz.arrays.cops[j];
+                        if (
+                            !copSprite.alive ||
+                            copSprite.mz.target !== journalistSprite ||
+                            !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) ||
+                            copSprite.mz.mode === COP_MODE_STUN ||
+                            copSprite.mz.mode === COP_MODE_FIGHT
+                        ) {
+                            continue;
+                        }
+
+                        this.proceedToJail(journalistSprite, copSprite);
+                        journalist.FOV.kill();
+                        this.mz.pressJailed = true;
+                        return;
+                    }
+                }
+
+
+                if (newTarget) {
+                    journalist.setMode(JOURNALIST_MODE_SHOOTING, { target: newTarget });
+                } else if (journalist.mode !== JOURNALIST_MODE_WANDER && journalist.mode !== JOURNALIST_MODE_FOLLOW) {
+                    journalist.setMode(JOURNALIST_MODE_WANDER);
+                }
+
+                journalist.update();
             }
 
-            if (newTarget) {
-                journalist.setMode(JOURNALIST_MODE_SHOOTING, { target: newTarget });
-            } else if (journalist.mode !== JOURNALIST_MODE_WANDER && journalist.mode !== JOURNALIST_MODE_FOLLOW) {
-                journalist.setMode(JOURNALIST_MODE_WANDER);
-            }
-
-            journalist.update();
         });
 
         // update swat
@@ -540,10 +577,13 @@ class Game {
                 // find target for a cop
                 let newTarget = null;
                 let distanceToTargetSq = Infinity;
-                for (let i = 0; i <= this.mz.arrays.protesters.length; i++) {
-                    const protester = i === this.mz.arrays.protesters.length ?
+                const protesterTargets = this.mz.arrays.protesters.concat(
+                    this.mz.score >= this.mz.pressScore && !this.mz.pressJailed ? this.mz.arrays.press : []
+                );
+                for (let i = 0; i <= protesterTargets.length; i++) {
+                    const protester = i === protesterTargets.length ?
                         this.mz.objects.player :
-                        this.mz.arrays.protesters[i].mz;
+                        protesterTargets[i].mz;
                     if (
                         !protester.sprite.alive ||
                         protester.mode === PROTESTER_MODE_ARRESTED ||
@@ -553,7 +593,8 @@ class Game {
                     }
                     if (
                         protester.sprite === cop.target ||
-                        protester.showPoster
+                        protester.showPoster ||
+                        protester instanceof Journalist
                     ) {
                         let distanceToProtesterSq = this.getDistanceSq(copSprite.body.center, protester.sprite.body.center);
                         // give higher priority to current target
@@ -703,7 +744,76 @@ class Game {
         );
         this.game.physics.arcade.collide(
             this.mz.levelObjects.paddyWagon,
-            this.mz.arrays.protesters
+            this.mz.arrays.protesters,
+            (wagon, protester) => {
+                console.log('collide', wagon, protester);
+                const moveEntity = this.collider.getEntityBySprite(protester);
+                const targets = moveEntity.move;
+                if (targets.length)
+                {
+                    const moveEntry = targets[0];
+                    const target = moveEntry.target;
+                    if (moveEntry.phasing && this.checkContainWagon(target))
+                    {
+                        protester.mz.moveTo(null);
+                        if (protester.mz.mode === PROTESTER_MODE_WANDER)
+                            protester.mz.wander();
+                    }
+                    else
+                    {
+                        let xSide =  null;
+                        if (protester.x > wagon.body.x + wagon.body.width)
+                        {
+                            xSide = 'right';
+                        }
+                        else {
+                            if (protester.x < wagon.body.x)
+                            {
+                                xSide = 'left';
+                            }
+                        }
+                        let ySide = null;
+                        if (protester.y > wagon.body.y + wagon.body.height)
+                        {
+                            ySide = 'bottom';
+                        }
+                        else
+                        {
+                            if (protester.y < wagon.body.y)
+                            {
+                                ySide = 'top';
+                            }
+                        }
+                        const distanceMove = 30;
+                        switch(true)
+                        {
+                            // case !!(xSide && ySide): {
+                            //     alert('who knows :(');
+                            //     break;
+                            // }
+                            case !!(xSide): {
+                                const goTop = !!Math.round(Math.random());
+                                const x = protester.x + Math.sign(protester.x - wagon.body.x) * distanceMove;
+                                const y =  goTop ? wagon.body.y - distanceMove : wagon.body.y + wagon.body.height + distanceMove;
+                                protester.mz.moveTo({x, y}, {prepend: true, phasing: true, reset: false});
+
+                                break;
+                            }
+                            case !!(ySide): {
+                                const goLeft = !!Math.round(Math.random());
+                                const y = protester.y + Math.sign(protester.y - wagon.body.y) * distanceMove;
+                                const x =  goLeft ? wagon.body.x - distanceMove : wagon.body.x + wagon.body.width + distanceMove;
+                                protester.mz.moveTo({x, y}, {prepend: true, phasing: true, reset: false});
+                                break;
+                            }
+                            default:
+                                console.log(xSide, ySide);
+                                alert('strange');
+                        }
+                    }
+                }
+
+            }
         );
         if (this.mz.objects.star)
         {
@@ -968,7 +1078,7 @@ class Game {
 
     beatUpProtester(sprite) {
         sprite.body.enable = false;
-        sprite.mz.viewSprite.damage(0.1);
+        // sprite.mz.viewSprite.damage(0.1);
         this.playRandomPunch();
     }
 
@@ -1025,12 +1135,8 @@ class Game {
         }
 
         protesterSprite.mz.setMode(PROTESTER_MODE_ARRESTED, {
-            x: (
-                copSprite.body.velocity.x === 0 ?
-                    this.game.rnd.sign() :
-                    -Math.sign(copSprite.body.velocity.x)
-            ) * protesterSprite.body.halfWidth,
-            y: protesterSprite.body.halfHeight,
+            x: protesterSprite.body.center.x - copSprite.body.center.x,
+            y: protesterSprite.body.center.y - copSprite.body.center.y,
             by: copSprite.mz
         });
 
@@ -1196,13 +1302,16 @@ class Game {
         return this.game.math.distanceSq(obj1.x, obj1.y, obj2.x, obj2.y);
     }
 
-    checkContainWagon({x, y}){
+    checkContainWagon({x, y}, extraDistance = 40){
         if (this.mz.levelObjects.paddyWagon)
         {
             for (let w of this.mz.levelObjects.paddyWagon)
             {
-                console.log(w);
-                if (w.getBounds().contains(x, y))
+                const startX = w.body.x - extraDistance;
+                const endX = w.body.x + w.body.width + extraDistance;
+                const startY = w.body.y - extraDistance;
+                const endY = w.body.y + w.body.height + extraDistance;
+                if (x > startX && x < endX && y > startY && y < endY)
                     return true;
             }
         }

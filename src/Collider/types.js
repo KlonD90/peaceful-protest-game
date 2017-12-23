@@ -13,5 +13,10 @@ export type Matrix = boolean[][]
 export type PersonalMatrix = { center: MCoords, matrix: Matrix }
 
 export type MoveOpts = {
-  callback?: () => void, follow?: boolean, reset?: boolean, phasing?: boolean,
+  callback?: () => void,
+  follow?: boolean,
+  reset?: boolean,
+  phasing?: boolean,
+  superphasing?: boolean,
+  prepend?: boolean
 }

@@ -35,7 +35,7 @@ class Player extends Protester {
         this.sprite.body.collideWorldBounds = true;
         this.sprite.body.mass = 7;
         this.sprite.body.setSize(37, 37);
-        this.sprite.body.immovable = true;
+
         this.direction = 0;
 
         this.power = 1;
@@ -253,7 +253,7 @@ class Player extends Protester {
         console.log('player mode', mode);
         switch (mode) {
             case PROTESTER_MODE_ARRESTED: {
-                // this.sprite.body.immovable = true;
+                this.sprite.body.immovable = true;
                 this.togglePoster(false);
 
                 this.sprite.body.collideWorldBounds = false;
@@ -269,7 +269,7 @@ class Player extends Protester {
                 this.GameObject.mz.timers.fight.loop(300, this.handleTickFight, this);
                 this.GameObject.mz.timers.fight.add(5000, this.handleFightLose, this);
                 this.GameObject.mz.timers.fight.start();
-                // this.sprite.body.immovable = true;
+                this.sprite.body.immovable = true;
                 HelpInfo.show('space_fight')
                 console.log(this.GameObject.mz.timers.fight);
                 break;
@@ -279,7 +279,7 @@ class Player extends Protester {
                 this.showPoster = false;
                 this.GameObject.mz.timers.fight.stop();
                 this.GameObject.mz.timers.fight.removeAll();
-                // this.sprite.body.immovable = true;
+                this.sprite.body.immovable = true;
                 this.stunTimer.stop();
                 this.stunTimer.removeAll();
                 this.stunTimer.add(5000, this.handleRecoverStun, this);
@@ -300,12 +300,12 @@ class Player extends Protester {
                 if (this.stunTween)
                     this.stunTween.stop();
                 this.viewSprite.alpha = 1;
-                // this.sprite.body.immovable = false;
+                this.sprite.body.immovable = false;
                 this.sprite.body.enable = true;
                 break;
             }
             default: {
-                // this.sprite.body.immovable = false;
+                this.sprite.body.immovable = false;
                 break;
             }
         }
