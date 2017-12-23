@@ -4,7 +4,8 @@ import StartMenu from './states/StartMenu.js';
 import Help from './states/Help.js';
 import Controls from './states/Controls.js';
 import Game from './states/Game.js';
-import './fonts.js';
+
+import './modal/index.js';
 
 // this fixes mobile browser 100% height issue with address bar and tabs
 setTimeout(function() {

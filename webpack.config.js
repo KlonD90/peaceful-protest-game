@@ -40,11 +40,18 @@ module.exports = {
                 }
             },
             {
-                test: /\.(jpg|png|mp3|jpeg|gif|css)$/,
+                test: /\.(jpg|png|mp3|jpeg|gif)$/,
                 loader: 'file-loader',
                 query: {
                     outputPath: 'assets/'
                 }
+            },
+            {
+              test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+              loader: 'url-loader',
+              options: {
+                limit: 10000
+              }
             }
         ]
     },
