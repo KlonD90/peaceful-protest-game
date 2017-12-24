@@ -35,21 +35,19 @@ class Tweets {
   rTweet(selector, options) {
     const tweets = this.find(selector);
     let tweet;
-    if (tweets.length > 1) {
+    if (tweets.length > 0) {
       // debugger;
-      const tweets_ids = tweets.map(tw => tw.id).filter(id => this.showedTweet.indexOf(id) < 0);
-      console.log('n.kozh tweets_ids', tweets_ids);
-      if (tweets_ids.length == 0) {
+      const tweetsIds = tweets.map(tw => tw.id).filter(id => this.showedTweet.indexOf(id) < 0);
+      console.log('n.kozh tweets_ids', tweetsIds);
+      if (tweetsIds.length == 0) {
         console.warn('Твиты такого типа уже все показаны');
         return null
       }
 
-      const tweet_id = tweets_ids[this.game.rnd.integerInRange(0, tweets_ids.length-1)];
+      const tweet_id = tweetsIds[this.game.rnd.integerInRange(0, tweetsIds.length-1)];
       this.showedTweet.push(tweet_id);
       tweet = tweets.find(tw => tw.id === tweet_id);
-    } else {
-      tweet = tweets[0];
-    };
+    }
     console.log('n.kozh rTweet called', tweet);
     return this._tweet({
       text: tweet.text,

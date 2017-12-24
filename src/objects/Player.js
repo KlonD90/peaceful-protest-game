@@ -7,9 +7,9 @@ import {
     PLAYER_MODE_STUN,
     PLAYER_MODE_NORMAL
 } from '../constants.js';
+import HelpInfo from "./HelpInfo";
 
 const TAP_RUNNING_DELTA = 200;
-
 class Player extends Protester {
     constructor({
         fovGroup,
@@ -268,12 +268,12 @@ class Player extends Protester {
                 this.GameObject.mz.timers.fight.add(5000, this.handleFightLose, this);
                 this.GameObject.mz.timers.fight.start();
                 this.sprite.body.immovable = true;
-                // HelpInfo.show('space_fight')
+                HelpInfo.show('space_fight')
                 console.log(this.GameObject.mz.timers.fight);
                 break;
             }
             case PLAYER_MODE_STUN: {
-                // HelpInfo.hide('space_fight')
+                HelpInfo.hide('space_fight')
                 this.showPoster = false;
                 this.GameObject.mz.timers.fight.stop();
                 this.GameObject.mz.timers.fight.removeAll();
@@ -291,7 +291,7 @@ class Player extends Protester {
                 break;
             }
             case PLAYER_MODE_NORMAL: {
-                // HelpInfo.hide('space_fight')
+                HelpInfo.hide('space_fight')
                 this.showPoster = false;
                 this.stunTimer.removeAll();
                 this.stunTimer.stop();

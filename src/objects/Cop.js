@@ -91,6 +91,15 @@ class Cop extends Prefab {
                 break;
             }
             case COP_MODE_CONVOY: {
+                if (!this.GameObject.mz.showedAdvice.arrest)
+                {
+                    this.GameObject.mz.showedAdvice.arrest = true;
+                    this.GameObject.mz.tweet.tweet(
+                        'Вы можете помешать задержанию людей - для этого подойдите ближе и быстро нажимайте пробел.',
+                        'tw_help',
+                        {visible: 5000, fadeIn: 500, fadeOut: 500}
+                    );
+                }
                 const { jailCoords } = props;
                 this.FOV.kill();
                 this.returnCoords = { x: this.sprite.x, y: this.sprite.y };

@@ -129,6 +129,11 @@ class Game {
                 star: null,
                 nod: null
             },
+            showedAdvice: {
+                arrest: false,
+                nod: false,
+                omon: false,
+            },
             tweet: null,
             limitScore: level.scoreWin,
             starScore: level.star.score,
@@ -256,8 +261,18 @@ class Game {
         this.onFinishShooting = this.handleFinishShooting.bind(this);
         const pressRequired = this.getPressRequiredNumber();
         for (let i = this.mz.arrays.press.length; i < pressRequired; i++) {
+            const isFirst = i === 0;
+            const coords = isFirst
+                ?
+                {
+                    x: this.mz.objects.player.sprite.x + 20,
+                    y: this.mz.objects.player.sprite.y - 50
+                }
+                :
+                this.getRandomCoordinates();
+            console.log('press first', isFirst, coords);
             const journalist = this.createPrefab(Journalist, {
-                ...this.getRandomCoordinates(),
+                ...coords,
                 fov: {
                     group: this.mz.groups.pressFOV,
                     distance: this.mz.level.press.fov.distance,
@@ -330,7 +345,7 @@ class Game {
 
         this.game.camera.setBoundsToWorld();
         this.customCamera = new Camera(this.game.camera, this.game);
-        // HelpInfo.setGame(this.game);
+        HelpInfo.setGame(this.game);
         this.mz.advices.space = this.mz.tweet.tweet(
             'Чтобы поднять/опустить плакат, нажмите пробел',
             'tw_help',
@@ -379,24 +394,26 @@ class Game {
 
         this.mz.protesters.meanMood = 0;
         this.mz.protesters.alive = 0;
-        const posterProtesters = this.mz.arrays.protesters.filter(x => x.mz.showPoster && x.mz.isAgitator);
+        const posterProtesters = this.mz.arrays.protesters.filter(x => x.mz.showPoster && x.mz.isAgitator && x.alive);
 
         if (this.mz.objects.player.showPoster)
         {
             posterProtesters.push(this.mz.objects.player.sprite);
         }
+        const worldBounds = this.game.world.bounds;
         for (let i = 0; i < this.mz.arrays.protesters.length; i++) {
             const sprite = this.mz.arrays.protesters[i];
             if (!sprite.alive) {
                 if (this.mz.protesters.toRevive !== 0) {
-                    const mood = this.game.math.clamp(
+                    const mood = Math.min(this.game.math.clamp(
                         lastTickMeanMood,
                         this.mz.level.protesters.mood,
                         (this.mz.level.winningThreshold - 1) / 100
-                    );
+                    ), 0.6);
                     this.reviveProtester({
                         sprite,
-                        mood
+                        mood,
+                        isFirst: this.mz.protesters.alive === 0
                     });
                     this.mz.protesters.alive++;
                     this.mz.protesters.meanMood += mood;
@@ -416,8 +433,11 @@ class Game {
                     }
                 }
                 sprite.mz.toggleCheering(
-                    !this.mz.gameEnded &&
+                    !this.mz.gameEnded
+                    &&
                     closeToPoster
+                    &&
+                    worldBounds.contains(sprite.x, sprite.y)
                 );
 
                 this.mz.protesters.alive++;
@@ -483,7 +503,8 @@ class Game {
                             copSprite.mz.target !== journalistSprite ||
                             !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) ||
                             copSprite.mz.mode === COP_MODE_STUN ||
-                            copSprite.mz.mode === COP_MODE_FIGHT
+                            copSprite.mz.mode === COP_MODE_FIGHT ||
+                            copSprite.mz.mode === COP_MODE_CONVOY
                         ) {
                             continue;
                         }
@@ -551,8 +572,18 @@ class Game {
 
         const pressRequired = this.getPressRequiredNumber();
         for (let i = this.mz.arrays.press.length; i < pressRequired; i++) {
+            const isFirst = i === 0;
+            const coords = isFirst
+                ?
+                {
+                    x: this.mz.objects.player.sprite.x + 20,
+                    y: this.mz.objects.player.sprite.y - 20
+                }
+                :
+                this.getRandomCoordinates();
+            console.log('press first', isFirst, coords);
             const journalist = this.createPrefab(Journalist, {
-                ...this.getRandomCoordinates(),
+                ...coords,
                 fov: {
                     group: this.mz.groups.pressFOV,
                     distance: this.mz.level.press.fov.distance,
@@ -676,7 +707,8 @@ class Game {
                     !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) ||
                     protesterSprite.mz.mode === PLAYER_MODE_FIGHT ||
                     copSprite.mz.mode === COP_MODE_STUN ||
-                    copSprite.mz.mode === COP_MODE_FIGHT
+                    copSprite.mz.mode === COP_MODE_FIGHT ||
+                    copSprite.mz.mode === COP_MODE_CONVOY
                 ) {
                     continue;
                 }
@@ -1070,8 +1102,10 @@ class Game {
         const onDropPoster = this.handleDropPoster.bind(this);
         const onLeft = this.handleProtesterLeft.bind(this);
         for (let i = 0; i < count; i++) {
+            const coords = (i === 0) ? {x: this.game.world.centerX, y: this.game.world.centerY} : this.getRandomCoordinates();
+
             const protester = this.createPrefab(NPCProtester, {
-                ...this.getRandomCoordinates(),
+                ...coords,
                 group: this.mz.groups.d,
                 speed: this.mz.level.protesters.speed,
                 spriteKey: `protester_sprite`,
@@ -1098,10 +1132,11 @@ class Game {
         }
     }
 
-    reviveProtester({ sprite, mood }) {
+    reviveProtester({ sprite, mood, isFirst }) {
+        const coords = isFirst ? {x: this.game.world.centerX + 20, y: this.game.world.centerY + 20} :this.randomOffscreenCoords()
         sprite.mz.revive({
-            ...this.randomOffscreenCoords(),
-            nextCoords: this.getRandomCoordinates(),
+            ...coords,
+            nextCoords: isFirst ? {x: this.game.world.centerX + 20, y: this.game.world.centerY + 20} : this.getRandomCoordinates(),
             mood
         });
 
@@ -1220,6 +1255,16 @@ class Game {
     }
 
     launchSWAT() {
+        if (!this.mz.showedAdvice.omon)
+        {
+            this.mz.showedAdvice.omon = true;
+            this.mz.advices.omon = this.mz.tweet.tweet(
+                'Будьте осторожны, ОМОН передвигается быстро и хватает всех без разбору.',
+                'tw_help',
+                {visible: 5000, fadeIn: 500, fadeOut: 500}
+            );
+        }
+
         this.mz.timers.swat.stop(true);
 
         this.mz.objects.audio.boo.play();

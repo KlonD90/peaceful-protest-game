@@ -7,6 +7,7 @@ import {
     PROTESTER_MODE_FOLLOW,
     PROTESTER_MODE_NOD,
 } from '../constants.js';
+import ManuallyBehavior from "./Tweets/ManuallyBehavior";
 
 class NPCProtester extends Protester {
     constructor({
@@ -129,6 +130,11 @@ class NPCProtester extends Protester {
             {
                 this.GameObject.mz.advices.agitate.hide();
                 this.GameObject.mz.advices.agitate = null;
+                this.GameObject.mz.advices.press = this.GameObject.mz.tweet.tweet(
+                    'Подойдите к журналисту и поднимите плакат в поле его видимости. Когда журналист закончит фотосессию - придут новые митингующие.',
+                    'tw_help',
+                    {behavior: ManuallyBehavior}
+                );
             }
         }
 
@@ -205,6 +211,15 @@ class NPCProtester extends Protester {
                 break;
             }
             case PROTESTER_MODE_NOD: {
+                if (!this.GameObject.mz.showedAdvice.nod)
+                {
+                    this.GameObject.mz.showedAdvice.nod = true;
+                    this.GameObject.mz.advices.nod = this.GameObject.mz.tweet.tweet(
+                        'Будьте осторожны, кто-то может плеснуть зеленкой в лицо!',
+                        'tw_help',
+                        {visible: 5000, fadeIn: 500, fadeOut: 500}
+                    );
+                }
                 this.setSpeed(this.speed.value);
                 if (this.mode === PROTESTER_MODE_WANDER) {
                     this.stopWandering();

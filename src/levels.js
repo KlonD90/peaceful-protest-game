@@ -8,11 +8,13 @@ export default {
         scoreWin: 1000,
         cops: {
             count: [
-                [4, 1],
-                [50, 3],
-                // [60, 3],
-                [90, 7],
-                [100, 8]
+                [40, 1],
+                [100, 2],
+                [200, 3],
+                [300, 4],
+                [400, 5],
+                [500, 6],
+                [800, 8]
             ],
             speed: {
                 value: 50,
@@ -27,8 +29,10 @@ export default {
             count: [
                 [4, 0],
                 [50, 1],
-                [60, 7],
-                [100, 8]
+                [100, 2],
+                [400, 3],
+                [800, 4],
+                [1000, 5]
             ],
             speed: {
                 value: 50
@@ -42,14 +46,14 @@ export default {
         },
         protesters: {
             count: {
-                start: 22,
+                start: 1,
                 max: 100,
                 add: 12
             },
             speed: {
                 value: 60
             },
-            mood: 0.5,
+            mood: 0.3,
             moodUp: 0.001,
             moodDown: 0.0001,
             poster: {
@@ -75,83 +79,83 @@ export default {
                 value: 200
             },
             frequency: 15000,
-            scoreThreshold: 0
+            scoreThreshold: 300
         },
         star: {
-            score: 0
+            score: 200
         }
     },
-    level2: {
-        id: 'level2',
-        worldWidth: 800,
-        worldHeight: 800,
-        duration: 4 * 60, // s
-        winningThreshold: 75,
-        cops: {
-            count: [
-                [40, 1],
-                [50, 2],
-                [60, 3],
-                [90, 4],
-                [100, 5]
-            ],
-            speed: {
-                value: 60,
-                running: 1.8
-            },
-            fov: {
-                distance: 150,
-                angle: 120
-            }
-        },
-        swat: {
-            count: 5,
-            speed: {
-                value: 200
-            },
-            frequency: 5000,
-            scoreThreshold: 10
-        },
-        press: {
-            count: 5,
-            speed: {
-                value: 50
-            },
-            fov: {
-                distance: 100,
-                angle: 100
-            },
-            duration: 5
-        },
-        protesters: {
-            count: {
-                start: 20,
-                max: 60,
-                add: 10
-            },
-            max: 60,
-            speed: {
-                value: 60
-            },
-            mood: 0.25,
-            moodUp: 0.002,
-            moodDown: 0.0001,
-            poster: {
-                drop: 0.12,
-                alive: 20 // s
-            }
-        },
-        player: {
-            speed: {
-                value: 100,
-                withPoster: 0.6,
-                running: 1.5
-            },
-            radius: 120,
-            stamina: 200,
-            staminaCooldown: 5, // s
-            powerUp: 0.1,
-            powerDown: 0.01
-        }
-    }
+    // level2: {
+    //     id: 'level2',
+    //     worldWidth: 800,
+    //     worldHeight: 800,
+    //     duration: 4 * 60, // s
+    //     winningThreshold: 75,
+    //     cops: {
+    //         count: [
+    //             [40, 1],
+    //             [50, 2],
+    //             [60, 3],
+    //             [90, 4],
+    //             [100, 5]
+    //         ],
+    //         speed: {
+    //             value: 60,
+    //             running: 1.8
+    //         },
+    //         fov: {
+    //             distance: 150,
+    //             angle: 120
+    //         }
+    //     },
+    //     swat: {
+    //         count: 5,
+    //         speed: {
+    //             value: 200
+    //         },
+    //         frequency: 5000,
+    //         scoreThreshold: 300
+    //     },
+    //     press: {
+    //         count: 5,
+    //         speed: {
+    //             value: 50
+    //         },
+    //         fov: {
+    //             distance: 100,
+    //             angle: 100
+    //         },
+    //         duration: 5
+    //     },
+    //     protesters: {
+    //         count: {
+    //             start: 20,
+    //             max: 60,
+    //             add: 10
+    //         },
+    //         max: 60,
+    //         speed: {
+    //             value: 60
+    //         },
+    //         mood: 0.25,
+    //         moodUp: 0.002,
+    //         moodDown: 0.0001,
+    //         poster: {
+    //             drop: 0.12,
+    //             alive: 20 // s
+    //         }
+    //     },
+    //     player: {
+    //         speed: {
+    //             value: 100,
+    //             withPoster: 0.6,
+    //             running: 1.5
+    //         },
+    //         radius: 120,
+    //         stamina: 200,
+    //         staminaCooldown: 5, // s
+    //         powerUp: 0.1,
+    //         powerDown: 0.01
+    //     }
+    // }
 };

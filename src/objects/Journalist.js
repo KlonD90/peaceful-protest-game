@@ -129,6 +129,11 @@ class Journalist extends Prefab {
     }
 
     shootingTimerCallback() {
+        if (this.GameObject.mz.advices.press)
+        {
+            this.GameObject.mz.advices.press.hide();
+            this.GameObject.mz.advices.press = null;
+        }
         this.onFinishShooting(this);
 
         this.FOV.kill();
