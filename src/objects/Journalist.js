@@ -8,6 +8,8 @@ import {
     JOURNALIST_MODE_FOLLOW
 } from '../constants.js';
 import {JOURNALIST_MODE_ARRESTED} from "../constants";
+import ProgressBar from "./ProgressBar";
+
 
 class Journalist extends Prefab {
     constructor({ fov, shootingDuration, cooldownDuration, onFinishShooting, ...prefabOptions }) {
@@ -24,8 +26,13 @@ class Journalist extends Prefab {
         });
         fov.group.add(this.FOV.graphics);
 
-        this.progressBar = this.game.add.graphics();
-        this.sprite.addChild(this.progressBar);
+        this.progressBar = new ProgressBar({game: this.game, width: 44, radius: 5, color: 0xf7c169});
+        this.sprite.addChild(this.progressBar.graphics);
+
+        this.cooldownBar = new ProgressBar({game: this.game, width: 44, radius: 5, color: 0xf0526f});
+        this.sprite.addChild(this.cooldownBar.graphics);
+
+        // this.sprite.addChild(this.progressBar);
         this.sprite.body.setCircle(37);
 
         this.shootingTimer = this.game.time.create(false);
@@ -48,7 +55,7 @@ class Journalist extends Prefab {
         if (this.shootingTimer.running) {
             this.updateProgressBar(this.shootingTimer.ms / this.shootingDuration);
         } else if (this.cooldownTimer.running) {
-            this.updateProgressBar(this.cooldownTimer.ms / this.cooldownDuration, 0xff0000);
+            this.updateCooldownBar(this.cooldownTimer.ms / this.cooldownDuration);
         } else {
             this.updateProgressBar(0);
         }
@@ -157,6 +164,21 @@ class Journalist extends Prefab {
         this.FOV.kill();
 
         super.kill();
+    }
+
+    hideProgressBars(){
+        this.progressBar.update(0);
+        this.cooldownBar.update(0);
+    }
+
+    updateProgressBar(percent){
+        this.cooldownBar.update(0);
+        this.progressBar.update(percent);
+    }
+
+    updateCooldownBar(percent){
+        this.progressBar.update(0);
+        this.cooldownBar.update(percent);
     }
 
     revive({ x, y}) {

@@ -17,7 +17,7 @@ class Protester extends Prefab {
         // this.injurySprite.bringToTop();
         // this.injurySprite.visible = false;
 
-        this.posterSprite = this.viewSprite.addChild(this.game.make.sprite(-10, 11, 'poster', 0));
+        this.posterSprite = this.viewSprite.addChild(this.game.make.sprite(-10, 11, 'plakat', 0));
         this.posterSprite.bringToTop();
         this.posterSprite.anchor.set(0.5, 1);
         this.posterSprite.visible = false;

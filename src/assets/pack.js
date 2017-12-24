@@ -301,8 +301,8 @@ const pack = {
             type: 'spritesheet',
             key: 'star',
             url: require('./star.png'),
-            frameHeight: 30,
-            frameWidth: 30
+            frameHeight: 31,
+            frameWidth: 37
         },
         {
             type: 'spritesheet',
@@ -338,6 +338,13 @@ const pack = {
             url: require('./soundButtons.png'),
             frameWidth: 50,
             frameHeight: 50
+        },
+        {
+            type: 'spritesheet',
+            key: 'plakat',
+            url: require('./plakat.png'),
+            frameWidth: 44,
+            frameHeight: 12
         },
         {
             type: 'audio',
@@ -473,7 +480,7 @@ const pack = {
             key: 'cop_sprite',
             url: require('./cop.png'),
             frameWidth: 31,
-            frameHeight: 36,
+            frameHeight: 37,
             frameMax: 3,
             margin: 0,
             spacing: 0

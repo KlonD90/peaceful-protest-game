@@ -1,5 +1,6 @@
 import Protester from './Protester.js';
 import Player from './Player.js'
+import ProgressBar from './ProgressBar';
 import {
     PROTESTER_MODE_WANDER,
     PROTESTER_MODE_ARRESTED,
@@ -25,8 +26,10 @@ class NPCProtester extends Protester {
         this.group = group;
         this.group.add(this.sprite);
 
-        this.progressBar = this.game.add.graphics();
-        this.sprite.addChild(this.progressBar);
+        this.progressBar = new ProgressBar({radius: 5, width: 44, color: 0x6eed83, lineWidth: 0, game: this.game});
+        this.sprite.addChild(this.progressBar.graphics);
+        // this.progressBar.graphics.y = -30;
+        // this.progressBar.graphics.x = -this.progressBar.fullWidth/2;
 
         this.leavingTimer = this.game.time.create(false);
 
@@ -94,12 +97,12 @@ class NPCProtester extends Protester {
                 }
                 else
                 {
-                    this.updateProgressBar(this.mood);
+                    this.progressBar.update(this.mood);
                     this.moodUp(this.moodUpValue);
                 }
             } else if (this.mood < 0.75) {
                 this.moodDown(this.moodDownValue);
-                this.updateProgressBar(0);
+                this.progressBar.update(0);
             }
         }
 

@@ -8,6 +8,7 @@ import {
     PLAYER_MODE_NORMAL
 } from '../constants.js';
 import HelpInfo from "./HelpInfo";
+import ProgressBar from './ProgressBar';
 
 const TAP_RUNNING_DELTA = 200;
 class Player extends Protester {
@@ -54,8 +55,14 @@ class Player extends Protester {
         this.tapStartTimestamp = Date.now();
         this.tapDelta = Infinity;
 
-        this.progressBar = this.game.add.graphics();
-        this.sprite.addChild(this.progressBar);
+        this.fightProgressBar = new ProgressBar({game: this.game, width: 44, radius: 5, color: 0x5479ef});
+        this.sprite.addChild(this.fightProgressBar.graphics);
+
+        this.staminaBar = new ProgressBar({game: this.game, width: 44, radius: 5, color: 0xe3ad92});
+        this.sprite.addChild(this.staminaBar.graphics);
+
+        this.cooldownBar = new ProgressBar({game: this.game, width: 44, radius: 5, color: 0xf0526f});
+        this.sprite.addChild(this.cooldownBar.graphics);
 
         this.audioScream = this.game.add.audio('scream03');
 
@@ -124,7 +131,7 @@ class Player extends Protester {
 
         if (this.mode === PROTESTER_MODE_ARRESTED || this.isFrozen || this.mode === PLAYER_MODE_STUN) {
             this.updateAnimation();
-            this.updateProgressBar(0);
+            this.hideProgressBars();
             return;
         }
 
@@ -178,9 +185,17 @@ class Player extends Protester {
         }
 
         if (this.stamina < this.maxStamina) {
-            this.updateProgressBar(this.stamina / this.maxStamina, this.cooldownTimer.running ? 0xff0000 : 0x00ff00);
+            const percentBar = this.stamina / this.maxStamina;
+            if (this.cooldownTimer.running)
+            {
+                this.updateCooldownBar(percentBar);
+            }
+            else
+            {
+                this.updateStaminaBar(percentBar)
+            }
         } else {
-            this.updateProgressBar(0);
+            this.hideProgressBars();
         }
 
         if (this.showPoster) {
@@ -404,23 +419,32 @@ class Player extends Protester {
     }
 
     updateFightBar(){
-        const y = -30;
-        const width = 25;
-        const height = 5;
-        const color = 0xff0000;
-        this.progressBar.clear();
+        this.staminaBar.update(0);
+        this.cooldownBar.update(0);
         const percent = this.fightBar/20;
-        if (percent !== 0) {
-            this.progressBar.lineStyle(1, 0xffff000, 1);
-            this.progressBar.drawRect(-width / 2, y - height / 2, width, height);
-            this.progressBar.lineStyle(height, color, 1);
-            this.progressBar.moveTo(-width / 2, y);
-            this.progressBar.lineTo(Math.round(width * (-0.5 + percent)), y);
-        }
+        this.fightProgressBar.update(percent);
         if (percent >= 1)
         {
             this.handleFightWin();
         }
+    }
+
+    updateStaminaBar(percent){
+        this.fightProgressBar.update(0);
+        this.cooldownBar.update(0);
+        this.staminaBar.update(percent);
+    }
+
+    updateCooldownBar(percent){
+        this.staminaBar.update(0);
+        this.fightProgressBar.update(0);
+        this.cooldownBar.update(percent);
+    }
+
+    hideProgressBars(){
+        this.staminaBar.update(0);
+        this.fightProgressBar.update(0);
+        this.cooldownBar.update(0);
     }
 
     handleTickFight(){
@@ -431,7 +455,7 @@ class Player extends Protester {
 
     handleFightWin(){
         this.clearTimers();
-        this.progressBar.clear();
+        this.hideProgressBars();
         this.setMode(PLAYER_MODE_NORMAL);
 
         this.GameObject.fightWin();
@@ -440,10 +464,12 @@ class Player extends Protester {
 
     handleFightLose(){
         this.clearTimers();
-        this.progressBar.clear();
+        this.hideProgressBars();
         this.setMode(PLAYER_MODE_STUN);
         this.GameObject.fightLose();
     }
+
+
 
     clearTimers(){
         this.GameObject.mz.timers.fight.removeAll();
