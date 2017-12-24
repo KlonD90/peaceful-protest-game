@@ -105,6 +105,7 @@ class Journalist extends Prefab {
                 const { x, y} = props;
                 this.sprite.x = x;
                 this.sprite.y = y;
+                this.GameObject.mz.tweet.rTweet({type: 'journalist_arrest'}, {visible: 5000, fadeIn: 500, fadeOut: 500})
             }
         }
 

@@ -8,8 +8,8 @@ export default {
         scoreWin: 1000,
         cops: {
             count: [
-                [4, 0],
-                [50, 5],
+                [4, 1],
+                [50, 3],
                 // [60, 3],
                 [90, 7],
                 [100, 8]
@@ -42,7 +42,7 @@ export default {
         },
         protesters: {
             count: {
-                start: 2,
+                start: 22,
                 max: 100,
                 add: 12
             },
@@ -75,10 +75,10 @@ export default {
                 value: 200
             },
             frequency: 15000,
-            scoreThreshold: 400
+            scoreThreshold: 0
         },
         star: {
-            score: 300
+            score: 0
         }
     },
     level2: {

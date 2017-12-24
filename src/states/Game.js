@@ -78,7 +78,8 @@ class Game {
                 swat: null,
                 screen: null,
                 resize: null,
-                fight: null
+                fight: null,
+                twits: null
             },
             objects: {
                 star: null,
@@ -225,6 +226,12 @@ class Game {
         this.mz.timers.screen = this.game.time.create(false);
         this.mz.timers.resize = this.game.time.create(false);
         this.mz.timers.fight = this.game.time.create(false);
+        this.mz.timers.twits = this.game.time.create(false);
+        this.mz.timers.twits.loop(1000 * 60, () => {
+            if (Math.random() < 0.5)
+                this.mz.tweet.rTweet({type: 'description'}, {visible: 5000, fadeIn: 500, fadeOut: 500})
+        });
+        this.mz.timers.twits.start();
 
         // swat
         if (this.mz.level.swat) {
@@ -997,19 +1004,19 @@ class Game {
         this.mz.cops.alive = this.getCopsRequiredNumber();
         for (let i = 0; i < totalCount; i++) {
             let x, y;
-            if (i < this.mz.cops.alive) {
-                const offset = 60;
-                const wagon = this.pickRandomWagon();
-                x = Math.round(wagon.body.center.x) + offset;
-                y = wagon.y + wagon.body.height + 15;
-            } else {
-                const randCoords = this.getRandomCoordinates();
-                x = randCoords.x;
-                y = randCoords.y;
-            }
+            // if (i < this.mz.cops.alive) {
+            //     const offset = 60;
+            //     const wagon = this.pickRandomWagon();
+            //     x = Math.round(wagon.body.center.x) + offset;
+            //     y = wagon.y + wagon.body.height + 15;
+            // } else {
+            //     const randCoords = this.getRandomCoordinates();
+            //     x = randCoords.x;
+            //     y = randCoords.y;
+            // }
             const cop = this.createPrefab(Cop, {
               x, y,
-              alive: i < this.mz.cops.alive,
+              alive: false,
               fov: {
                   group: this.mz.groups.copsFOV,
                   distance: this.mz.level.cops.fov.distance,
@@ -1022,9 +1029,9 @@ class Game {
             this.mz.arrays.cops.push(cop.sprite);
             this.mz.groups.d.add(cop.sprite);
 
-            if (i < this.mz.cops.alive) {
-                cop.setMode(COP_MODE_WANDER);
-            }
+            // if (i < this.mz.cops.alive) {
+            //     cop.setMode(COP_MODE_WANDER);
+            // }
         }
     }
 
@@ -1525,6 +1532,10 @@ class Game {
                 cop.setMode(COP_MODE_STUN);
                 this.increaseScore(10, copSprite);
             }
+        }
+        if (Math.random() < 0.3)
+        {
+            this.mz.tweet.rTweet({type: 'defended'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
         }
     }
 

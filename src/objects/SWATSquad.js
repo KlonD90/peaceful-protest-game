@@ -124,10 +124,16 @@ class SWATSquad {
     }
 
     onArrest (protester) {
+        if (Math.random() < 0.3)
+        {
+            this.gameObject.mz.tweet.rTweet({type: 'omon'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
+        }
       if (protester instanceof Star) {
         console.log("Arrested star")
+        this.gameObject.mz.tweet.rTweet({type: 'star_'+protester.name+'_arrest'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
         const paddyWagon = this.gameObject.mz.arrays.wagons[0];
         const callback = () => {
+            this.gameObject.mz.tweet.rTweet({type: 'star_'+protester.name+'_bus'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
             this.gameObject.handleLeaveWagon(paddyWagon, -300, 0);
             for (let i = 0; i < this.sprites.length; i++) {
                 for (let j = 0; j < this.sprites[i].children.length; j++) {

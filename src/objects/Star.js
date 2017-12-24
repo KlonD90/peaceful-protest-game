@@ -43,6 +43,9 @@ export class Star extends Protester {
     })
 
 
+    this.name = 'navalny';
+
+
     this.config = fullConfig
 
 
@@ -66,6 +69,7 @@ export class Star extends Protester {
         console.log('star coords', coords);
         this.moveTo(coords, { callback: () => this.setState(Star.STATE.AGITATE), phasing: true })
         this.state = { type: Star.STATE.MOVE_IN }
+        this.GameObject.mz.tweet.rTweet({type: 'star_'+this.name+'_enter'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
         break;
       }
       case Star.STATE.AGITATE: {
@@ -79,6 +83,7 @@ export class Star extends Protester {
         break
       }
       case Star.STATE.ARRESTED: {
+        // this.GameObject.mz.tweet.rTweet({type: 'star_'+this.name+'_enter'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
         const { slots, duration, direction } = this.config.agitation
 
         this.moveTo()
