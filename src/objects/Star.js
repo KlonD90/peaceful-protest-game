@@ -19,6 +19,8 @@ const defaults = {
   speed: 100,
 }
 
+
+const starDatabase = ['navalny', 'limonov', 'verzilov']
 /*
  * Star lifecyle: rest -> moveIn -> agitate -> moveOut -> rest
  */
@@ -34,16 +36,17 @@ export class Star extends Protester {
     console.log({ config, GameObject, ...prefabOptions })
     const fullConfig = { ...defaults, ...config }
     console.log(prefabOptions)
+    const rand = Math.floor(Math.random()*3);
     super({
       ...GameObject.getRandomCoordinates(),
-      spriteKey: `star`,
-      spriteName: `star`,
+      spriteKey: `star_0${(rand+1)}`,
+      spriteName: `star_0${(rand+1)}`,
       speed: { value: fullConfig.speed },
       ...prefabOptions, GameObject,
     })
 
 
-    this.name = 'navalny';
+    this.name = starDatabase[rand];
 
 
     this.config = fullConfig

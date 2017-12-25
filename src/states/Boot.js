@@ -1,5 +1,6 @@
 import pack from '../assets/pack.js';
 import i18n from '../objects/i18n.js';
+import levels from '../levels';
 
 class Boot {
     init() {
@@ -23,8 +24,10 @@ class Boot {
                 ['pack', 'help' + (Phaser.Device.desktop ? 'Desktop' : 'Touch'), null, pack],
                 ['pack', 'helpTips', null, pack],
                 ['pack', 'tweets', null, pack],
+                ['pack', 'levelCommon', null, pack],
+                ['pack', 'level1', null, pack]
             ],
-            nextState: ['StartMenu']
+            nextState: ['Game', true, false, levels['level1']]
         });
     }
 

@@ -8,7 +8,7 @@ export default {
         scoreWin: 1000,
         cops: {
             count: [
-                [40, 1],
+                [20, 1],
                 [100, 2],
                 [200, 3],
                 [300, 4],
@@ -54,7 +54,7 @@ export default {
                 value: 60
             },
             mood: 0.3,
-            moodUp: 0.001,
+            moodUp: 0.003,
             moodDown: 0.0001,
             poster: {
                 drop: 0.3,

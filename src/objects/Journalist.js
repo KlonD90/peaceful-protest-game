@@ -13,15 +13,15 @@ import ProgressBar from "./ProgressBar";
 
 class Journalist extends Prefab {
     constructor({ fov, shootingDuration, cooldownDuration, onFinishShooting, ...prefabOptions }) {
-        super({ spriteKey: 'press_sprite', ...prefabOptions });
+        super({ spriteKey: Math.random() >= 0.5 ? 'press_01' : 'press_02', ...prefabOptions });
 
         this.FOV = new FOV({
             game: this.game,
             radius: fov.distance,
             angle: fov.angle,
             colors: {
-                [FOV_MODE_NORMAL]: 0xdddddd,
-                [FOV_MODE_CAPTURE]: 0xffffff
+                [FOV_MODE_NORMAL]: 0xf7c169,
+                [FOV_MODE_CAPTURE]: 0xf7c169
             }
         });
         fov.group.add(this.FOV.graphics);
@@ -64,7 +64,8 @@ class Journalist extends Prefab {
             x: this.sprite.x,
             y: this.sprite.y,
             angle: this.sprite.body.angle,
-            mode: this.mode === JOURNALIST_MODE_SHOOTING ? FOV_MODE_CAPTURE : FOV_MODE_NORMAL
+            mode: this.mode === JOURNALIST_MODE_SHOOTING ? FOV_MODE_CAPTURE : FOV_MODE_NORMAL,
+            tween: true
         });
         this.updateAnimation()
     }

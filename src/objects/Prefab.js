@@ -180,7 +180,8 @@ class Prefab {
 
     updateAnimation(){
         const velocity = this.sprite.body.velocity;
-        let newState = 'stop';
+        const withPoster = !!this.showPoster;
+        let newState = 'stop'
         if (velocity.x != 0 || velocity.y != 0)
         {
             if (this.canRun)
@@ -199,14 +200,15 @@ class Prefab {
                 newState = 'walk';
             }
         }
+        newState = newState + (withPoster?'Poster':'');
         if (newState != this.curAnimationState)
         {
             this.curAnimationState = newState;
-            console.log('new state');
-            if (newState === 'stop')
+            console.log('new state', newState);
+            if (newState.substr(0, 4) === 'stop')
             {
                 this.viewSprite.animations.stop(null, true);
-                this.viewSprite.frame = 0;
+                this.viewSprite.frame = withPoster ? 3 : 0;
             }
             else
                 this.viewSprite.animations.play(newState);

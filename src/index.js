@@ -27,9 +27,9 @@ setTimeout(function() {
 
     game.state.add('Boot', Boot);
     game.state.add('Loading', Loading);
-    game.state.add('StartMenu', StartMenu);
-    game.state.add('Help', Help);
-    game.state.add('Controls', Controls);
+    // game.state.add('StartMenu', StartMenu);
+    // game.state.add('Help', Help);
+    // game.state.add('Controls', Controls);
     game.state.add('Game', Game);
 
     game.state.start('Boot');

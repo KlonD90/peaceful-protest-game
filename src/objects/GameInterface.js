@@ -1,4 +1,5 @@
 import ScoreMeter from './../objects/ScoreMeter.js';
+import levels from '../levels';
 
 class GameInterface {
     constructor({ game, onTogglePoster }) {
@@ -8,13 +9,18 @@ class GameInterface {
         this.group = this.game.add.group();
         this.group.fixedToCamera = true;
 
+        const isWide = this.game.width > 500;
+
         this.score = new ScoreMeter({
             game: this.game,
             x: this.game.width / 2,
-            y: this.game.height - 20,
-            width: Math.min(this.game.width / 2, 250)
+            y: isWide ? 20 : 10,
+            width: 180,
+            radius: 10
         });
         this.group.add(this.score.group);
+        if (!isWide)
+            this.score.group.x = this.game.width - this.score.fullWidth - 10;
 
         this.textScore = this.game.add.text(
             this.game.width - 20,
@@ -27,7 +33,25 @@ class GameInterface {
         );
         this.textScore.anchor.set(1, 0);
         this.textScore.setShadow(2, 2, 'rgba(0, 0, 0, .8)', 0);
+
+        this.textTime = this.game.add.text(
+            isWide?this.game.width/2 : this.game.width - 60,
+            isWide ? 50 : 40,
+            '',
+            {
+                font: '25px Arial',
+                fill: '#fff'
+            }
+        );
+        this.textTime.anchor.set(0.5, 0);
+        this.textTime.setShadow(2, 2, 'rgba(0, 0, 0, .8)', 0);
+
+        this.textTime.setText('00:00:00')
+
         this.group.add(this.textScore);
+        this.group.add(this.textTime);
+
+
 
         this.buttonSound = this.game.add.button(
             10,
@@ -53,21 +77,35 @@ class GameInterface {
             this.buttonPoster.anchor.set(1, 1);
             this.buttonPoster.input.priorityID = 2;
         }
+        else
+        {
+            this.restartButton = this.game.add.button(
+                this.game.width - 10,
+                isWide ? 10 : 10,
+                'restartButton',
+                this.handleRestartButton,
+                this,
+                1, 1, 1, 1,
+                this.group
+            );
+            this.restartButton.anchor.set(1, 0);
+            this.restartButton.input.priorityID = 2;
+        }
+
     }
 
     update({ score, protestersAlive, protestersTotal, meanMood }) {
         this.buttonSound.frame = this.game.sound.mute ? 1 : 0;
 
-        this.score.update({
-            score,
-            protestersAlive,
-            protestersTotal,
-            mood: 100 * meanMood
-        });
+        this.score.update(score/1000);
     }
 
-    updateScore(score) {
-        this.textScore.setText(score);
+    updateTimer(time){
+        this.textTime.setText(time);
+    }
+
+    updateScore(score, time) {
+        // this.textScore.setText(score);
     }
 
     handleClickSound() {
@@ -80,6 +118,10 @@ class GameInterface {
 
     kill() {
         this.group.killAll();
+    }
+
+    handleRestartButton(){
+        this.game.state.start('Game', true, false, levels['level1']);
     }
 }
 

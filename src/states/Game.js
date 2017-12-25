@@ -13,6 +13,8 @@ import Collider from "../Collider/Collider.js"
 import HelpInfo from '../objects/HelpInfo.js';
 import Camera from '../objects/Camera';
 import Tweet from '../objects/Tweets/';
+// import modalShow from './modal/';
+
 
 
 import levelObjects, {reset as levelObjectReset} from "../levelObjects.js"
@@ -314,9 +316,9 @@ class Game {
         //     this.mz.arrays.borders.push(borderBottom);
         // }
 
-        // this.mz.objects.timer = this.game.time.create();
-        // this.mz.objects.timer.loop(Phaser.Timer.SECOND, this.updateScore, this);
-        // this.mz.objects.timer.start();
+        this.mz.objects.timer = this.game.time.create();
+        this.mz.objects.timer.loop(Phaser.Timer.SECOND, this.updateTimer, this);
+        this.mz.objects.timer.start();
 
         // pause menu
         this.mz.objects.pauseMenu = new PauseMenu({ game: this.game });
@@ -873,7 +875,6 @@ class Game {
                             }
                             default:
                                 console.log(xSide, ySide);
-                                alert('strange');
                         }
                     }
                 }
@@ -992,9 +993,20 @@ class Game {
             x: pointer.x + this.game.camera.x,
             y: pointer.y + this.game.camera.y
         };
+
         const player = this.mz.objects.player;
-        player.resetClickSpeed();
-        player.moveTo(coords, { callback: () => player.resetClickSpeed(true) });
+        if (player.mode !== PLAYER_MODE_FIGHT && player.mode !== PLAYER_MODE_STUN)
+        {
+            const angleDegree = player.sprite.position.angle(coords, true);
+            player.direction = angleDegree;
+            player.resetClickSpeed();
+
+            player.moveTo(coords, { callback: () => player.resetClickSpeed(true), superphasing: true });
+        }
+        if (player.mode === PLAYER_MODE_FIGHT)
+        {
+            player.fightBar += 1;
+        }
     }
 
     handleProtesterLeft() {
@@ -1029,6 +1041,11 @@ class Game {
 
     updateScore() {
         this.mz.objects.interface.updateScore(`${this.mz.score} / ${this.mz.limitScore}`);
+    }
+
+    updateTimer(){
+        this.mz.timePassed++;
+        this.mz.objects.interface.updateTimer(getFormattedTime(this.mz.timePassed));
     }
 
     createCops() {
@@ -1564,7 +1581,7 @@ class Game {
 
     increaseScore(points){
         this.mz.score += points;
-        this.updateScore();
+        // this.updateScore();
     }
 
     fightWin(){

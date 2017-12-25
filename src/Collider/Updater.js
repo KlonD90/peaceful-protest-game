@@ -9,12 +9,12 @@ import type {
 } from "./types.js"
 
 
-const decisionTimeout = 1000;
+const decisionTimeout = 2000;
 const timesTimeout = 2;
 
-const matrixTimeout = 1000;
+const matrixTimeout = 2000;
 
-const obstaclesTimeout = 5000;
+const obstaclesTimeout = 10000;
 
 const savedMatrix = {
   move: {time: 0, matrix: null},

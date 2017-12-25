@@ -28,8 +28,6 @@ class NPCProtester extends Protester {
 
         this.progressBar = new ProgressBar({radius: 5, width: 44, color: 0x6eed83, lineWidth: 0, game: this.game});
         this.sprite.addChild(this.progressBar.graphics);
-        // this.progressBar.graphics.y = -30;
-        // this.progressBar.graphics.x = -this.progressBar.fullWidth/2;
 
         this.leavingTimer = this.game.time.create(false);
 
@@ -56,6 +54,7 @@ class NPCProtester extends Protester {
 
         const fpsAnimation = 3;
         this.viewSprite.animations.add('walk', [1, 2], fpsAnimation, true);
+        this.viewSprite.animations.add('walkPoster', [4, 5], fpsAnimation, true);
 
 
         if (this.isNOD)
@@ -97,16 +96,19 @@ class NPCProtester extends Protester {
                 }
                 else
                 {
-                    this.progressBar.update(this.mood);
+                    if (this.mood >= 1)
+                        this.progressBar.update(0);
+                    else
+                        this.progressBar.update(this.mood);
                     this.moodUp(this.moodUpValue);
                 }
-            } else if (this.mood < 0.75) {
+            } else if (this.mood < 1) {
                 this.moodDown(this.moodDownValue);
                 this.progressBar.update(0);
             }
         }
 
-        this.showPoster = this.mode !== PROTESTER_MODE_ARRESTED && this.mood >= 0.75 && !this.isNOD;
+        this.showPoster = this.mode !== PROTESTER_MODE_ARRESTED && this.mood >= 1 && !this.isNOD;
         // if (this.isFollower)
         //     alert('ia am follower');
         if (this.showPoster && this.isFollower)
@@ -142,21 +144,21 @@ class NPCProtester extends Protester {
         }
 
         this.sprite.tint = 0xffffff;
-        if (this.mood >= 0.75) {
-            const tintSaturation = (this.mood - 0.75) / (1 - 0.75) * 0.25;
-            this.sprite.tint = Phaser.Color.RGBArrayToHex([
-                1 - tintSaturation,
-                1,
-                1 - tintSaturation
-            ]);
-        } else if (this.mood <= 0.25) {
-            const tintSaturation = (1 - this.mood / 0.25) * 0.25;
-            this.sprite.tint = Phaser.Color.RGBArrayToHex([
-                1,
-                1 - tintSaturation,
-                1 - tintSaturation
-            ]);
-        }
+        // if (this.mood >= 0.75) {
+        //     const tintSaturation = (this.mood - 0.75) / (1 - 0.75) * 0.25;
+        //     this.sprite.tint = Phaser.Color.RGBArrayToHex([
+        //         1 - tintSaturation,
+        //         1,
+        //         1 - tintSaturation
+        //     ]);
+        // } else if (this.mood <= 0.25) {
+        //     const tintSaturation = (1 - this.mood / 0.25) * 0.25;
+        //     this.sprite.tint = Phaser.Color.RGBArrayToHex([
+        //         1,
+        //         1 - tintSaturation,
+        //         1 - tintSaturation
+        //     ]);
+        // }
 
         super.update();
         this.updateAnimation();
@@ -321,7 +323,7 @@ class NPCProtester extends Protester {
         }
         else
         {
-            this.changeViewSprite('npc_0'+(Math.floor(Math.random()*3)+1), 3);
+            this.changeViewSprite('npc_0'+(Math.floor(Math.random()*8)+1), 3);
         }
         this.nodDone = false;
         this.slot = null;
