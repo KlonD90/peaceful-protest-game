@@ -32,7 +32,7 @@ class ScoreMeter {
 
         for (let i = 0; i < colors.length; i++)
         {
-            const size = Math.round(restWidth/colors.length -i);
+            const size = Math.round(restWidth/ (colors.length -i));
             this.partSizes.push(size);
             restWidth-=size;
         }

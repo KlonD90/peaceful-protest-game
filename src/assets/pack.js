@@ -285,6 +285,34 @@ const pack = {
         },
         {
             type: 'spritesheet',
+            key: 'points_1',
+            url: require('./points_1.png'),
+            frameWidth: 67,
+            frameHeight: 45
+        },
+        {
+            type: 'spritesheet',
+            key: 'points_2',
+            url: require('./points_2.png'),
+            frameWidth: 67,
+            frameHeight: 46
+        },
+        {
+            type: 'spritesheet',
+            key: 'points_5',
+            url: require('./points_5.png'),
+            frameWidth: 69,
+            frameHeight: 46
+        },
+        {
+            type: 'spritesheet',
+            key: 'points_10',
+            url: require('./points_10.png'),
+            frameWidth: 104,
+            frameHeight: 47
+        },
+        {
+            type: 'spritesheet',
             key: 'paddy_wagon',
             url: require('./paddy_wagon.png'),
             frameWidth: 120,

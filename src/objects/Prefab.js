@@ -2,7 +2,7 @@ import {
     FIELD_OFFSET
 } from '../constants.js';
 
-class Prefab {
+class   Prefab {
     constructor({ game, x, y, speed, spriteKey, spriteName, props, GameObject, moveTo }) {
         this.props = props;
         this.game = game;

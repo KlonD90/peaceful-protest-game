@@ -302,7 +302,7 @@ class Game {
                 this.mz.objects.player.togglePoster();
             }
         });
-        this.updateScore();
+        // this.updateScore();
 
 
         // bottom borders
@@ -468,7 +468,8 @@ class Game {
                 score: this.mz.score,
                 protestersAlive: this.mz.protesters.alive,
                 protestersTotal: this.mz.level.protesters.count.max,
-                meanMood: this.mz.protesters.meanMood
+                meanMood: this.mz.protesters.meanMood,
+                percent: this.mz.score/this.mz.limitScore
             });
         }
 
@@ -1020,7 +1021,7 @@ class Game {
 
     handleFinishShooting(journalist) {
         this.mz.protesters.toRevive += this.mz.level.protesters.count.add;
-        this.increaseScore(this.mz.level.protesters.count.add, journalist.sprite);
+        this.increaseScore(10, journalist.sprite);
     }
 
     handlePause() {
@@ -1579,8 +1580,22 @@ class Game {
         }
     }
 
-    increaseScore(points){
+    increaseScore(points, sprite){
         this.mz.score += points;
+        if (sprite)
+        {
+            this.playPoints(sprite, points)
+        }
+        const takens = Player.instance.slots.getTakens();
+        if (takens.length)
+        {
+            this.mz.score += takens.length;
+            for (let i = 0; i < takens.length; i++)
+            {
+                console.log(takens[i]);
+                this.playPoints(takens[i], 1);
+            }
+        }
         // this.updateScore();
     }
 
@@ -1749,6 +1764,22 @@ class Game {
                 return levelObject;
             }));
         }
+    }
+
+    playPoints(sprite, points)
+    {
+        var spritePoint = this.game.add.sprite(sprite.x, sprite.y-10, 'points_'+points);
+        spritePoint.scale.setTo(0.5);
+        spritePoint.anchor.set(0.5);
+        var tween = game.add.tween(spritePoint);
+        tween.to(
+            {y: sprite.y - 200, alpha: 0.7}, 1500, Phaser.Easing.Default, true
+        );
+        tween.onComplete.add(
+            () => {
+                spritePoint.destroy();
+            }
+        )
     }
 }
 

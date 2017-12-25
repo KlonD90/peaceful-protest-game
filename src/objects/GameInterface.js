@@ -94,10 +94,10 @@ class GameInterface {
 
     }
 
-    update({ score, protestersAlive, protestersTotal, meanMood }) {
+    update({ score, protestersAlive, protestersTotal, meanMood, percent }) {
         this.buttonSound.frame = this.game.sound.mute ? 1 : 0;
 
-        this.score.update(score/1000);
+        this.score.update(percent);
     }
 
     updateTimer(time){

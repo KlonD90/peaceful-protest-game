@@ -26,6 +26,10 @@ export class SlotManager {
       slot.dismiss()
     })
   }
+
+  getTakens(){
+    return this.slots.filter(slot => slot.taken).map(slot => slot.taken);
+  }
 }
 
 export default SlotManager

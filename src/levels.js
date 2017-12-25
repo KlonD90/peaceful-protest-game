@@ -5,16 +5,15 @@ export default {
         worldHeight: 800,
         duration: 3 * 60, // s
         winningThreshold: 100,
-        scoreWin: 1000,
+        scoreWin: 500,
         cops: {
             count: [
                 [20, 1],
                 [100, 2],
-                [200, 3],
-                [300, 4],
-                [400, 5],
-                [500, 6],
-                [800, 8]
+                [250, 3],
+                [300, 6],
+                [400, 8],
+                [1000, 8]
             ],
             speed: {
                 value: 50,
@@ -30,8 +29,8 @@ export default {
                 [4, 0],
                 [50, 1],
                 [100, 2],
-                [400, 3],
-                [800, 4],
+                [300, 3],
+                [400, 4],
                 [1000, 5]
             ],
             speed: {
@@ -46,7 +45,7 @@ export default {
         },
         protesters: {
             count: {
-                start: 1,
+                start: 2,
                 max: 100,
                 add: 12
             },
