@@ -1592,7 +1592,10 @@ class Game {
             this.mz.score += takens.length;
             for (let i = 0; i < takens.length; i++)
             {
-                this.playPoints(takens[i].sprite, 1);
+                if (takens[i].sprite)
+                {
+                    this.playPoints(takens[i].sprite, 1);
+                }
             }
         }
         // this.updateScore();
