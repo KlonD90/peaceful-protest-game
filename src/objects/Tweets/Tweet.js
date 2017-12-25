@@ -54,7 +54,8 @@ export default class BaseTweet {
         height, 
         name, {
           font: '14px abc',
-          fill: '#fcfcfc',
+          // fill: '#fcfcfc',
+          fill: '#ddecff',
         });
       nameGameObject.font = 'Graphik LC, Arial';
       nameGameObject.fixedToCamera = true;
@@ -144,10 +145,12 @@ export default class BaseTweet {
 
     ]
     for (let y=0; y<(bitmapH); y+=2) {
-      bitmap.rect(0, y, width, 2, 'rgba(0,0,0,'+ lagrange(aplhaIterp, y) +')');
+      // bitmap.rect(0, y, width, 2, 'rgba(0,0,0,'+ lagrange(aplhaIterp, y) +')');
+      bitmap.rect(0, y, width, 2, 'rgba(0,0,0,'+ 0.2 +')');
     }
 
-    var spriteBg = this.game.add.sprite(0, height-MARGIN_BOTTOM-20, bitmap);
+    // var spriteBg = this.game.add.sprite(0, height-MARGIN_BOTTOM-20, bitmap);
+    var spriteBg = this.game.add.sprite(0, height-MARGIN_BOTTOM-13, bitmap);
     spriteBg.fixedToCamera = true;
 
     return spriteBg;
