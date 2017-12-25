@@ -4,10 +4,19 @@ import axios from 'axios';
 import templateSource from 'raw-loader!./modal.html';
 import style from 'style-loader!css-loader!./style.css';
 import font from  'style-loader!css-loader!./font.css'
+import sha256 from './sha256.js';
 
 const template = Handlebars.compile(templateSource);
 
-const getScore = () => axios.get('/game_score')
+window.hash = ({score, name, email}) => {
+  const string = `${score}${name}${email}0795782855`;
+  return sha256.hash(string);
+}
+
+const getScore = () => {
+  return axios.get('/game_score')
+}
+
 const getScoreFake = () => {
   return new Promise((resolve) => {
     resolve([{
@@ -23,10 +32,19 @@ const getScoreFake = () => {
 }
 
 const sendNewScore = (formData) => {
-  if (validate(formData))
-    return Promise.reject();
-
-  return axios.post('/game_score', formData)
+  if (!validate(formData))
+    return Promise.reject('validation error');
+  const cats = hash(formData);
+  return axios({
+    method: 'post',
+    url: '/game_score',
+    data: {
+      score: formData.score,
+      nick: formData.name,
+      contact: formData.email,
+      cats,
+    }
+  });
 }
 const sendNewScoreFake = (formData) => {
   if (validate(formData)) {
@@ -88,7 +106,7 @@ const resultTypes = {
   }
 }
 
-const _show = (context, cb) => {
+const _show = (context, currentScore, cb) => {
   // debugger;
   const html = template(context);
   const fragment = document.createElement('div');
@@ -106,17 +124,23 @@ const _show = (context, cb) => {
       e.preventDefault();
       const formData = {
         name: nameEl.value,
-        email: emailEl.value
+        email: emailEl.value,
+        score: currentScore,
       }
-      sendNewScoreFake(formData)
-        .then(() => {
+      // sendNewScoreFake(formData)
+      sendNewScore(formData)
+        .then((res) => {
+          debugger;
           const c = context.scores.find(s => s.current);
           c.nick = formData.name;
           c.contact = formData.email;
           c.showForm = false;
           document.body.removeChild(fragment);
           _show(context, cb);
-        });
+        })
+        .catch(err => {
+          console.error(err);
+        })
 
       return false;
     }
@@ -135,8 +159,9 @@ const _show = (context, cb) => {
 const show = (type, currentScore, cb) => {
 // export default (type, currentScore, cb) => {
   let context = resultTypes[type]
-  // getScore().then(() => {
-    getScoreFake().then((scores) => {
+  getScore().then(({data: scores}) => {
+      debugger;
+    // getScoreFake().then((scores) => {
     for(var i=0; i<scores.length; i++) {
       if (scores[i].score > currentScore) {
         break;
@@ -145,10 +170,11 @@ const show = (type, currentScore, cb) => {
     scores.splice(i, 0, { showForm: true, current: true, score: currentScore })
     context.scores = scores.slice(0, 2);
 
-    _show(context, cb);
+    _show(context, currentScore, cb);
   });
 }
 
+// setTimeout(() => show('arrested', 900, () => console.log('заново')), 1500);
 
 export default show;
 
