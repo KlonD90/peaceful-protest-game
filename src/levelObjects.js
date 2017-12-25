@@ -18,28 +18,34 @@ export const PaddyWagon: LevelObject = {
     immovable: true,
     positions: [
         {
-            startX: 0,
-            startY: 0,
+            startX: -300,
+            startY: 75,
             angle: 90,
             score: 20,
-            moveX: 300,
-            moveY: 0,
+            moveX: 150,
+            moveY: 75,
+            entagleX: 60,
+            entagleY: 20
         },
         {
             startX: 1000,
             startY: -300,
             angle: 0,
-            score: 50,
+            score: 100,
             moveX: 1000,
-            moveY: 50
+            moveY: 150,
+            entagleX: 40,
+            entagleY: 20
         },
         {
             startX: 1200,
-            startY: 650,
-            angle: 180,
-            score: 100,
-            moveX: 900,
-            moveY: 400
+            startY: 700,
+            angle: -90,
+            score: 200,
+            moveX: 1000,
+            moveY: 700,
+            entagleX: -60,
+            entagleY: -140
         },
     ],
 }

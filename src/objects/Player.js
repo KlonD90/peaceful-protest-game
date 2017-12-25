@@ -250,20 +250,14 @@ class Player extends Protester {
             this.stop();
         }
 
-        if (Phaser.Device.desktop)
-        {
-            if (this.keys.space.isDown && this.mode !== PLAYER_MODE_FIGHT  && this.mode !== PLAYER_MODE_STUN) {
-                this.showPoster = true;
-                if (this.GameObject.mz.advices.space !== null)
-                {
-                    this.GameObject.mz.advices.space.hide();
-                    this.GameObject.mz.advices.space = null;
-                }
-            }
-            else
+        if (this.keys.space.justDown && this.mode !== PLAYER_MODE_FIGHT) {
+            this.togglePoster();
+            if (this.GameObject.mz.advices.space !== null)
             {
-                this.showPoster = false;
+                this.GameObject.mz.advices.space.hide();
+                this.GameObject.mz.advices.space = null;
             }
+
         }
         this.updateAnimation();
 

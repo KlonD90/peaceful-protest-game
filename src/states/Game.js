@@ -1195,8 +1195,8 @@ class Game {
         let minDistanceSq = Infinity;
         this.mz.arrays.wagons.forEach(carSprite => {
             const carCoords = {
-                x: carSprite.body.x + (carSprite.body.width / 2) + 60,
-                y: carSprite.body.y + carSprite.body.height + 20
+                x: carSprite.body.x + (carSprite.body.width / 2) + carSprite.entagleX,
+                y: carSprite.body.y + carSprite.body.height + carSprite.entagleY
             };
             const distanceToCarSq = this.getDistanceSq(copSprite, carCoords);
             if (distanceToCarSq < minDistanceSq) {
@@ -1206,7 +1206,7 @@ class Game {
         });
 
         this.arrest(protesterSprite, copSprite);
-        copSprite.mz.setMode(COP_MODE_CONVOY, { jailSprite: closestCarCoords });
+        copSprite.mz.setMode(COP_MODE_CONVOY, { jailCoords: closestCarCoords });
     }
 
     arrest(protesterSprite, copSprite) {
@@ -1563,8 +1563,8 @@ class Game {
                 let minDistanceSq = Infinity;
                 this.mz.arrays.wagons.forEach(carSprite => {
                     const carCoords = {
-                        x: carSprite.body.x + (carSprite.body.width / 2),
-                        y: carSprite.body.y + carSprite.body.height + 20
+                        x: carSprite.body.x + (carSprite.body.width / 2) + carSprite.entagleX,
+                        y: carSprite.body.y + carSprite.body.height + carSprite.entagleY
                     };
                     const distanceToCarSq = this.getDistanceSq(copSprite, carCoords);
                     if (distanceToCarSq < minDistanceSq) {
@@ -1678,8 +1678,8 @@ class Game {
                 let minDistanceSq = Infinity;
                 this.mz.arrays.wagons.forEach(carSprite => {
                     const carCoords = {
-                        x: carSprite.body.x + (carSprite.body.width / 2) + 60,
-                        y: carSprite.body.y + carSprite.body.height + 20
+                        x: carSprite.body.x + (carSprite.body.width / 2) + carSprite.entagleX,
+                        y: carSprite.body.y + carSprite.body.height + carSprite.entagleY
                     };
                     const distanceToCarSq = this.getDistanceSq(cop, carCoords);
                     if (distanceToCarSq < minDistanceSq) {
@@ -1734,10 +1734,12 @@ class Game {
                 this.mz.levelObjects[key] = []
             }
             this.mz.levelObjects[key] = this.mz.levelObjects[key].concat(positions.filter(x => !x.done && x.score <= this.mz.score).map((obj, i) => {
-                const { startX, startY, moveX, moveY, angle } = obj;
+                const { startX, startY, moveX, moveY, angle, entagleX, entagleY } = obj;
                 const levelObject = this.game.add.sprite(startX, startY, sprite, 0);
+                levelObject.entagleX = entagleX;
+                levelObject.entagleY = entagleY;
                 levelObject.spriteName = sprite+i;
-
+                levelObject.anchor.setTo(0.5);
                 if (angle)
                 {
                     levelObject.angle = angle;
@@ -1745,8 +1747,18 @@ class Game {
                 this.game.physics.arcade.enable(levelObject);
                 if (angle === 90 || angle === -90)
                 {
-                    levelObject.body.setSize(levelObject.height, levelObject.width, -levelObject.height, 0);
+                    // levelObject.anchor.setTo(1, 0);
+                    levelObject.body.setSize(
+                        levelObject.height,
+                        levelObject.width,
+                        levelObject.width/2 - levelObject.height/2,
+                        levelObject.height/2 - levelObject.width/2
+                    );
                 }
+                // else
+                // {
+                //     levelObject.body.setSize(levelObject.width, levelObject.height, -levelObject.width/2, -levelObjects.height/2);
+                // }
                 this.mz.groups[group].add(levelObject);
 
                 if (immovable)

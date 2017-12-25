@@ -199,8 +199,8 @@ class Cop extends Prefab {
     revive(rtl) {
         const offset = 100;
         const wagon = this.GameObject.pickRandomWagon();
-        const x = Math.round(wagon.body.center.x)+offset;
-        const y = wagon.y + wagon.body.height - 20;
+        const x = Math.round(wagon.body.center.x)+wagon.entagleX;
+        const y = wagon.y + wagon.body.height + wagon.entagleY;
         this.sprite.x = x;
         this.sprite.y = y;
         this.sprite.body.reset(x, y);

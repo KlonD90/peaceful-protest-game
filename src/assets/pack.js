@@ -315,8 +315,8 @@ const pack = {
             type: 'spritesheet',
             key: 'paddy_wagon',
             url: require('./paddy_wagon.png'),
-            frameWidth: 120,
-            frameHeight: 300,
+            frameWidth: 123,
+            frameHeight: 303,
         },
         {
             type: 'spritesheet',
