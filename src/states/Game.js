@@ -13,7 +13,7 @@ import Collider from "../Collider/Collider.js"
 import HelpInfo from '../objects/HelpInfo.js';
 import Camera from '../objects/Camera';
 import Tweet from '../objects/Tweets/';
-// import modalShow from './modal/';
+import modalShow from '../modal/';
 
 
 
@@ -154,7 +154,7 @@ class Game {
         // this.game.time.advancedTiming = true;
 
         this.game.stage.backgroundColor = '#ccc';
-        this.game.sound.mute = true;
+        // this.game.sound.mute = true;
 
         this.game.world.resize(this.mz.level.worldWidth, this.mz.level.worldHeight);
 
@@ -1205,10 +1205,8 @@ class Game {
             }
         });
 
-
         this.arrest(protesterSprite, copSprite);
-
-        copSprite.mz.setMode(COP_MODE_CONVOY, { jailCoords: closestCarCoords });
+        copSprite.mz.setMode(COP_MODE_CONVOY, { jailSprite: closestCarCoords });
     }
 
     arrest(protesterSprite, copSprite) {

@@ -329,22 +329,31 @@ const pack = {
             type: 'spritesheet',
             key: 'star_01',
             url: require('./star_01.png'),
-            frameHeight: 31,
-            frameWidth: 37
+            frameHeight: 37,
+            frameWidth: 31,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
         },
         {
             type: 'spritesheet',
             key: 'star_02',
             url: require('./star_02.png'),
-            frameHeight: 31,
-            frameWidth: 37
+            frameHeight: 37,
+            frameWidth: 31,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
         },
         {
             type: 'spritesheet',
             key: 'star_03',
             url: require('./star_03.png'),
-            frameHeight: 31,
-            frameWidth: 37
+            frameHeight: 37,
+            frameWidth: 31,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
         },
         {
             type: 'spritesheet',

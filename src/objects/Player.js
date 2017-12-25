@@ -150,8 +150,11 @@ class Player extends Protester {
 
 
 
-        this.circleGraphics.lineStyle(1, 0x33ff33, 1);
-        this.circleGraphics.drawCircle(this.sprite.x, this.sprite.y, this.radius.graphic * 2);
+        this.circleGraphics
+            // .lineStyle(1, 0x33ff33, 1)
+            .beginFill(0x0db14b, 0.3)
+            .drawCircle(this.sprite.x, this.sprite.y, this.radius.graphic * 2)
+            .endFill();
 
         let newSpeed = this.speed.value;
 
@@ -247,14 +250,20 @@ class Player extends Protester {
             this.stop();
         }
 
-        if (this.keys.space.justDown && this.mode !== PLAYER_MODE_FIGHT) {
-            this.togglePoster();
-            if (this.GameObject.mz.advices.space !== null)
-            {
-                this.GameObject.mz.advices.space.hide();
-                this.GameObject.mz.advices.space = null;
+        if (Phaser.Device.desktop)
+        {
+            if (this.keys.space.isDown && this.mode !== PLAYER_MODE_FIGHT  && this.mode !== PLAYER_MODE_STUN) {
+                this.showPoster = true;
+                if (this.GameObject.mz.advices.space !== null)
+                {
+                    this.GameObject.mz.advices.space.hide();
+                    this.GameObject.mz.advices.space = null;
+                }
             }
-
+            else
+            {
+                this.showPoster = false;
+            }
         }
         this.updateAnimation();
 

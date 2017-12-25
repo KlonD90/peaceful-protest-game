@@ -39,12 +39,12 @@ class GameInterface {
             isWide ? 50 : 40,
             '',
             {
-                font: '25px Arial',
-                fill: '#fff'
+                font: 'bold 26px Arial',
+                fill: '#fff',
             }
         );
         this.textTime.anchor.set(0.5, 0);
-        this.textTime.setShadow(2, 2, 'rgba(0, 0, 0, .8)', 0);
+        // this.textTime.setShadow(2, 2, 'rgba(0, 0, 0, .8)', 0);
 
         this.textTime.setText('00:00:00')
 

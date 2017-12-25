@@ -10,10 +10,10 @@ export default {
             count: [
                 [20, 1],
                 [100, 2],
-                [250, 3],
+                [200, 3],
                 [300, 6],
                 [400, 8],
-                [1000, 8]
+                [1000, 12]
             ],
             speed: {
                 value: 50,
@@ -77,11 +77,11 @@ export default {
             speed: {
                 value: 200
             },
-            frequency: 15000,
+            frequency: 10000,
             scoreThreshold: 300
         },
         star: {
-            score: 200
+            score: 100
         }
     },
     // level2: {
