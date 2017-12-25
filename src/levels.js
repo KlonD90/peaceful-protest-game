@@ -12,8 +12,8 @@ export default {
                 [100, 2],
                 [200, 3],
                 [300, 6],
-                [400, 8],
-                [1000, 12]
+                [400, 7],
+                [1000, 8]
             ],
             speed: {
                 value: 50,
@@ -47,13 +47,13 @@ export default {
             count: {
                 start: 2,
                 max: 100,
-                add: 12
+                add: 10
             },
             speed: {
                 value: 60
             },
             mood: 0.3,
-            moodUp: 0.003,
+            moodUp: 0.002,
             moodDown: 0.0001,
             poster: {
                 drop: 0.3,
@@ -81,7 +81,7 @@ export default {
             scoreThreshold: 300
         },
         star: {
-            score: 100
+            score: 200
         }
     },
     // level2: {

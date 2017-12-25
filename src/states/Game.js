@@ -56,6 +56,7 @@ class Game {
 
         this.mz = {
             level,
+            garbageLevel: 0,
             gameEnded: false,
             screenAttacked: false,
             score: 0,
@@ -89,6 +90,9 @@ class Game {
                 swat: null,
                 shield: null,
                 bgTile: null,
+                garbage_01: null,
+                garbage_02: null,
+                garbage_03: null,
                 interface: null,
                 audio: {},
                 pauseMenu: null,
@@ -160,6 +164,13 @@ class Game {
 
         this.mz.objects.bgTile = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'meeting_map');
         this.mz.objects.bgTile.fixedToCamera = true;
+
+        this.mz.objects.garbage_01 = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'garbage_01');
+        this.mz.objects.garbage_02 = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'garbage_02');
+        this.mz.objects.garbage_03 = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'garbage_03');
+        this.mz.objects.garbage_01.visible = false;
+        this.mz.objects.garbage_02.visible = false;
+        this.mz.objects.garbage_03.visible = false;
 
         this.mz.objects.audio.theme = this.game.add.audio('theme');
         this.mz.objects.audio.theme.loopFull(0.1);
@@ -370,6 +381,7 @@ class Game {
     }
 
     update() {
+        this.updateGarbage()
         // this.mz.pressJailed = false;
         // update background
         this.mz.objects.bgTile.tilePosition.set(-this.game.camera.x, -this.game.camera.y);
@@ -1155,7 +1167,8 @@ class Game {
         sprite.mz.revive({
             ...coords,
             nextCoords: isFirst ? {x: this.game.world.centerX + 20, y: this.game.world.centerY + 20} : this.getRandomCoordinates(),
-            mood
+            mood,
+            isFirst
         });
 
         this.mz.protesters.toRevive--;
@@ -1792,6 +1805,16 @@ class Game {
                 spritePoint.destroy();
             }
         )
+    }
+
+    updateGarbage(){
+        const garbageLevel = Math.floor(this.mz.score/100);
+        if (this.mz.garbageLevel < garbageLevel)
+        {
+            this.mz.garbageLevel = garbageLevel;
+            if (this.mz.objects['garbage_0'+this.mz.garbageLevel])
+                this.mz.objects['garbage_0'+this.mz.garbageLevel].visible = true;
+        }
     }
 }
 

@@ -44,9 +44,9 @@ class NPCProtester extends Protester {
         this.onLeft = onLeft;
 
         this.isFollower = true;
-        this.isFollowing = false;
+        this.following = null;
         this.isNOD = !this.isFollower && Math.random() < 0.03;
-        this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.1;
+        this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.01;
         this.nodDone = false;
         this.slot = null;
         this.sprite.body.setSize(37, 37);
@@ -86,26 +86,23 @@ class NPCProtester extends Protester {
             this.setMode(PROTESTER_MODE_LEAVE);
         }
 
-        if (!this.isFollowing)
-        {
-            if (this.isBeingCheeredUp) {
-                if (this.isNOD)
-                {
-                    if (!this.nodDone && this.mode != PROTESTER_MODE_NOD)
-                        this.setMode(PROTESTER_MODE_NOD);
-                }
-                else
-                {
-                    if (this.mood >= 1)
-                        this.progressBar.update(0);
-                    else
-                        this.progressBar.update(this.mood);
-                    this.moodUp(this.moodUpValue);
-                }
-            } else if (this.mood < 1) {
-                this.moodDown(this.moodDownValue);
-                this.progressBar.update(0);
+        if (this.isBeingCheeredUp) {
+            if (this.isNOD)
+            {
+                if (!this.nodDone && this.mode != PROTESTER_MODE_NOD)
+                    this.setMode(PROTESTER_MODE_NOD);
             }
+            else
+            {
+                if (this.mood >= 1)
+                    this.progressBar.update(0);
+                else
+                    this.progressBar.update(this.mood);
+                this.moodUp(this.moodUpValue);
+            }
+        } else if (this.mood < 1) {
+            this.moodDown(this.moodDownValue);
+            this.progressBar.update(0);
         }
 
         this.showPoster = this.mode !== PROTESTER_MODE_ARRESTED && this.mood >= 1 && !this.isNOD;
@@ -299,10 +296,16 @@ class NPCProtester extends Protester {
     }
 
 
-    revive({ x, y, nextCoords, mood = this.initialMood }) {
+    revive({ x, y, nextCoords, mood = this.initialMood, isFirst }) {
         this.sprite.x = x;
         this.sprite.y = y;
         this.sprite.body.reset(x, y);
+
+        if (isFirst)
+        {
+            this.isNOD = false;
+            this.isFollower = true;
+        }
 
         this.posterSprite.revive();
 
@@ -314,9 +317,9 @@ class NPCProtester extends Protester {
 
     reset(){
         this.dismissSlotsTaken();
-        this.isFollower = Math.random() < 0.1;
+        this.isFollower = Math.random() < 0.05;
         this.isNOD = !this.isFollower && Math.random() < 0.03;
-        this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.1;
+        this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.01;
         if (this.isNOD)
         {
             this.changeViewSprite('nod', 3);

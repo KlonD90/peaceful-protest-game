@@ -669,6 +669,24 @@ const pack = {
             key: 'meeting_map',
             url: require('./meeting_map.png'),
             overwrite: false
+        },
+        {
+            type: 'image',
+            key: 'garbage_01',
+            url: require('./garbage_01.png'),
+            overwrite: false
+        },
+        {
+            type: 'image',
+            key: 'garbage_02',
+            url: require('./garbage_02.png'),
+            overwrite: false
+        },
+        {
+            type: 'image',
+            key: 'garbage_03',
+            url: require('./garbage_03.png'),
+            overwrite: false
         }
     ],
     level2: [

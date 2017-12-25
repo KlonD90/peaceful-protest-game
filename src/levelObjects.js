@@ -45,7 +45,7 @@ export const PaddyWagon: LevelObject = {
             moveX: 1000,
             moveY: 700,
             entagleX: -60,
-            entagleY: -140
+            entagleY: -160
         },
     ],
 }
