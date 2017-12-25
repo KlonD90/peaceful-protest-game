@@ -8,7 +8,7 @@ import sha256 from './sha256.js';
 
 const template = Handlebars.compile(templateSource);
 
-window.hash = ({score, name, email}) => {
+const hash = ({score, name, email}) => {
   const string = `${score}${name}${email}0795782855`;
   return sha256.hash(string);
 }
@@ -98,11 +98,20 @@ Handlebars.registerHelper('plus', function(a, b) {
 const resultTypes = {
   'success': {
     title: 'Митинг удался',
-    text: 'Вы молодец, попробуйте набрать очки быстрее, чтобы получить приз — кофты “Будет хуже” от Кровостока',
+    text: (ratingPos) => {
+      if (ratingPos < 2) {
+        return `“Поздравляем! Вы заняли ${ratingPos+1} место в сегодняшнем топ-2, заполните поле для участия в розыгрыше призов.`;
+      }
+
+      return 'Вы молодец, попробуйте набрать очки быстрее, чтобы получить приз — кофты “Будет хуже” от Кровостока'; 
+    },
+    // 'Вы молодец, попробуйте набрать очки быстрее, чтобы получить приз — кофты “Будет хуже” от Кровостока',
+    background: require('../assets/win_small.png'),
   },
   'arrested': {
     title: 'Вас повязали',
-    text: 'Не агитируйте все время, тогда полиция не обратит на вас внимание. Используйте shift, чтобы передвигаться быстрее и ускользать от Омона.'
+    text: 'Не агитируйте все время, тогда полиция не обратит на вас внимание. Используйте shift, чтобы передвигаться быстрее и ускользать от Омона.',
+    background: require('../assets/lose_copy_small.png'),
   }
 }
 
@@ -126,7 +135,7 @@ const _show = (context, currentScore, cb) => {
         name: nameEl.value,
         email: emailEl.value,
         score: currentScore,
-      }
+      };
       // sendNewScoreFake(formData)
       sendNewScore(formData)
         .then((res) => {
@@ -158,17 +167,20 @@ const _show = (context, currentScore, cb) => {
 
 const show = (type, currentScore, cb) => {
 // export default (type, currentScore, cb) => {
-  let context = resultTypes[type]
+  let context = resultTypes[type];
+
   getScore().then(({data: scores}) => {
-      debugger;
-    // getScoreFake().then((scores) => {
+  // getScoreFake().then((scores) => {
     for(var i=0; i<scores.length; i++) {
       if (scores[i].score > currentScore) {
         break;
       }
     }
-    scores.splice(i, 0, { showForm: true, current: true, score: currentScore })
+    scores.splice(i, 0, { showForm: true, current: true, score: currentScore });
     context.scores = scores.slice(0, 2);
+
+    if (typeof context.text === 'function')
+      context.text = context.text(i);
 
     _show(context, currentScore, cb);
   });

@@ -18,9 +18,10 @@
   text-align: center;
 }
   .game-end_picture {
-    min-height: 160px;
+    min-height: 200px;
     width: 100%;
     background: #ccc;
+    background-size: cover;
   }
   .game-end_content {
     padding: 35px 20px 30px 20px;
@@ -44,7 +45,7 @@
     margin-top: 40px;
   }
   .game-end_participated {
-    margin-top: 25px;
+    margin: 40px 0px;
   }
   .game-end_shares {
     margin-top: 35px;
@@ -162,6 +163,9 @@
 .replay-button:hover {
   background: red;
 }
+.participated-form {
+  letter-spacing: 10px;
+}
 .participated-button {
   background: #73eb87;
 }
@@ -183,4 +187,10 @@
   }
   .score-form_input.invalid {
     background: #ed4d6966;
+  }
+  @media(min-width: 500px){
+    .score-form_input {
+      margin-top: 0px;
+      display: inline-block;
+    }
   }
