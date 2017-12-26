@@ -26,7 +26,13 @@ class NPCProtester extends Protester {
         this.group = group;
         this.group.add(this.sprite);
 
-        this.progressBar = new ProgressBar({radius: 5, width: 44, color: 0x6eed83, lineWidth: 0, game: this.game});
+        this.progressBar = new ProgressBar({
+            radius: 5,
+            width: 44,
+            color: 0x6eed83,
+            lineWidth: 0,
+            game: this.game
+        });
         this.sprite.addChild(this.progressBar.graphics);
 
         this.leavingTimer = this.game.time.create(false);
@@ -45,8 +51,8 @@ class NPCProtester extends Protester {
 
         this.isFollower = true;
         this.following = null;
-        this.isNOD = !this.isFollower && Math.random() < 0.03;
-        this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.01;
+        this.isNOD = !this.isFollower && Math.random() < 0.05;
+        this.isAgitator = false;
         this.nodDone = false;
         this.slot = null;
         this.sprite.body.setSize(37, 37);

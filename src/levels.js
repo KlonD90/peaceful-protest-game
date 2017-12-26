@@ -8,12 +8,12 @@ export default {
         scoreWin: 500,
         cops: {
             count: [
-                [20, 1],
-                [100, 2],
-                [200, 3],
-                [300, 6],
-                [400, 7],
-                [1000, 8]
+                [100, 10],
+                // [100, 2],
+                // [200, 3],
+                // [300, 6],
+                // [400, 7],
+                [1000, 12]
             ],
             speed: {
                 value: 50,
@@ -45,14 +45,14 @@ export default {
         },
         protesters: {
             count: {
-                start: 2,
+                start: 90,
                 max: 100,
                 add: 10
             },
             speed: {
                 value: 60
             },
-            mood: 0.3,
+            mood: 1,
             moodUp: 0.002,
             moodDown: 0.0001,
             poster: {
@@ -78,7 +78,7 @@ export default {
                 value: 200
             },
             frequency: 10000,
-            scoreThreshold: 300
+            scoreThreshold: 0
         },
         star: {
             score: 200
