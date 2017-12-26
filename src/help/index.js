@@ -42,7 +42,7 @@ const data = [
 ]
 
 
-const show = () => {
+const show = (cb) => {
   const containerEl = document.querySelector('[data-js-selector="help-container"]');
   const fragment = document.createElement('div');
   const html = template({
@@ -50,9 +50,16 @@ const show = () => {
     separator: require('../assets/helppics/separator.png')
   });
   fragment.innerHTML = html;
-  // debugger;
   containerEl.appendChild(fragment);
-  // alert('help');
+
+  const closeEl = document.querySelector('[data-js-selector="help-close"]');
+  const hide = (e) => {
+    containerEl.removeChild(fragment);
+    cb && cb();
+  }
+  closeEl.onclick = hide;
+
+  return hide;
 }
 
 export default show;
