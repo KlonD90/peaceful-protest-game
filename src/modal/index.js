@@ -129,7 +129,7 @@ const _show = (context, currentScore, cb) => {
   fragment.innerHTML = html;
   document.body.appendChild(fragment);
 
-  if(context.scores.find(s => s.current)){
+  if(context.scores.find(s => s.showForm)){
     const formEl = document.querySelector('[data-js-selector="participated-form"]');
     const nameEl = document.querySelector('[data-js-selector="participated-form-name"]');
     const emailEl = document.querySelector('[data-js-selector="participated-form-email"]');
@@ -159,7 +159,6 @@ const _show = (context, currentScore, cb) => {
     }
 
   }
-
   document.querySelector('[data-js-selector="replay-button"]')
     .onclick = function() {
       document.body.removeChild(fragment)
@@ -187,7 +186,7 @@ const show = (type, currentScore, cb) => {
         context.text = context.text(i);
     }
     context.scores = scores.slice(0, 2);
-    context.currentURL = encodeURIComponent(window.location.href+`?result=${type}`);
+    context.currentURL = encodeURIComponent(window.location.href+`?result=${type}&_share=1`);
 
     _show(context, currentScore, cb);
   })
