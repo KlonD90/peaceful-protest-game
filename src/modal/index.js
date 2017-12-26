@@ -3,8 +3,11 @@ import axios from 'axios';
 
 import templateSource from 'raw-loader!./modal.html';
 import style from 'style-loader!css-loader!./style.css';
-import font from  'style-loader!css-loader!./font.css'
 import sha256 from './sha256.js';
+
+// import font from  'style-loader!css-loader!./font.css';
+if (process.env.NODE_ENV === 'development')
+  require('style-loader!css-loader!./font.css');
 
 const HOST_URL = 'https://v3-stage.zona.media';
 // const HOST_URL = 'http://localhost:8081';
