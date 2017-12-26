@@ -6,7 +6,7 @@ import style from 'style-loader!css-loader!./style.css';
 import font from  'style-loader!css-loader!./font.css'
 import sha256 from './sha256.js';
 
-const HOST_URL = 'https://v3-stage.zona.media/';
+const HOST_URL = 'https://v3-stage.zona.media';
 // const HOST_URL = 'http://localhost:8081';
 const template = Handlebars.compile(templateSource);
 
@@ -16,15 +16,7 @@ const hash = ({score, name, email}) => {
 }
 
 const getScore = () => {
-  return axios.get(`${HOST_URL}/game_score`, {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-      withCredentials: true,
-      credentials: 'same-origin',
-    }
-  });
+  return axios.get(`${HOST_URL}/game_score`);
 }
 
 const getScoreFake = () => {
