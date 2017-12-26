@@ -262,6 +262,13 @@ const pack = {
       },
       {
         type: 'image',
+        key: 'tw_help',
+        url: require('./tweets/help.png'),
+        frameWidth: 400,
+        frameHeight: 400
+      },
+      {
+        type: 'image',
         key: 'tw_evgenyfeldman',
         url: require('./tweets/evgenyfeldman.jpg'),
         frameWidth: 400,
@@ -278,10 +285,38 @@ const pack = {
         },
         {
             type: 'spritesheet',
+            key: 'points_1',
+            url: require('./points_1.png'),
+            frameWidth: 67,
+            frameHeight: 45
+        },
+        {
+            type: 'spritesheet',
+            key: 'points_2',
+            url: require('./points_2.png'),
+            frameWidth: 67,
+            frameHeight: 46
+        },
+        {
+            type: 'spritesheet',
+            key: 'points_5',
+            url: require('./points_5.png'),
+            frameWidth: 69,
+            frameHeight: 46
+        },
+        {
+            type: 'spritesheet',
+            key: 'points_10',
+            url: require('./points_10.png'),
+            frameWidth: 104,
+            frameHeight: 47
+        },
+        {
+            type: 'spritesheet',
             key: 'paddy_wagon',
             url: require('./paddy_wagon.png'),
-            frameWidth: 120,
-            frameHeight: 300,
+            frameWidth: 123,
+            frameHeight: 303,
         },
         {
             type: 'spritesheet',
@@ -292,10 +327,33 @@ const pack = {
         },
         {
             type: 'spritesheet',
-            key: 'star',
-            url: require('./star.png'),
-            frameHeight: 30,
-            frameWidth: 30
+            key: 'star_01',
+            url: require('./star_01.png'),
+            frameHeight: 37,
+            frameWidth: 31,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'star_02',
+            url: require('./star_02.png'),
+            frameHeight: 37,
+            frameWidth: 31,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'star_03',
+            url: require('./star_03.png'),
+            frameHeight: 37,
+            frameWidth: 31,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
         },
         {
             type: 'spritesheet',
@@ -308,8 +366,15 @@ const pack = {
             type: 'spritesheet',
             key: 'soundButtons',
             url: require('./soundButtons.png'),
-            frameWidth: 50,
-            frameHeight: 50
+            frameWidth: 48,
+            frameHeight: 48
+        },
+        {
+            type: 'spritesheet',
+            key: 'restartButton',
+            url: require('./restart.png'),
+            frameWidth: 48,
+            frameHeight: 48
         },
         {
             type: 'spritesheet',
@@ -320,10 +385,24 @@ const pack = {
         },
         {
             type: 'spritesheet',
+            key: 'nod',
+            url: require('./nod.png'),
+            frameWidth: 31,
+            frameHeight: 37
+        },
+        {
+            type: 'spritesheet',
             key: 'podskazka_plakat',
             url: require('./soundButtons.png'),
             frameWidth: 50,
             frameHeight: 50
+        },
+        {
+            type: 'spritesheet',
+            key: 'plakat',
+            url: require('./plakat.png'),
+            frameWidth: 44,
+            frameHeight: 12
         },
         {
             type: 'audio',
@@ -349,6 +428,21 @@ const pack = {
             type: 'audio',
             key: 'boo',
             urls: require('./audio/boo.mp3')
+        },
+        {
+            type: 'audio',
+            key: 'bp_loop',
+            urls: require('./audio/bp.mp3')
+        },
+        {
+            type: 'audio',
+            key: 'meeting_sound',
+            urls: require('./audio/ms.mp3')
+        },
+        {
+            type: 'audio',
+            key: 'bp_song',
+            urls: require('./audio/krovostok.mp3')
         },
         {
             type: 'audio',
@@ -409,28 +503,91 @@ const pack = {
         },
         {
             type: 'spritesheet',
-            key: 'player',
-            url: require('./player.png'),
-            frameWidth: 30,
-            frameHeight: 46
-        },
-        {
-            type: 'spritesheet',
             key: 'player_sprite',
             url: require('./player_sprite.png'),
             frameWidth: 31,
             frameHeight: 37,
-            frameMax: 3,
+            frameMax: 7,
             margin: 0,
             spacing: 0
         },
         {
             type: 'spritesheet',
-            key: 'protester_sprite',
-            url: require('./guy.png'),
+            key: 'npc_01',
+            url: require('./npc_01.png'),
             frameWidth: 31,
             frameHeight: 37,
-            frameMax: 3,
+            frameMax: 6,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'npc_02',
+            url: require('./npc_02.png'),
+            frameWidth: 31,
+            frameHeight: 37,
+            frameMax: 6,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'npc_03',
+            url: require('./npc_03.png'),
+            frameWidth: 31,
+            frameHeight: 37,
+            frameMax: 6,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'npc_04',
+            url: require('./npc_04.png'),
+            frameWidth: 31,
+            frameHeight: 37,
+            frameMax: 6,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'npc_05',
+            url: require('./npc_05.png'),
+            frameWidth: 31,
+            frameHeight: 37,
+            frameMax: 6,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'npc_06',
+            url: require('./npc_06.png'),
+            frameWidth: 31,
+            frameHeight: 38,
+            frameMax: 6,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'npc_07',
+            url: require('./npc_07.png'),
+            frameWidth: 31,
+            frameHeight: 38,
+            frameMax: 6,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'npc_08',
+            url: require('./npc_08.png'),
+            frameWidth: 31,
+            frameHeight: 38,
+            frameMax: 6,
             margin: 0,
             spacing: 0
         },
@@ -448,6 +605,26 @@ const pack = {
             type: 'spritesheet',
             key: 'press_sprite',
             url: require('./press.png'),
+            frameWidth: 31,
+            frameHeight: 37,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'press_01',
+            url: require('./press_01.png'),
+            frameWidth: 31,
+            frameHeight: 37,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'press_02',
+            url: require('./press_02.png'),
             frameWidth: 31,
             frameHeight: 37,
             frameMax: 3,
@@ -490,6 +667,13 @@ const pack = {
             frameHeight: 71
         },
         {
+            type: 'spritesheet',
+            key: 'dropped_poster',
+            url: require('./dropped_poster.png'),
+            frameWidth: 44,
+            frameHeight: 34
+        },
+        {
             type: 'image',
             key: 'ground',
             url: require('./ground01.png'),
@@ -499,6 +683,24 @@ const pack = {
             type: 'image',
             key: 'meeting_map',
             url: require('./meeting_map.png'),
+            overwrite: false
+        },
+        {
+            type: 'image',
+            key: 'garbage_01',
+            url: require('./garbage_01.png'),
+            overwrite: false
+        },
+        {
+            type: 'image',
+            key: 'garbage_02',
+            url: require('./garbage_02.png'),
+            overwrite: false
+        },
+        {
+            type: 'image',
+            key: 'garbage_03',
+            url: require('./garbage_03.png'),
             overwrite: false
         }
     ],
@@ -544,13 +746,6 @@ const pack = {
             url: require('./journalist01.png'),
             frameWidth: 32,
             frameHeight: 49
-        },
-        {
-            type: 'spritesheet',
-            key: 'player',
-            url: require('./player.png'),
-            frameWidth: 30,
-            frameHeight: 46
         },
         {
             type: 'spritesheet',

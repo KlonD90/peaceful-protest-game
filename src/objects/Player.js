@@ -8,9 +8,9 @@ import {
     PLAYER_MODE_NORMAL
 } from '../constants.js';
 import HelpInfo from "./HelpInfo";
+import ProgressBar from './ProgressBar';
 
 const TAP_RUNNING_DELTA = 200;
-
 class Player extends Protester {
     constructor({
         fovGroup,
@@ -35,6 +35,7 @@ class Player extends Protester {
         this.sprite.body.collideWorldBounds = true;
         this.sprite.body.mass = 7;
         this.sprite.body.setSize(37, 37);
+
         this.direction = 0;
 
         this.power = 1;
@@ -54,8 +55,14 @@ class Player extends Protester {
         this.tapStartTimestamp = Date.now();
         this.tapDelta = Infinity;
 
-        this.progressBar = this.game.add.graphics();
-        this.sprite.addChild(this.progressBar);
+        this.fightProgressBar = new ProgressBar({game: this.game, width: 44, radius: 5, color: 0x5479ef});
+        this.sprite.addChild(this.fightProgressBar.graphics);
+
+        this.staminaBar = new ProgressBar({game: this.game, width: 44, radius: 5, color: 0xe3ad92});
+        this.sprite.addChild(this.staminaBar.graphics);
+
+        this.cooldownBar = new ProgressBar({game: this.game, width: 44, radius: 5, color: 0xf0526f});
+        this.sprite.addChild(this.cooldownBar.graphics);
 
         this.audioScream = this.game.add.audio('scream03');
 
@@ -64,9 +71,12 @@ class Player extends Protester {
         this.isGoing = false;
         this.stunTimer = this.game.time.create(false);
 
+        this.isWalking = false;
+        this.isRunning = false;
+
 
         this.slots = new SlotManager(this.sprite, this, slots || [
-            { x: -30, y: 0 } ,
+            { x: -30, y: 0 },
             { x: -30, y: 30},
             { x: -30, y: -30},
             { x: -30, y: -60},
@@ -101,13 +111,17 @@ class Player extends Protester {
         const fpsAnimation = 3;
         this.viewSprite.animations.add('walk', [1, 2], fpsAnimation, true);
         this.viewSprite.animations.add('run', [1, 2], fpsAnimation*this.speed.running, true);
+        this.viewSprite.animations.add('walkPoster', [5, 6], fpsAnimation, true);
+        this.viewSprite.animations.add('runPoster', [5, 6], fpsAnimation*this.speed.running, true);
         this.fightBar = 0;
 
-
+        this.canRun = true;
 
 
         Player.instance = this
     }
+
+
 
     update() {
         this.resetRadius();
@@ -118,12 +132,14 @@ class Player extends Protester {
         this.circleGraphics.clear();
 
         if (this.mode === PROTESTER_MODE_ARRESTED || this.isFrozen || this.mode === PLAYER_MODE_STUN) {
-            this.updateProgressBar(0);
+            this.updateAnimation();
+            this.hideProgressBars();
             return;
         }
 
         if (this.mode === PLAYER_MODE_FIGHT)
         {
+            this.updateAnimation();
             if (this.keys.space.justDown)
             {
                 this.fightBar+=1;
@@ -134,8 +150,11 @@ class Player extends Protester {
 
 
 
-        this.circleGraphics.lineStyle(1, 0x33ff33, 1);
-        this.circleGraphics.drawCircle(this.sprite.x, this.sprite.y, this.radius.graphic * 2);
+        this.circleGraphics
+            // .lineStyle(1, 0x33ff33, 1)
+            .beginFill(0x0db14b, 0.3)
+            .drawCircle(this.sprite.x, this.sprite.y, this.radius.graphic * 2)
+            .endFill();
 
         let newSpeed = this.speed.value;
 
@@ -149,51 +168,39 @@ class Player extends Protester {
                 areMovingKeysDown && this.keys.shift.isDown ||
                 this.tapDelta < TAP_RUNNING_DELTA
             ) {
-                if (this.GameObject.mz.advices.space_pozor && this.GameObject.mz.advices.shift_run === false)
+                if (this.GameObject.mz.advices.shift !== null)
                 {
-                    HelpInfo.hide('shift_run');
-                    this.GameObject.mz.advices.shift_run = true;
+                    this.GameObject.mz.advices.shift.hide();
+                    this.GameObject.mz.advices.shift = null;
                 }
                 if (this.stamina > 0) {
                     this.stamina -= 1;
                     newSpeed *= this.speed.running;
-                    if (!this.isRunning)
-                    {
-                        this.isRunning = true;
-                        this.viewSprite.animations.play('run');
-                    }
                 } else {
                     this.cooldownTimer.add(this.staminaCooldown, () => {
                         this.cooldownTimer.stop(true);
                     });
                     this.cooldownTimer.start();
-                    if (this.isRunning)
-                    {
-                        this.isRunning = false;
-                        this.viewSprite.animations.play('walk');
-                    }
                 }
             } else if (this.stamina < this.maxStamina) {
                 this.stamina += 1;
-                if (this.isRunning)
-                {
-                    this.isRunning = false;
-                    this.viewSprite.animations.play('walk');
-                }
             }
         } else {
             this.stamina = this.maxStamina * this.cooldownTimer.ms / this.staminaCooldown;
-            if (this.isRunning)
-            {
-                this.isRunning = false;
-                this.viewSprite.animations.play('walk');
-            }
         }
 
         if (this.stamina < this.maxStamina) {
-            this.updateProgressBar(this.stamina / this.maxStamina, this.cooldownTimer.running ? 0xff0000 : 0x00ff00);
+            const percentBar = this.stamina / this.maxStamina;
+            if (this.cooldownTimer.running)
+            {
+                this.updateCooldownBar(percentBar);
+            }
+            else
+            {
+                this.updateStaminaBar(percentBar)
+            }
         } else {
-            this.updateProgressBar(0);
+            this.hideProgressBars();
         }
 
         if (this.showPoster) {
@@ -233,11 +240,6 @@ class Player extends Protester {
             console.log('direction', this.direction);
             // this.sprite.frame = 2;
             this.resetClickSpeed(true);
-            if (!this.isGoing)
-            {
-                this.isGoing = true;
-                this.viewSprite.animations.play('walk');
-            }
         } else if (
             this.keys.up.justUp ||
             this.keys.down.justUp ||
@@ -250,14 +252,14 @@ class Player extends Protester {
 
         if (this.keys.space.justDown && this.mode !== PLAYER_MODE_FIGHT) {
             this.togglePoster();
-            if (this.GameObject.mz.advices.space_pozor === false)
+            if (this.GameObject.mz.advices.space !== null)
             {
-                HelpInfo.hide('space_pozor');
-                this.GameObject.mz.advices.space_pozor = true;
-                HelpInfo.show('shift_run');
+                this.GameObject.mz.advices.space.hide();
+                this.GameObject.mz.advices.space = null;
             }
 
         }
+        this.updateAnimation();
 
     }
 
@@ -286,12 +288,12 @@ class Player extends Protester {
                 this.GameObject.mz.timers.fight.add(5000, this.handleFightLose, this);
                 this.GameObject.mz.timers.fight.start();
                 this.sprite.body.immovable = true;
-                HelpInfo.show('space_fight')
+                // HelpInfo.show('space_fight')
                 console.log(this.GameObject.mz.timers.fight);
                 break;
             }
             case PLAYER_MODE_STUN: {
-                HelpInfo.hide('space_fight')
+                // HelpInfo.hide('space_fight')
                 this.showPoster = false;
                 this.GameObject.mz.timers.fight.stop();
                 this.GameObject.mz.timers.fight.removeAll();
@@ -309,7 +311,7 @@ class Player extends Protester {
                 break;
             }
             case PLAYER_MODE_NORMAL: {
-                HelpInfo.hide('space_fight')
+                // HelpInfo.hide('space_fight')
                 this.showPoster = false;
                 this.stunTimer.removeAll();
                 this.stunTimer.stop();
@@ -422,23 +424,32 @@ class Player extends Protester {
     }
 
     updateFightBar(){
-        const y = -30;
-        const width = 25;
-        const height = 5;
-        const color = 0xff0000;
-        this.progressBar.clear();
+        this.staminaBar.update(0);
+        this.cooldownBar.update(0);
         const percent = this.fightBar/20;
-        if (percent !== 0) {
-            this.progressBar.lineStyle(1, 0xffff000, 1);
-            this.progressBar.drawRect(-width / 2, y - height / 2, width, height);
-            this.progressBar.lineStyle(height, color, 1);
-            this.progressBar.moveTo(-width / 2, y);
-            this.progressBar.lineTo(Math.round(width * (-0.5 + percent)), y);
-        }
+        this.fightProgressBar.update(percent);
         if (percent >= 1)
         {
             this.handleFightWin();
         }
+    }
+
+    updateStaminaBar(percent){
+        this.fightProgressBar.update(0);
+        this.cooldownBar.update(0);
+        this.staminaBar.update(percent);
+    }
+
+    updateCooldownBar(percent){
+        this.staminaBar.update(0);
+        this.fightProgressBar.update(0);
+        this.cooldownBar.update(percent);
+    }
+
+    hideProgressBars(){
+        this.staminaBar.update(0);
+        this.fightProgressBar.update(0);
+        this.cooldownBar.update(0);
     }
 
     handleTickFight(){
@@ -449,7 +460,7 @@ class Player extends Protester {
 
     handleFightWin(){
         this.clearTimers();
-        this.progressBar.clear();
+        this.hideProgressBars();
         this.setMode(PLAYER_MODE_NORMAL);
 
         this.GameObject.fightWin();
@@ -458,10 +469,12 @@ class Player extends Protester {
 
     handleFightLose(){
         this.clearTimers();
-        this.progressBar.clear();
+        this.hideProgressBars();
         this.setMode(PLAYER_MODE_STUN);
         this.GameObject.fightLose();
     }
+
+
 
     clearTimers(){
         this.GameObject.mz.timers.fight.removeAll();

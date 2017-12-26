@@ -32,6 +32,10 @@ class Cop extends Prefab {
         this.sprite.body.setSize(37, 37);
         this.stunTimer = this.game.time.create(false);
 
+        const fpsAnimation = 3;
+        this.viewSprite.animations.add('walk', [1, 2], fpsAnimation, true);
+
+
 
         if (!alive) {
             this.kill();
@@ -53,6 +57,8 @@ class Cop extends Prefab {
             angle: this.sprite.body.angle,
             mode: this.mode === COP_MODE_PURSUE ? FOV_MODE_CAPTURE : FOV_MODE_NORMAL
         });
+
+        this.updateAnimation();
     }
 
     setMode(mode, props = {}) {
@@ -85,10 +91,19 @@ class Cop extends Prefab {
                 break;
             }
             case COP_MODE_CONVOY: {
+                if (!this.GameObject.mz.showedAdvice.arrest)
+                {
+                    this.GameObject.mz.showedAdvice.arrest = true;
+                    this.GameObject.mz.tweet.tweet(
+                        'Вы можете помешать задержанию людей - для этого подойдите ближе и быстро нажимайте пробел.',
+                        'tw_help',
+                        {visible: 5000, fadeIn: 500, fadeOut: 500}
+                    );
+                }
                 const { jailCoords } = props;
                 this.FOV.kill();
                 this.returnCoords = { x: this.sprite.x, y: this.sprite.y };
-                this.moveTo(jailCoords, {callback: () => this.handleCovoyEnd(), phasing: true})
+                this.moveTo(jailCoords, {callback: () => this.handleCovoyEnd(), superphasing: true})
                 break;
             }
             case COP_MODE_ENTER: {
@@ -143,7 +158,8 @@ class Cop extends Prefab {
         this.setMode(COP_MODE_WANDER, { coords: this.returnCoords });
         // const tweets = this.GameObject.mz.tweet.find({type: 'arrest'});
         // const tweet = tweets[Math.floor(tweets.length * Math.random())];
-        this.GameObject.mz.tweet.rTweet({type: 'arrest'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
+        if (Math.random() < 0.3)
+            this.GameObject.mz.tweet.rTweet({type: 'arrest'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
     }
 
     handleFightWin() {
@@ -183,8 +199,8 @@ class Cop extends Prefab {
     revive(rtl) {
         const offset = 100;
         const wagon = this.GameObject.pickRandomWagon();
-        const x = Math.round(wagon.body.center.x)+offset;
-        const y = wagon.y + wagon.body.height - 20;
+        const x = Math.round(wagon.body.center.x)+wagon.entagleX;
+        const y = wagon.y + wagon.body.height + wagon.entagleY;
         this.sprite.x = x;
         this.sprite.y = y;
         this.sprite.body.reset(x, y);

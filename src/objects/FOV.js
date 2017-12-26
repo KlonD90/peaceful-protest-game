@@ -1,8 +1,8 @@
 import { FOV_MODE_NORMAL, FOV_MODE_CAPTURE } from '../constants.js';
 
 const DEFAULT_COLORS = {
-    [FOV_MODE_NORMAL]: 0x3a3a56,
-    [FOV_MODE_CAPTURE]: 0x563a3a
+    [FOV_MODE_NORMAL]: 0x2b3992,
+    [FOV_MODE_CAPTURE]: 0x2b3992
 };
 
 class FOV {
@@ -35,7 +35,7 @@ class FOV {
             y + Math.sin(startAngle) * this.radius
         ];
 
-        this.graphics.beginFill(this.colors[mode || FOV_MODE_NORMAL], 0.4);
+        this.graphics.beginFill(this.colors[mode || FOV_MODE_NORMAL], mode === FOV_MODE_NORMAL ? 0.2 : 0.5);
         this.graphics.moveTo(x, y);
         this.graphics.lineTo(...arcStart);
         this.graphics.arc(

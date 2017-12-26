@@ -19,6 +19,8 @@ const defaults = {
   speed: 100,
 }
 
+
+const starDatabase = ['navalny', 'limonov', 'verzilov']
 /*
  * Star lifecyle: rest -> moveIn -> agitate -> moveOut -> rest
  */
@@ -34,21 +36,24 @@ export class Star extends Protester {
     console.log({ config, GameObject, ...prefabOptions })
     const fullConfig = { ...defaults, ...config }
     console.log(prefabOptions)
+    const rand = Math.floor(Math.random()*3);
     super({
       ...GameObject.getRandomCoordinates(),
-      spriteKey: `protester1`,
-      spriteName: `star`,
+      spriteKey: `star_0${(rand+1)}`,
+      spriteName: `star_0${(rand+1)}`,
       speed: { value: fullConfig.speed },
       ...prefabOptions, GameObject,
     })
 
-    this.starGraphic = this.game.add.graphics();
-    this.sprite.addChild(this.starGraphic);
+
+    this.name = starDatabase[rand];
+
 
     this.config = fullConfig
 
 
     this.restTimer = this.game.time.create(false);
+    this.viewSprite.animations.add('walk', [1, 2], 3, true);
     this.kill()
   }
 
@@ -67,6 +72,7 @@ export class Star extends Protester {
         console.log('star coords', coords);
         this.moveTo(coords, { callback: () => this.setState(Star.STATE.AGITATE), phasing: true })
         this.state = { type: Star.STATE.MOVE_IN }
+        this.GameObject.mz.tweet.rTweet({type: 'star_'+this.name+'_enter'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
         break;
       }
       case Star.STATE.AGITATE: {
@@ -80,6 +86,7 @@ export class Star extends Protester {
         break
       }
       case Star.STATE.ARRESTED: {
+        // this.GameObject.mz.tweet.rTweet({type: 'star_'+this.name+'_enter'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
         const { slots, duration, direction } = this.config.agitation
 
         this.moveTo()
@@ -109,14 +116,8 @@ export class Star extends Protester {
       }
     }
 
-    this.updateStarGraphic()
     super.update()
-  }
-
-  updateStarGraphic(){
-      this.starGraphic.clear()
-      this.starGraphic.lineStyle(3, 0xffff00, 1);
-      drawStar(this.starGraphic, 0, 0, 5, 30,15)
+    this.updateAnimation()
   }
 
   revive() {

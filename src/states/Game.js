@@ -13,8 +13,12 @@ import Collider from "../Collider/Collider.js"
 import HelpInfo from '../objects/HelpInfo.js';
 import Camera from '../objects/Camera';
 import Tweet from '../objects/Tweets/';
+import modalShow from '../modal/';
+import levels from '../levels';
 
-import levelObjects from "../levelObjects.js"
+
+
+import levelObjects, {reset as levelObjectReset} from "../levelObjects.js"
 
 import {
     FIELD_OFFSET,
@@ -41,19 +45,19 @@ import {
     getFormattedTime
 } from '../utils.js';
 import {
-    COP_MODE_FIGHT, COP_MODE_STUN, JOURNALIST_MODE_FOLLOW, PROTESTER_MODE_NOD,
+    COP_MODE_FIGHT, COP_MODE_STUN, JOURNALIST_MODE_ARRESTED, JOURNALIST_MODE_FOLLOW, PROTESTER_MODE_NOD,
     PROTESTER_MODE_WANDER
 } from "../constants";
+import ManuallyBehavior from "../objects/Tweets/ManuallyBehavior";
 
 class Game {
     init(level) {
         // FIXME: debug
         window.game = this
 
-        this.collider = new Collider({ game: this.game, gameObject: this, scale: 20 })
-
         this.mz = {
             level,
+            garbageLevel: 0,
             gameEnded: false,
             screenAttacked: false,
             score: 0,
@@ -78,7 +82,9 @@ class Game {
                 swat: null,
                 screen: null,
                 resize: null,
-                fight: null
+                fight: null,
+                twits: null,
+                gameTime: null
             },
             objects: {
                 star: null,
@@ -86,6 +92,9 @@ class Game {
                 swat: null,
                 shield: null,
                 bgTile: null,
+                garbage_01: null,
+                garbage_02: null,
+                garbage_03: null,
                 interface: null,
                 audio: {},
                 pauseMenu: null,
@@ -102,6 +111,7 @@ class Game {
                 wagons: [],
                 enterWagons: [],
                 awaitWagons: [],
+                leftWagons: [],
             },
             groups: {
                 d: null,
@@ -116,28 +126,53 @@ class Game {
             },
             zoomLevel: -1,
             advices: {
-                space_pozor: false,
-                shift_run: false,
+                space: null,
+                shift: null,
+                agitate: null,
+                press: null,
+                arrest: null,
+                fight: null,
+                people: null,
+                omon: null,
+                star: null,
+                nod: null
+            },
+            showedAdvice: {
+                arrest: false,
+                nod: false,
+                omon: false,
             },
             tweet: null,
             limitScore: level.scoreWin,
-            starScore: level.star.score
+            starScore: level.star.score,
+            pressScore: level.press.score,
+            pressJailed: false,
         };
         this.mz.score = 0;
     }
 
     create() {
+        this.collider = new Collider({ game: this.game, gameObject: this, scale: 20 })
         this.mz.tweet = new Tweet(this.game);
+        this.mz.pressJailed = false;
+        this.mz.tweet.resetShowedTweets();
         this.mz.score = 0;
         // this.game.time.advancedTiming = true;
 
         this.game.stage.backgroundColor = '#ccc';
-        this.game.sound.mute = true;
+        // this.game.sound.mute = true;
 
         this.game.world.resize(this.mz.level.worldWidth, this.mz.level.worldHeight);
 
         this.mz.objects.bgTile = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'meeting_map');
         this.mz.objects.bgTile.fixedToCamera = true;
+
+        this.mz.objects.garbage_01 = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'garbage_01');
+        this.mz.objects.garbage_02 = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'garbage_02');
+        this.mz.objects.garbage_03 = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'garbage_03');
+        this.mz.objects.garbage_01.visible = false;
+        this.mz.objects.garbage_02.visible = false;
+        this.mz.objects.garbage_03.visible = false;
 
         this.mz.objects.audio.theme = this.game.add.audio('theme');
         this.mz.objects.audio.theme.loopFull(0.1);
@@ -176,45 +211,7 @@ class Game {
         this.mz.groups.npcProtesters = this.game.add.group();
 
         this.mz.levelObjects = {}
-        for (let key in levelObjects) {
-            const { speed, personalMatrix, sprite, positions, objectClass, immovable, group, ...extras } = levelObjects[key]
-            this.mz.levelObjects[key] = positions.map(({ x, y, angle }, i) => {
 
-                const levelObject = this.game.add.sprite(x, y, sprite, 0);
-                levelObject.spriteName = sprite+i;
-                // levelObject.anchor.set(0.5);
-
-
-                // levelObject.body.reset(x, y)
-                if (angle)
-                {
-                    levelObject.angle = angle;
-
-                    if (angle === 90 || angle === -90)
-                    {
-
-                    }
-                    // levelObject.body.rotation = Phaser.Math.degToRad(angle);
-                }
-                this.game.physics.arcade.enable(levelObject);
-                levelObject.body.setSize(levelObject.height, levelObject.width, -levelObject.height, 0);
-                this.mz.groups[group].add(levelObject);
-
-                if (immovable)
-                {
-                    levelObject.body.immovable = true;
-                }
-                this.collider.addEntity({ sprite: levelObject, object: this.game })
-                if (key === 'paddyWagon')
-                {
-                    this.mz.groups.cars.add(levelObject);
-                    this.mz.arrays.awaitWagons.push(levelObject);
-                }
-
-                // levelObject.body.velocity = new Phaser.Point({x: 300, y: 0})
-                return levelObject;
-            })
-        }
 
         // this.mz.groups.d.add(this.mz.objects.star);
         // player
@@ -249,6 +246,19 @@ class Game {
         this.mz.timers.screen = this.game.time.create(false);
         this.mz.timers.resize = this.game.time.create(false);
         this.mz.timers.fight = this.game.time.create(false);
+        this.mz.timers.twits = this.game.time.create(false);
+        this.mz.timers.twits = this.game.time.create(false);
+        if (this.mz.timers.gameTime)
+        {
+            this.mz.timers.gameTime.destroy();
+        }
+        this.mz.timers.gameTime = this.game.time.create(false);
+        this.mz.timers.gameTime.start();
+        this.mz.timers.twits.loop(1000 * 60, () => {
+            if (Math.random() < 0.5)
+                this.mz.tweet.rTweet({type: 'description'}, {visible: 5000, fadeIn: 500, fadeOut: 500})
+        });
+        this.mz.timers.twits.start();
 
         // swat
         if (this.mz.level.swat) {
@@ -273,8 +283,17 @@ class Game {
         this.onFinishShooting = this.handleFinishShooting.bind(this);
         const pressRequired = this.getPressRequiredNumber();
         for (let i = this.mz.arrays.press.length; i < pressRequired; i++) {
+            const isFirst = i === 0;
+            const coords = isFirst
+                ?
+                {
+                    x: this.mz.objects.player.sprite.x + 20,
+                    y: this.mz.objects.player.sprite.y - 50
+                }
+                :
+                this.getRandomCoordinates();
             const journalist = this.createPrefab(Journalist, {
-                ...this.getRandomCoordinates(),
+                ...coords,
                 fov: {
                     group: this.mz.groups.pressFOV,
                     distance: this.mz.level.press.fov.distance,
@@ -302,7 +321,7 @@ class Game {
                 this.mz.objects.player.togglePoster();
             }
         });
-        this.updateScore();
+        // this.updateScore();
 
 
         // bottom borders
@@ -316,9 +335,9 @@ class Game {
         //     this.mz.arrays.borders.push(borderBottom);
         // }
 
-        // this.mz.objects.timer = this.game.time.create();
-        // this.mz.objects.timer.loop(Phaser.Timer.SECOND, this.updateScore, this);
-        // this.mz.objects.timer.start();
+        this.mz.objects.timer = this.game.time.create();
+        this.mz.objects.timer.loop(Phaser.Timer.SECOND, this.updateTimer, this);
+        this.mz.objects.timer.start();
 
         // pause menu
         this.mz.objects.pauseMenu = new PauseMenu({ game: this.game });
@@ -348,11 +367,30 @@ class Game {
         this.game.camera.setBoundsToWorld();
         this.customCamera = new Camera(this.game.camera, this.game);
         HelpInfo.setGame(this.game);
-        HelpInfo.show('space_pozor');
+        this.mz.advices.space = this.mz.tweet.tweet(
+            'Чтобы поднять/опустить плакат, нажмите пробел',
+            'tw_help',
+            {behavior: ManuallyBehavior}
+        );
+        this.mz.advices.agitate = this.mz.tweet.tweet(
+            'Чтобы агитировать людей встаньте у человека с поднятым плакатом',
+            'tw_help',
+            {behavior: ManuallyBehavior}
+        );
+        this.mz.advices.shift = this.mz.tweet.tweet(
+            'Чтобы бегать нажмите shift',
+            'tw_help',
+            {behavior: ManuallyBehavior}
+        );
+
+
+        levelObjectReset();
         // setTimeout(this.screenAttack.bind(this), 200);
     }
 
     update() {
+        this.updateGarbage()
+        // this.mz.pressJailed = false;
         // update background
         this.mz.objects.bgTile.tilePosition.set(-this.game.camera.x, -this.game.camera.y);
 
@@ -360,6 +398,8 @@ class Game {
         {
             this.createStar();
         }
+
+        this.createLevelObjects();
 
 
         this.collider.update()
@@ -376,24 +416,26 @@ class Game {
 
         this.mz.protesters.meanMood = 0;
         this.mz.protesters.alive = 0;
-        const posterProtesters = this.mz.arrays.protesters.filter(x => x.mz.showPoster && x.mz.isAgitator);
+        const posterProtesters = this.mz.arrays.protesters.filter(x => x.mz.showPoster && x.mz.isAgitator && x.alive);
 
         if (this.mz.objects.player.showPoster)
         {
             posterProtesters.push(this.mz.objects.player.sprite);
         }
+        const worldBounds = this.game.world.bounds;
         for (let i = 0; i < this.mz.arrays.protesters.length; i++) {
             const sprite = this.mz.arrays.protesters[i];
             if (!sprite.alive) {
                 if (this.mz.protesters.toRevive !== 0) {
-                    const mood = this.game.math.clamp(
+                    const mood = Math.min(this.game.math.clamp(
                         lastTickMeanMood,
                         this.mz.level.protesters.mood,
                         (this.mz.level.winningThreshold - 1) / 100
-                    );
+                    ), 0.6);
                     this.reviveProtester({
                         sprite,
-                        mood
+                        mood,
+                        isFirst: this.mz.protesters.alive === 0
                     });
                     this.mz.protesters.alive++;
                     this.mz.protesters.meanMood += mood;
@@ -413,8 +455,11 @@ class Game {
                     }
                 }
                 sprite.mz.toggleCheering(
-                    !this.mz.gameEnded &&
+                    !this.mz.gameEnded
+                    &&
                     closeToPoster
+                    &&
+                    worldBounds.contains(sprite.x, sprite.y)
                 );
 
                 this.mz.protesters.alive++;
@@ -443,31 +488,67 @@ class Game {
                 score: this.mz.score,
                 protestersAlive: this.mz.protesters.alive,
                 protestersTotal: this.mz.level.protesters.count.max,
-                meanMood: this.mz.protesters.meanMood
+                meanMood: this.mz.protesters.meanMood,
+                percent: this.mz.score/this.mz.limitScore
             });
         }
 
         // update journalists
         this.mz.arrays.press.forEach(journalistSprite => {
             const journalist = journalistSprite.mz;
-            let newTarget = null;
+            if (journalist.mode === JOURNALIST_MODE_ARRESTED)
+            {
+                return;
+            }
+            if (journalistSprite.alive)
+            {
+                let newTarget = null;
 
-            if (
-                !this.mz.gameEnded &&
-                journalist.FOV.isActive &&
-                this.mz.objects.player.showPoster &&
-                journalist.FOV.containsPoint(this.mz.objects.player.sprite.body.center)
-            ) {
-                newTarget = this.mz.objects.player.sprite;
+                if (
+                    !this.mz.gameEnded &&
+                    journalist.FOV.isActive &&
+                    this.mz.objects.player.showPoster &&
+                    journalist.FOV.containsPoint(this.mz.objects.player.sprite.body.center)
+                ) {
+                    newTarget = this.mz.objects.player.sprite;
+                }
+
+
+                if (this.mz.score >= this.mz.pressScore && !this.mz.pressJailed)
+                {
+                    const protesterBounds = journalistSprite.getBounds();
+
+                    // vs cops
+                    for (let j = 0; j < this.mz.arrays.cops.length; j++) {
+                        const copSprite = this.mz.arrays.cops[j];
+                        if (
+                            !copSprite.alive ||
+                            copSprite.mz.target !== journalistSprite ||
+                            !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) ||
+                            copSprite.mz.mode === COP_MODE_STUN ||
+                            copSprite.mz.mode === COP_MODE_FIGHT ||
+                            copSprite.mz.mode === COP_MODE_CONVOY
+                        ) {
+                            continue;
+                        }
+
+                        this.proceedToJail(journalistSprite, copSprite);
+                        journalist.FOV.kill();
+                        this.mz.pressJailed = true;
+                        return;
+                    }
+                }
+
+
+                if (newTarget) {
+                    journalist.setMode(JOURNALIST_MODE_SHOOTING, { target: newTarget });
+                } else if (journalist.mode !== JOURNALIST_MODE_WANDER && journalist.mode !== JOURNALIST_MODE_FOLLOW) {
+                    journalist.setMode(JOURNALIST_MODE_WANDER);
+                }
+
+                journalist.update();
             }
 
-            if (newTarget) {
-                journalist.setMode(JOURNALIST_MODE_SHOOTING, { target: newTarget });
-            } else if (journalist.mode !== JOURNALIST_MODE_WANDER && journalist.mode !== JOURNALIST_MODE_FOLLOW) {
-                journalist.setMode(JOURNALIST_MODE_WANDER);
-            }
-
-            journalist.update();
         });
 
         // update swat
@@ -488,6 +569,8 @@ class Game {
             this.mz.objects.swat.update();
         }
 
+
+
         // update shield
         // this.mz.objects.shield.update();
 
@@ -502,17 +585,28 @@ class Game {
             }
         }
 
-        if (copsRequired > this.mz.cops.alive && this.mz.arrays.wagons.length === 0 && this.mz.arrays.enterWagons.length === 0 )
-        {
-            this.handleEnterWagon(this.mz.arrays.awaitWagons[0], 300, 0)
-        }
+        // if (copsRequired > this.mz.cops.alive && this.mz.arrays.wagons.length === 0 && this.mz.arrays.enterWagons.length === 0 )
+        // {
+        //     this.handleEnterWagon(this.mz.arrays.awaitWagons[0], 300, 0)
+        // }
 
         this.handleEnteringWagons();
+        this.handleLeavingWagons();
 
         const pressRequired = this.getPressRequiredNumber();
         for (let i = this.mz.arrays.press.length; i < pressRequired; i++) {
+            const isFirst = i === 0;
+            const coords = isFirst
+                ?
+                {
+                    x: this.mz.objects.player.sprite.x + 20,
+                    y: this.mz.objects.player.sprite.y - 20
+                }
+                :
+                this.getRandomCoordinates();
+            console.log('press first', isFirst, coords);
             const journalist = this.createPrefab(Journalist, {
-                ...this.getRandomCoordinates(),
+                ...coords,
                 fov: {
                     group: this.mz.groups.pressFOV,
                     distance: this.mz.level.press.fov.distance,
@@ -570,10 +664,13 @@ class Game {
                 // find target for a cop
                 let newTarget = null;
                 let distanceToTargetSq = Infinity;
-                for (let i = 0; i <= this.mz.arrays.protesters.length; i++) {
-                    const protester = i === this.mz.arrays.protesters.length ?
+                const protesterTargets = this.mz.arrays.protesters.concat(
+                    this.mz.score >= this.mz.pressScore && !this.mz.pressJailed ? this.mz.arrays.press : []
+                );
+                for (let i = 0; i <= protesterTargets.length; i++) {
+                    const protester = i === protesterTargets.length ?
                         this.mz.objects.player :
-                        this.mz.arrays.protesters[i].mz;
+                        protesterTargets[i].mz;
                     if (
                         !protester.sprite.alive ||
                         protester.mode === PROTESTER_MODE_ARRESTED ||
@@ -583,7 +680,8 @@ class Game {
                     }
                     if (
                         protester.sprite === cop.target ||
-                        protester.showPoster
+                        protester.showPoster ||
+                        protester instanceof Journalist
                     ) {
                         let distanceToProtesterSq = this.getDistanceSq(copSprite.body.center, protester.sprite.body.center);
                         // give higher priority to current target
@@ -632,7 +730,8 @@ class Game {
                     !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) ||
                     protesterSprite.mz.mode === PLAYER_MODE_FIGHT ||
                     copSprite.mz.mode === COP_MODE_STUN ||
-                    copSprite.mz.mode === COP_MODE_FIGHT
+                    copSprite.mz.mode === COP_MODE_FIGHT ||
+                    copSprite.mz.mode === COP_MODE_CONVOY
                 ) {
                     continue;
                 }
@@ -724,18 +823,95 @@ class Game {
         //     this.mz.arrays.cops
         // );
         this.game.physics.arcade.collide(
+            this.mz.objects.swat.sprites,
+            this.mz.objects.swat.sprites
+        );
+        this.game.physics.arcade.collide(
           this.mz.levelObjects.paddyWagon,
           this.mz.objects.player.sprite
         );
         this.game.physics.arcade.collide(
             this.mz.levelObjects.paddyWagon,
-            this.mz.arrays.protesters
+            this.mz.arrays.protesters,
+            (wagon, protester) => {
+                const moveEntity = this.collider.getEntityBySprite(protester);
+                const targets = moveEntity.move;
+                if (targets.length)
+                {
+                    const moveEntry = targets[0];
+                    const target = moveEntry.target;
+                    if (moveEntry.phasing && this.checkContainWagon(target))
+                    {
+                        protester.mz.moveTo(null);
+                        if (protester.mz.mode === PROTESTER_MODE_WANDER)
+                            protester.mz.wander();
+                    }
+                    else
+                    {
+                        let xSide =  null;
+                        if (protester.x > wagon.body.x + wagon.body.width)
+                        {
+                            xSide = 'right';
+                        }
+                        else {
+                            if (protester.x < wagon.body.x)
+                            {
+                                xSide = 'left';
+                            }
+                        }
+                        let ySide = null;
+                        if (protester.y > wagon.body.y + wagon.body.height)
+                        {
+                            ySide = 'bottom';
+                        }
+                        else
+                        {
+                            if (protester.y < wagon.body.y)
+                            {
+                                ySide = 'top';
+                            }
+                        }
+                        const distanceMove = 30;
+                        switch(true)
+                        {
+                            // case !!(xSide && ySide): {
+                            //     alert('who knows :(');
+                            //     break;
+                            // }
+                            case !!(xSide): {
+                                const goTop = !!Math.round(Math.random());
+                                const x = protester.x + Math.sign(protester.x - wagon.body.x) * distanceMove;
+                                const y =  goTop ? wagon.body.y - distanceMove : wagon.body.y + wagon.body.height + distanceMove;
+                                protester.mz.moveTo({x, y}, {prepend: true, phasing: true, reset: false});
+
+                                break;
+                            }
+                            case !!(ySide): {
+                                const goLeft = !!Math.round(Math.random());
+                                const y = protester.y + Math.sign(protester.y - wagon.body.y) * distanceMove;
+                                const x =  goLeft ? wagon.body.x - distanceMove : wagon.body.x + wagon.body.width + distanceMove;
+                                protester.mz.moveTo({x, y}, {prepend: true, phasing: true, reset: false});
+                                break;
+                            }
+                            default:
+                                console.log(xSide, ySide);
+                        }
+                    }
+                }
+
+            }
         );
         if (this.mz.objects.star)
-        this.game.physics.arcade.collide(
-            this.mz.objects.player.sprite,
-            this.mz.objects.star.sprite
-        );
+        {
+            this.game.physics.arcade.collide(
+                this.mz.objects.player.sprite,
+                this.mz.objects.star.sprite
+            );
+            this.game.physics.arcade.collide(
+                this.mz.objects.player.sprite,
+                this.mz.objects.star.sprite
+            );
+        }
         this.game.physics.arcade.collide(
             this.mz.arrays.cops,
             this.mz.arrays.protesters,
@@ -801,7 +977,6 @@ class Game {
         if (this.mz.screenAttacked)
         {
             //
-            console.log('sprite position', this.mz.objects.player.sprite.x, this.mz.objects.player.sprite.y);
             this.mz.objects.screenAttack
                 .clear()
                 .beginFill(0x67c079, 0.95)
@@ -841,9 +1016,20 @@ class Game {
             x: pointer.x + this.game.camera.x,
             y: pointer.y + this.game.camera.y
         };
+
         const player = this.mz.objects.player;
-        player.resetClickSpeed();
-        player.moveTo(coords, { callback: () => player.resetClickSpeed(true) });
+        if (player.mode !== PLAYER_MODE_FIGHT && player.mode !== PLAYER_MODE_STUN)
+        {
+            const angleDegree = player.sprite.position.angle(coords, true);
+            player.direction = angleDegree;
+            player.resetClickSpeed();
+
+            player.moveTo(coords, { callback: () => player.resetClickSpeed(true), superphasing: true });
+        }
+        if (player.mode === PLAYER_MODE_FIGHT)
+        {
+            player.fightBar += 1;
+        }
     }
 
     handleProtesterLeft() {
@@ -857,7 +1043,7 @@ class Game {
 
     handleFinishShooting(journalist) {
         this.mz.protesters.toRevive += this.mz.level.protesters.count.add;
-        this.increaseScore(this.mz.level.protesters.count.add, journalist.sprite);
+        this.increaseScore(10, journalist.sprite);
     }
 
     handlePause() {
@@ -880,24 +1066,29 @@ class Game {
         this.mz.objects.interface.updateScore(`${this.mz.score} / ${this.mz.limitScore}`);
     }
 
+    updateTimer(){
+        this.mz.timePassed++;
+        this.mz.objects.interface.updateTimer(getFormattedTime(this.mz.timePassed));
+    }
+
     createCops() {
         const totalCount = this.mz.level.cops.count[this.mz.level.cops.count.length - 1][1];
         this.mz.cops.alive = this.getCopsRequiredNumber();
         for (let i = 0; i < totalCount; i++) {
             let x, y;
-            if (i < this.mz.cops.alive) {
-                const offset = 60;
-                const wagon = this.pickRandomWagon();
-                x = Math.round(wagon.body.center.x) + offset;
-                y = wagon.y + wagon.body.height + 15;
-            } else {
-                const randCoords = this.getRandomCoordinates();
-                x = randCoords.x;
-                y = randCoords.y;
-            }
+            // if (i < this.mz.cops.alive) {
+            //     const offset = 60;
+            //     const wagon = this.pickRandomWagon();
+            //     x = Math.round(wagon.body.center.x) + offset;
+            //     y = wagon.y + wagon.body.height + 15;
+            // } else {
+            //     const randCoords = this.getRandomCoordinates();
+            //     x = randCoords.x;
+            //     y = randCoords.y;
+            // }
             const cop = this.createPrefab(Cop, {
               x, y,
-              alive: i < this.mz.cops.alive,
+              alive: false,
               fov: {
                   group: this.mz.groups.copsFOV,
                   distance: this.mz.level.cops.fov.distance,
@@ -910,9 +1101,9 @@ class Game {
             this.mz.arrays.cops.push(cop.sprite);
             this.mz.groups.d.add(cop.sprite);
 
-            if (i < this.mz.cops.alive) {
-                cop.setMode(COP_MODE_WANDER);
-            }
+            // if (i < this.mz.cops.alive) {
+            //     cop.setMode(COP_MODE_WANDER);
+            // }
         }
     }
 
@@ -951,8 +1142,10 @@ class Game {
         const onDropPoster = this.handleDropPoster.bind(this);
         const onLeft = this.handleProtesterLeft.bind(this);
         for (let i = 0; i < count; i++) {
+            const coords = (i === 0) ? {x: this.game.world.centerX, y: this.game.world.centerY} : this.getRandomCoordinates();
+
             const protester = this.createPrefab(NPCProtester, {
-                ...this.getRandomCoordinates(),
+                ...coords,
                 group: this.mz.groups.d,
                 speed: this.mz.level.protesters.speed,
                 spriteKey: `protester_sprite`,
@@ -979,11 +1172,13 @@ class Game {
         }
     }
 
-    reviveProtester({ sprite, mood }) {
+    reviveProtester({ sprite, mood, isFirst }) {
+        const coords = isFirst ? {x: this.game.world.centerX + 20, y: this.game.world.centerY + 20} :this.randomOffscreenCoords()
         sprite.mz.revive({
-            ...this.randomOffscreenCoords(),
-            nextCoords: this.getRandomCoordinates(),
-            mood
+            ...coords,
+            nextCoords: isFirst ? {x: this.game.world.centerX + 20, y: this.game.world.centerY + 20} : this.getRandomCoordinates(),
+            mood,
+            isFirst
         });
 
         this.mz.protesters.toRevive--;
@@ -992,7 +1187,7 @@ class Game {
 
     beatUpProtester(sprite) {
         sprite.body.enable = false;
-        sprite.mz.viewSprite.damage(0.1);
+        // sprite.mz.viewSprite.damage(0.1);
         this.playRandomPunch();
     }
 
@@ -1021,10 +1216,10 @@ class Game {
     proceedToJail(protesterSprite, copSprite) {
         let closestCarCoords = null;
         let minDistanceSq = Infinity;
-        this.mz.groups.cars.forEach(carSprite => {
+        this.mz.arrays.wagons.forEach(carSprite => {
             const carCoords = {
-                x: (carSprite.body.x + carSprite.body.width) / 2 + 60,
-                y: carSprite.body.y + carSprite.body.height + 20
+                x: carSprite.body.x + (carSprite.body.width / 2) + carSprite.entagleX,
+                y: carSprite.body.y + carSprite.body.height + carSprite.entagleY
             };
             const distanceToCarSq = this.getDistanceSq(copSprite, carCoords);
             if (distanceToCarSq < minDistanceSq) {
@@ -1033,9 +1228,7 @@ class Game {
             }
         });
 
-
         this.arrest(protesterSprite, copSprite);
-
         copSprite.mz.setMode(COP_MODE_CONVOY, { jailCoords: closestCarCoords });
     }
 
@@ -1047,14 +1240,11 @@ class Game {
         if (protesterSprite.name === 'player') {
             this.game.camera.follow(copSprite);
         }
-
+        const x = protesterSprite.body.center.x - copSprite.body.center.x;
+        const y = protesterSprite.body.center.y - copSprite.body.center.y;
         protesterSprite.mz.setMode(PROTESTER_MODE_ARRESTED, {
-            x: (
-                copSprite.body.velocity.x === 0 ?
-                    this.game.rnd.sign() :
-                    -Math.sign(copSprite.body.velocity.x)
-            ) * protesterSprite.body.halfWidth,
-            y: protesterSprite.body.halfHeight,
+            x: Math.sign(x) * Math.min(Math.abs(x), 17),
+            y: Math.sign(y) * Math.min(Math.abs(y), 17),
             by: copSprite.mz
         });
 
@@ -1071,8 +1261,9 @@ class Game {
                 break;
             }
         }
-        console.log('protester sprite', protesterSprite);
-        protesterSprite.mz.mood = 0.1;
+        const prevX = protesterSprite.x;
+        const prevY = protesterSprite.y;
+
         copSprite.removeChild(protesterSprite);
         this.mz.groups.d.add(protesterSprite);
         // this.beatUpProtester(protesterSprite);
@@ -1084,11 +1275,12 @@ class Game {
         }
 
         if (protesterSprite.name !== 'player') {
+            protesterSprite.mz.mood = 0.1;
             this.mz.protesters.arrested--;
             protesterSprite.mz.kill();
             protesterSprite.body.enable = true;
-            const x = copSprite.x + 30;
-            const y = copSprite.y + 30;
+            const x = copSprite.x + prevX;
+            const y = copSprite.y + prevY;
             protesterSprite.mz.revive({x, y, nextCoords: {x, y}});
             protesterSprite.visible = true;
             const slot = Player.instance.slots.take(this);
@@ -1097,10 +1289,19 @@ class Game {
             }
             // protesterSprite.mz.setMode(PROTESTER_MODE_WANDER);
         }
-        console.log('protester', protesterSprite);
     }
 
     launchSWAT() {
+        if (!this.mz.showedAdvice.omon)
+        {
+            this.mz.showedAdvice.omon = true;
+            this.mz.advices.omon = this.mz.tweet.tweet(
+                'Будьте осторожны, ОМОН передвигается быстро и хватает всех без разбору.',
+                'tw_help',
+                {visible: 5000, fadeIn: 500, fadeOut: 500}
+            );
+        }
+
         this.mz.timers.swat.stop(true);
 
         this.mz.objects.audio.boo.play();
@@ -1152,18 +1353,18 @@ class Game {
 
         this.mz.objects.audio.theme.fadeOut(2000);
 
-        this.mz.objects.endMenu = new EndMenu({
-            game: this.game,
-            mode,
-            score: this.mz.objects.interface.score.group,
-            stats: {
-                time: this.mz.timePassed,
-                alive: this.mz.protesters.alive,
-                arrested: this.mz.protesters.arrested,
-                revived: this.mz.protesters.revived,
-                left: this.mz.protesters.left
-            }
-        });
+        // this.mz.objects.endMenu = new EndMenu({
+        //     game: this.game,
+        //     mode,
+        //     score: this.mz.objects.interface.score.group,
+        //     stats: {
+        //         time: this.mz.timePassed,
+        //         alive: this.mz.protesters.alive,
+        //         arrested: this.mz.protesters.arrested,
+        //         revived: this.mz.protesters.revived,
+        //         left: this.mz.protesters.left
+        //     }
+        // });
 
         this.game.camera.unfollow();
         this.mz.objects.interface.kill();
@@ -1185,16 +1386,11 @@ class Game {
             this.mz.arrays.protesters.forEach(sprite => {
                 sprite.mz.moodUp(1);
             });
+            modalShow('success', this.mz.timers.gameTime.seconds, () => this.game.state.start('Game', true, false, levels['level1']));
         } else {
+            modalShow('arrested', 0,  () => this.game.state.start('Game', true, false, levels['level1']));
             this.mz.objects.audio.boo.play();
             switch (mode) {
-                case END_GAME_TIME_OUT: {
-                    this.mz.arrays.protesters.forEach(sprite => {
-                        sprite.mz.moodDown(1);
-                    });
-                    // this.launchShield();
-                    break;
-                }
                 case END_GAME_PROTEST_RATE: {
                     // this.launchShield();
                     break;
@@ -1204,6 +1400,7 @@ class Game {
                 }
             }
         }
+
     }
 
     playRandomSound() {
@@ -1220,12 +1417,18 @@ class Game {
         return this.game.math.distanceSq(obj1.x, obj1.y, obj2.x, obj2.y);
     }
 
-    checkContainWagon({x, y}){
-        for (let w of this.mz.levelObjects.paddyWagon)
+    checkContainWagon({x, y}, extraDistance = 40){
+        if (this.mz.levelObjects.paddyWagon)
         {
-            console.log(w);
-            if (w.getBounds().contains(x, y))
-                return true;
+            for (let w of this.mz.levelObjects.paddyWagon)
+            {
+                const startX = w.body.x - extraDistance;
+                const endX = w.body.x + w.body.width + extraDistance;
+                const startY = w.body.y - extraDistance;
+                const endY = w.body.y + w.body.height + extraDistance;
+                if (x > startX && x < endX && y > startY && y < endY)
+                    return true;
+            }
         }
         return false;
     }
@@ -1375,10 +1578,10 @@ class Game {
             {
                 let closestCarCoords = null;
                 let minDistanceSq = Infinity;
-                this.mz.groups.cars.forEach(carSprite => {
+                this.mz.arrays.wagons.forEach(carSprite => {
                     const carCoords = {
-                        x: (carSprite.body.x + carSprite.body.width) / 2,
-                        y: carSprite.body.y + carSprite.body.height + 40
+                        x: carSprite.body.x + (carSprite.body.width / 2) + carSprite.entagleX,
+                        y: carSprite.body.y + carSprite.body.height + carSprite.entagleY
                     };
                     const distanceToCarSq = this.getDistanceSq(copSprite, carCoords);
                     if (distanceToCarSq < minDistanceSq) {
@@ -1392,9 +1595,25 @@ class Game {
         }
     }
 
-    increaseScore(points){
+    increaseScore(points, sprite){
         this.mz.score += points;
-        this.updateScore();
+        if (sprite)
+        {
+            this.playPoints(sprite, points)
+        }
+        const takens = Player.instance.slots.getTakens();
+        if (takens.length)
+        {
+            this.mz.score += takens.length;
+            for (let i = 0; i < takens.length; i++)
+            {
+                if (takens[i].sprite)
+                {
+                    this.playPoints(takens[i].sprite, 1);
+                }
+            }
+        }
+        // this.updateScore();
     }
 
     fightWin(){
@@ -1408,6 +1627,10 @@ class Game {
                 this.increaseScore(10, copSprite);
             }
         }
+        if (Math.random() < 0.3)
+        {
+            this.mz.tweet.rTweet({type: 'defended'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
+        }
     }
 
     handleEnterWagon(wagon, x, y){
@@ -1419,7 +1642,6 @@ class Game {
     handleGotPlaceWagon(wagon){
         this.mz.arrays.wagons.push(wagon);
         wagon.body.stop();
-
     }
 
     handleEnteringWagons(){
@@ -1439,6 +1661,79 @@ class Game {
         }
     }
 
+    handleLeaveWagon(wagon, x, y){
+        for (let i =0; i<this.mz.arrays.wagons.length; i++)
+        {
+            const w = this.mz.arrays.wagons[i];
+            if (
+                w === wagon
+            )
+            {
+                this.mz.arrays.wagons.splice(i, 1);
+                this.game.physics.arcade.moveToXY(wagon, x, y, 60);
+                this.mz.arrays.leftWagons.push(wagon);
+                break;
+            }
+        }
+        for (let i=0; i<this.mz.levelObjects.paddyWagon.length; i++)
+        {
+            const w = this.mz.levelObjects.paddyWagon[i];
+            if (
+                w === wagon
+            )
+            {
+                this.mz.levelObjects.paddyWagon.splice(i, 1);
+                break;
+            }
+        }
+
+        for (let cop of this.mz.arrays.cops)
+        {
+            if (cop.alive && cop.mz.mode === COP_MODE_CONVOY)
+            {
+                let closestCarCoords = null;
+                let minDistanceSq = Infinity;
+                this.mz.arrays.wagons.forEach(carSprite => {
+                    const carCoords = {
+                        x: carSprite.body.x + (carSprite.body.width / 2) + carSprite.entagleX,
+                        y: carSprite.body.y + carSprite.body.height + carSprite.entagleY
+                    };
+                    const distanceToCarSq = this.getDistanceSq(cop, carCoords);
+                    if (distanceToCarSq < minDistanceSq) {
+                        closestCarCoords = carCoords;
+                        minDistanceSq = distanceToCarSq;
+                    }
+                });
+                cop.mz.setMode(COP_MODE_CONVOY, { jailCoords: closestCarCoords });
+            }
+        }
+    }
+
+    handleLeavingWagons(){
+        for (let i =0; i<this.mz.arrays.leftWagons.length; i++)
+        {
+            const w = this.mz.arrays.leftWagons[i];
+            if (
+                w
+                && (
+                    (w.y + w.height < 0)
+                    ||
+                    (w.x + w.width < 0)
+                    ||
+                    (w.y - w.height > this.game.world.height)
+                    ||
+                    (w.x - w.width > this.game.world.width)
+                )
+            )
+            {
+                this.mz.arrays.leftWagons.splice(i, 1);
+                this.collider.removeEntityBySprite(w);
+                w.destroy();
+                break;
+            }
+        }
+    }
+
     pickRandomWagon(){
         return this.mz.arrays.wagons.length ? this.mz.arrays.wagons[Math.floor(Math.random()*this.mz.arrays.wagons.length)] : null;
     }
@@ -1446,6 +1741,88 @@ class Game {
     createStar(){
         this.mz.objects.star = this.createPrefab(Star, {});
         this.mz.objects.star.setState(Star.STATE.MOVE_IN);
+    }
+
+    createLevelObjects(){
+        for (let key in levelObjects) {
+            const { speed, personalMatrix, sprite, positions, objectClass, immovable, group, ...extras } = levelObjects[key]
+            if (!this.mz.levelObjects[key])
+            {
+                this.mz.levelObjects[key] = []
+            }
+            this.mz.levelObjects[key] = this.mz.levelObjects[key].concat(positions.filter(x => !x.done && x.score <= this.mz.score).map((obj, i) => {
+                const { startX, startY, moveX, moveY, angle, entagleX, entagleY } = obj;
+                const levelObject = this.game.add.sprite(startX, startY, sprite, 0);
+                levelObject.entagleX = entagleX;
+                levelObject.entagleY = entagleY;
+                levelObject.spriteName = sprite+i;
+                levelObject.anchor.setTo(0.5);
+                if (angle)
+                {
+                    levelObject.angle = angle;
+                }
+                this.game.physics.arcade.enable(levelObject);
+                if (angle === 90 || angle === -90)
+                {
+                    // levelObject.anchor.setTo(1, 0);
+                    levelObject.body.setSize(
+                        levelObject.height,
+                        levelObject.width,
+                        levelObject.width/2 - levelObject.height/2,
+                        levelObject.height/2 - levelObject.width/2
+                    );
+                }
+                // else
+                // {
+                //     levelObject.body.setSize(levelObject.width, levelObject.height, -levelObject.width/2, -levelObjects.height/2);
+                // }
+                this.mz.groups[group].add(levelObject);
+
+                if (immovable)
+                {
+                    levelObject.body.immovable = true;
+                }
+                this.collider.addEntity({ sprite: levelObject, object: this.game, obstacle: true })
+                if (key === 'paddyWagon')
+                {
+                    this.mz.groups.cars.add(levelObject);
+                    this.mz.arrays.awaitWagons.push(levelObject);
+                    this.handleEnterWagon(levelObject, moveX, moveY);
+                }
+                obj.done = true;
+                return levelObject;
+            }));
+        }
+    }
+
+    playPoints(sprite, points)
+    {
+        var spritePoint = this.game.add.sprite(sprite.x, sprite.y-10, 'points_'+points);
+        spritePoint.scale.setTo(0.5);
+        spritePoint.anchor.set(0.5);
+        var tween = game.add.tween(spritePoint);
+        tween.to(
+            {y: sprite.y - 200, alpha: 0.7}, 1500, Phaser.Easing.Default, true
+        );
+        tween.onComplete.add(
+            () => {
+                spritePoint.destroy();
+            }
+        )
+    }
+
+    updateGarbage(){
+        const garbageLevel = Math.floor(this.mz.score/100);
+        if (this.mz.garbageLevel < garbageLevel)
+        {
+            this.mz.garbageLevel = garbageLevel;
+            if (this.mz.objects['garbage_0'+this.mz.garbageLevel])
+                this.mz.objects['garbage_0'+this.mz.garbageLevel].visible = true;
+        }
+    }
+
+    updateSoundTheme(){
+
     }
 }
 

@@ -35,21 +35,19 @@ class Tweets {
   rTweet(selector, options) {
     const tweets = this.find(selector);
     let tweet;
-    if (tweets.length > 1) {
+    if (tweets.length > 0) {
       // debugger;
-      const tweets_ids = tweets.map(tw => tw.id).filter(id => this.showedTweet.indexOf(id) < 0);
-      console.log('n.kozh tweets_ids', tweets_ids);
-      if (tweets_ids.length == 0) {
+      const tweetsIds = tweets.map(tw => tw.id).filter(id => this.showedTweet.indexOf(id) < 0);
+      console.log('n.kozh tweets_ids', tweetsIds);
+      if (tweetsIds.length == 0) {
         console.warn('Твиты такого типа уже все показаны');
         return null
       }
 
-      const tweet_id = tweets_ids[this.game.rnd.integerInRange(0, tweets_ids.length-1)];
+      const tweet_id = tweetsIds[this.game.rnd.integerInRange(0, tweetsIds.length-1)];
       this.showedTweet.push(tweet_id);
       tweet = tweets.find(tw => tw.id === tweet_id);
-    } else {
-      tweet = tweets[0];
-    };
+    }
     console.log('n.kozh rTweet called', tweet);
     return this._tweet({
       text: tweet.text,
@@ -61,6 +59,10 @@ class Tweets {
   _tweet(tweet, options={}) {
     console.log('n.kozh _tweet called', tweet);
     const tweetInstance = this.createTweet(tweet, options);
+    tweetInstance.destroy.add(() => {
+      this.removeFromQueue(tweetInstance);
+    });
+    console.log('tw instance', tweetInstance);
     if (tweetInstance.behavior instanceof ManuallyBehaviour) {
       this.pushToQueue(tweetInstance, true);
     } else {
@@ -88,15 +90,11 @@ class Tweets {
       fontSize: options.fontSize
     };
 
+    const behavior = options.behavior || DefaultBehavior;
+
     const tweet = new Tweet(data, anim, custom);
     tweet.set('game', this.game);
-    tweet.set('aaa', 'bbb');
-    if (!data.name) {
-      // если нам не передали имя
-      // это означает, что для него не подходит
-      // дефолтное поведение
-      tweet.setBehavior(ManuallyBehaviour);
-    } else tweet.setBehavior(DefaultBehavior);
+    tweet.setBehavior(behavior);
 
     tweet.build();
     return tweet;
@@ -114,6 +112,12 @@ class Tweets {
     }
   }
 
+  removeFromQueue(tweetInstance){
+    for (let i=0; i<this.queue.length; i++)
+      if (this.queue[i] === tweetInstance)
+        this.queue.splice(i, 1);
+  }
+
   startQueue() {
     console.log('n.kozh start Queue executing status', this.executing);
     if (this.executing) return;
@@ -129,6 +133,7 @@ class Tweets {
     this.executing = true;
     this.currentTweet = tweet;
     tweet.show();
+
     tweet.nextTweet.add(() => {
       this.executing = false;
       this.startQueue();

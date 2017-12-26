@@ -140,21 +140,21 @@ export default {
     name: "Алексей Абанин",
     text: "Большая куча вместе с @navalny идёт в сторону пушкинской от маяковской",
     nickname: "aban_in",
-    type: "star"
+    type: "star_navalny_enter"
   },
   19:{
     id: 19,
     name: "Рубанов Роман",
     text: "Навального задержали",
     nickname: "rrubanov",
-    type: "star"
+    type: "star_navalny_arrest"
   },
   20:{
     id: 20,
-    name: "Навальный",
+    name: "Alexey Navalny‏",
     text: "Ребята, со мной все хорошо. Не надо меня отбивать. Идите по Тверской. Наша сегодняшняя тема - борьба с коррупцией",
     nickname: "navalny",
-    type: "star"
+    type: "star_navalny_bus"
   },
 
   21:{
@@ -162,21 +162,21 @@ export default {
     name: "Пётр Верзилов",
     text: "Народ все прибывает на Пушкинскую, идут задержания",
     nickname: "gruppa_voina",
-    type: "star"
+    type: "star_verzilov_enter"
   },
   22:{
     id: 22,
     name: "Пётр Верзилов",
     text: "Медиамагнат Пётр Верзилов был задержан на Пушкинской площади в Москве.",
     nickname: "gruppa_voina",
-    type: "star"
+    type: "star_verzilov_arrest"
   },
   23:{
     id: 23,
     name: "Пётр Верзилов",
     text: 'Уау, в нашем автозаке актёр Александр Паль, лауреат премии "Кинотавра" за лучшую мужскую роль в фильме "Тряпичный союз". Очень крутой фильм!',
     nickname: "gruppa_voina",
-    type: "star"
+    type: "star_verzilov_bus"
   },
 
   24:{
@@ -184,21 +184,21 @@ export default {
     name: "Илья Варламов",
     text: "Лимонова задержали",
     nickname: "varlamov",
-    type: "star"
+    type: "star_limonov_enter"
   },
   25:{
     id: 25,
     name: "Медиазона",
     text: "По предварительным данным, Лимонова повезут в ОВД по Тверскому району, остальных задержанных — в ОВД Красносельский",
     nickname: "mediazzzona",
-    type: "star"
+    type: "star_limonov_arrest"
   },
   26:{
     id: 26,
     name: "Телеканал Дождь",
     text: "Илья Яшин оказался в автозаке, хотя даже не успел совершить ничего провокационного и незаконного. Яшин рассказал, как его задержали, и кто оказался с ним в автозаке",
     nickname: "tvrain",
-    type: "star"
+    type: "star_limonov_bus"
   },
   
 

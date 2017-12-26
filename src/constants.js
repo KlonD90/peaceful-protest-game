@@ -39,6 +39,7 @@ export const PROTESTER_MODE_NOD = 'nod';
 export const JOURNALIST_MODE_WANDER = 'wander';
 export const JOURNALIST_MODE_SHOOTING = 'shooting';
 export const JOURNALIST_MODE_FOLLOW = 'follow';
+export const JOURNALIST_MODE_ARRESTED = 'arrested';
 
 export const PADDY_WAGON_MODE_STAY = 'stay';
 export const PADDY_WAGON_MODE_LEAVE = 'leave';
