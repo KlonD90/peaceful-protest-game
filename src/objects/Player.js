@@ -211,6 +211,11 @@ class Player extends Protester {
         this.viewSprite.angle = this.direction - 90;
 
         if (areMovingKeysDown) {
+            if (this.GameObject.mz.advices.move)
+            {
+                this.GameObject.mz.advices.move.hide();
+                this.GameObject.mz.advices.move = null;
+            }
             this.moveTo(null);
             const angles = [];
 

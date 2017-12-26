@@ -88,6 +88,27 @@ class Cop extends Prefab {
                 }
                 this.target = target;
                 this.moveTo(target, {phasing: true});
+                if (!this.GameObject.mz.showedAdvice.shift)
+                {
+                    this.GameObject.mz.showedAdvice.shift = true;
+                    if (Phaser.Device.desktop)
+                    {
+                        this.GameObject.mz.tweet.tweet(
+                            'Если вы зажмете SHIFT, вы сможете убегать от полиции, однако смотрите не выдохнитесь',
+                            'tw_help',
+                            {visible: 5000, fadeIn: 500, fadeOut: 500}
+                        );
+                    }
+                    else
+                    {
+                        this.GameObject.mz.tweet.tweet(
+                            'если вы дважды быстро коснетесь экрана, вы сможете убегать от полиции, однако смотрите не выдохнитесь',
+                            'tw_help',
+                            {visible: 5000, fadeIn: 500, fadeOut: 500}
+                        );
+                    }
+
+                }
                 break;
             }
             case COP_MODE_CONVOY: {
@@ -95,7 +116,12 @@ class Cop extends Prefab {
                 {
                     this.GameObject.mz.showedAdvice.arrest = true;
                     this.GameObject.mz.tweet.tweet(
-                        'Вы можете помешать задержанию людей - для этого подойдите ближе и быстро нажимайте пробел.',
+                        Phaser.Device.desktop
+                            ?
+                            'Чтобы помешать задержанию демонстранта, подойдите к нему и быстро жмите на пробел много раз подряд'
+                            :
+                            'Чтобы помешать задержанию демонстранта, подойдите к нему и быстро жмите по экрану много раз подряд'
+                        ,
                         'tw_help',
                         {visible: 5000, fadeIn: 500, fadeOut: 500}
                     );

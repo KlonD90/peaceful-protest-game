@@ -217,7 +217,7 @@ class NPCProtester extends Protester {
                 {
                     this.GameObject.mz.showedAdvice.nod = true;
                     this.GameObject.mz.advices.nod = this.GameObject.mz.tweet.tweet(
-                        'Будьте осторожны, кто-то может плеснуть зеленкой в лицо!',
+                        'Смотрите, чтобы вам не плеснули зеленкой в лицо',
                         'tw_help',
                         {visible: 5000, fadeIn: 500, fadeOut: 500}
                     );

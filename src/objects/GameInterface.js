@@ -67,7 +67,7 @@ class GameInterface {
         if (!Phaser.Device.desktop) {
             this.buttonPoster = this.game.add.button(
                 this.game.width - 20,
-                this.game.height - 20,
+                this.game.height - 140,
                 'helpPoster',
                 this.handleTogglePoster,
                 this,

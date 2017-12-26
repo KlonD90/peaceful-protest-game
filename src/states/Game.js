@@ -126,6 +126,7 @@ class Game {
             },
             zoomLevel: -1,
             advices: {
+                move: null,
                 space: null,
                 shift: null,
                 agitate: null,
@@ -135,12 +136,16 @@ class Game {
                 people: null,
                 omon: null,
                 star: null,
-                nod: null
+                nod: null,
+                cops: null
             },
             showedAdvice: {
+                move: false,
                 arrest: false,
                 nod: false,
                 omon: false,
+                shift: false,
+                cops: false
             },
             tweet: null,
             limitScore: level.scoreWin,
@@ -372,21 +377,30 @@ class Game {
         this.game.camera.setBoundsToWorld();
         this.customCamera = new Camera(this.game.camera, this.game);
         HelpInfo.setGame(this.game);
+        this.mz.advices.move = this.mz.tweet.tweet(
+            Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице',
+            'tw_help',
+            {behavior: ManuallyBehavior}
+        );
         this.mz.advices.space = this.mz.tweet.tweet(
-            'Чтобы поднять/опустить плакат, нажмите пробел',
+            Phaser.Device.desktop
+                ?
+                'Нажмите ПРОБЕЛ, чтобы начать агитацию/перестать агитировать'
+                :
+                'Нажмите на значок справа внизу экрана, чтобы начать/закончить агитацию',
             'tw_help',
             {behavior: ManuallyBehavior}
         );
         this.mz.advices.agitate = this.mz.tweet.tweet(
-            'Чтобы агитировать людей встаньте у человека с поднятым плакатом',
+            'Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам',
             'tw_help',
             {behavior: ManuallyBehavior}
         );
-        this.mz.advices.shift = this.mz.tweet.tweet(
-            'Чтобы бегать нажмите shift',
-            'tw_help',
-            {behavior: ManuallyBehavior}
-        );
+        // this.mz.advices.shift = this.mz.tweet.tweet(
+        //     'Чтобы бегать нажмите shift',
+        //     'tw_help',
+        //     {behavior: ManuallyBehavior}
+        // );
 
 
         levelObjectReset();
@@ -585,6 +599,15 @@ class Game {
             // revive if necessary
 
             if (copsRequired > this.mz.cops.alive) {
+                if (!this.mz.showedAdvice.cops)
+                {
+                    this.mz.showedAdvice.cops = true;
+                    this.mz.tweet.tweet(
+                        'Во время агитации остерегайтесь сотрудников полиции, опустите плакат до того, как они вас заметят',
+                        'tw_help',
+                        {visible: 5000, fadeIn: 500, fadeOut: 500}
+                    );
+                }
                 this.reviveCops(copsRequired - this.mz.cops.alive);
                 this.mz.cops.alive = copsRequired;
             }
@@ -1034,6 +1057,11 @@ class Game {
         const player = this.mz.objects.player;
         if (player.mode !== PLAYER_MODE_FIGHT && player.mode !== PLAYER_MODE_STUN)
         {
+            if (this.mz.advices.move)
+            {
+                this.mz.advices.move.hide();
+                this.mz.advices.move = null;
+            }
             const angleDegree = player.sprite.position.angle(coords, true);
             player.direction = angleDegree;
             player.resetClickSpeed();
