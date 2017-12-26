@@ -67,7 +67,7 @@ export default class BaseTweet {
         getTextStyle(width),
       );
 
-      textGameObject.font = 'William Text, Arial';
+      textGameObject.font = 'Arial';
       textGameObject.fixedToCamera = true;
     } else {
       textGameObject = this.game.add.text(
@@ -77,7 +77,7 @@ export default class BaseTweet {
         getTextStyle(width),
       );
 
-      textGameObject.font = 'William Text, Arial';
+      textGameObject.font = 'Arial';
       textGameObject.fixedToCamera = true;
     }
 
