@@ -108,17 +108,17 @@ const resultTypes = {
 
       return 'Да вы опытный активист! Попробуйте сыграть снова и набрать очки еще быстрее, тогда вы сможете выиграть наш приз — ватник «Будет хуже».'; 
     },
-    background: require('../assets/win_small.png'),
+    background: require('../assets/win_small_500.png'),
   },
   'arrested': {
     title: 'Вас свинтили. Скучайте в автозаке',
     text: 'Агитируйте аккуратнее, и тогда полиция не обратит на вас внимание. Используйте shift, чтобы передвигаться быстрее и ускользать из лап Нацгвардии.',
-    background: require('../assets/lose_copy_small.png'),
+    background: require('../assets/lose_small_500.png'),
   },
   'desolation': {
     title: 'Попробуйте одиночные пикеты',
     text: 'Вы остались в одиночестве. Ваш протест был настолько пассивным, что вас просто никто не заметил.',
-    background: require('../assets/lose_copy_small.png'),
+    background: require('../assets/desolation_small_500.png'),
   }
 }
 
@@ -152,7 +152,7 @@ const _show = (context, currentScore, cb) => {
           c.contact = formData.email;
           c.showForm = false;
           document.body.removeChild(fragment);
-          _show(context, cb);
+          _show(context, currentScore, cb);
         });
 
       return false;
@@ -161,7 +161,7 @@ const _show = (context, currentScore, cb) => {
   }
   document.querySelector('[data-js-selector="replay-button"]')
     .onclick = function() {
-      document.body.removeChild(fragment)
+      document.body.removeChild(fragment);
       cb();
     };
 }

@@ -166,9 +166,9 @@ export default {
   },
   22:{
     id: 22,
-    name: "Пётр Верзилов",
+    name: "Повар Войны",
     text: "Медиамагнат Пётр Верзилов был задержан на Пушкинской площади в Москве.",
-    nickname: "gruppa_voina",
+    nickname: "noliquid",
     type: "star_verzilov_arrest"
   },
   23:{
