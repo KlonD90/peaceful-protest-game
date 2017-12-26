@@ -431,6 +431,21 @@ const pack = {
         },
         {
             type: 'audio',
+            key: 'bp_loop',
+            urls: require('./audio/bp.mp3')
+        },
+        {
+            type: 'audio',
+            key: 'meeting_sound',
+            urls: require('./audio/ms.mp3')
+        },
+        {
+            type: 'audio',
+            key: 'bp_song',
+            urls: require('./audio/krovostok.mp3')
+        },
+        {
+            type: 'audio',
             key: 'croud',
             urls: require('./audio/croud.mp3')
         },

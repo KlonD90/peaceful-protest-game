@@ -25,7 +25,7 @@ body::before {
     max-height: 800px;
     min-height: 330px;
     vertical-align: middle;
-    box-shadow: 0px 0px 0px 20px rgba(0, 0, 0, 0.1);
+    /*box-shadow: 0px 0px 0px 20px rgba(0, 0, 0, 0.1);*/
     background-color: #000;
 
     position: relative;
@@ -39,10 +39,4 @@ body::before {
   bottom: 0px;
   z-index: -1;
   background: #d9dde1;
-
-  // -webkit-filter: blur(5px);
-  // -moz-filter: blur(5px);
-  // -o-filter: blur(5px);
-  // -ms-filter: blur(5px);
-  // filter: blur(5px);
 }

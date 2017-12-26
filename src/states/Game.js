@@ -14,6 +14,7 @@ import HelpInfo from '../objects/HelpInfo.js';
 import Camera from '../objects/Camera';
 import Tweet from '../objects/Tweets/';
 import modalShow from '../modal/';
+import levels from '../levels';
 
 
 
@@ -82,7 +83,8 @@ class Game {
                 screen: null,
                 resize: null,
                 fight: null,
-                twits: null
+                twits: null,
+                gameTime: null
             },
             objects: {
                 star: null,
@@ -245,6 +247,13 @@ class Game {
         this.mz.timers.resize = this.game.time.create(false);
         this.mz.timers.fight = this.game.time.create(false);
         this.mz.timers.twits = this.game.time.create(false);
+        this.mz.timers.twits = this.game.time.create(false);
+        if (this.mz.timers.gameTime)
+        {
+            this.mz.timers.gameTime.destroy();
+        }
+        this.mz.timers.gameTime = this.game.time.create(false);
+        this.mz.timers.gameTime.start();
         this.mz.timers.twits.loop(1000 * 60, () => {
             if (Math.random() < 0.5)
                 this.mz.tweet.rTweet({type: 'description'}, {visible: 5000, fadeIn: 500, fadeOut: 500})
@@ -283,7 +292,6 @@ class Game {
                 }
                 :
                 this.getRandomCoordinates();
-            console.log('press first', isFirst, coords);
             const journalist = this.createPrefab(Journalist, {
                 ...coords,
                 fov: {
@@ -826,7 +834,6 @@ class Game {
             this.mz.levelObjects.paddyWagon,
             this.mz.arrays.protesters,
             (wagon, protester) => {
-                console.log('collide', wagon, protester);
                 const moveEntity = this.collider.getEntityBySprite(protester);
                 const targets = moveEntity.move;
                 if (targets.length)
@@ -970,7 +977,6 @@ class Game {
         if (this.mz.screenAttacked)
         {
             //
-            console.log('sprite position', this.mz.objects.player.sprite.x, this.mz.objects.player.sprite.y);
             this.mz.objects.screenAttack
                 .clear()
                 .beginFill(0x67c079, 0.95)
@@ -1257,7 +1263,6 @@ class Game {
         }
         const prevX = protesterSprite.x;
         const prevY = protesterSprite.y;
-        console.log('protester sprite', protesterSprite);
 
         copSprite.removeChild(protesterSprite);
         this.mz.groups.d.add(protesterSprite);
@@ -1284,7 +1289,6 @@ class Game {
             }
             // protesterSprite.mz.setMode(PROTESTER_MODE_WANDER);
         }
-        console.log('protester', protesterSprite);
     }
 
     launchSWAT() {
@@ -1382,9 +1386,9 @@ class Game {
             this.mz.arrays.protesters.forEach(sprite => {
                 sprite.mz.moodUp(1);
             });
-            modalShow('success');
+            modalShow('success', this.mz.timers.gameTime.second, () => this.game.state.start('Game', true, false, levels['level1']));
         } else {
-            modalShow('arrested');
+            modalShow('arrested', 0,  () => this.game.state.start('Game', true, false, levels['level1']));
             this.mz.objects.audio.boo.play();
             switch (mode) {
                 case END_GAME_PROTEST_RATE: {
@@ -1815,6 +1819,10 @@ class Game {
             if (this.mz.objects['garbage_0'+this.mz.garbageLevel])
                 this.mz.objects['garbage_0'+this.mz.garbageLevel].visible = true;
         }
+    }
+
+    updateSoundTheme(){
+
     }
 }
 
