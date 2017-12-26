@@ -147,6 +147,7 @@ class Game {
             starScore: level.star.score,
             pressScore: level.press.score,
             pressJailed: false,
+            musicStage: 'start'
         };
         this.mz.score = 0;
     }
@@ -174,8 +175,10 @@ class Game {
         this.mz.objects.garbage_02.visible = false;
         this.mz.objects.garbage_03.visible = false;
 
-        this.mz.objects.audio.theme = this.game.add.audio('theme');
-        this.mz.objects.audio.theme.loopFull(0.1);
+        this.mz.objects.audio.theme = this.game.add.audio('bp_loop');
+        this.mz.objects.audio.theme.loopFull(0.001);
+        this.game.add.tween(this.mz.objects.audio.theme).to({volume:0.15}, 20000).start();
+
         this.mz.objects.audio.audioPunch = [
             this.game.add.audio('punch01'),
             this.game.add.audio('punch02')
@@ -186,6 +189,8 @@ class Game {
         this.mz.objects.audio.applause = this.game.add.audio('applause');
         this.mz.objects.audio.boo = this.game.add.audio('boo');
         this.mz.objects.audio.pick = this.game.add.audio('pick');
+        this.mz.objects.audio.meeting = this.game.add.audio('meeting_sound');
+        // this.mz.objects.audio.song = this.game.add.audio('bp_song');
 
 
 
@@ -989,6 +994,15 @@ class Game {
                 .lineTo(0, 0)
                 .endFill();
         }
+
+        if (this.mz.protesters.alive >= 20 && this.mz.musicStage === 'start')
+        {
+            // this.GameObject.mz.objects.audio.theme.fadeOut(10000);
+            this.mz.musicStage = 'crowd';
+            this.mz.objects.audio.meeting.loopFull(0.01);
+            this.game.add.tween(this.mz.objects.audio.meeting).to({volume:0.15}, 30000).start();
+                // .fadeIn(20000);
+        }
     }
 
     render() {
@@ -1351,7 +1365,7 @@ class Game {
     endGame(mode) {
         this.mz.gameEnded = true;
 
-        this.mz.objects.audio.theme.fadeOut(2000);
+
 
         // this.mz.objects.endMenu = new EndMenu({
         //     game: this.game,
@@ -1386,9 +1400,20 @@ class Game {
             this.mz.arrays.protesters.forEach(sprite => {
                 sprite.mz.moodUp(1);
             });
-            modalShow('success', this.mz.timers.gameTime.seconds, () => this.game.state.start('Game', true, false, levels['level1']));
+            modalShow('success', this.mz.timers.gameTime.seconds, () => {
+                this.mz.objects.audio.theme.stop();
+                this.mz.objects.audio.meeting.stop();
+                // this.mz.objects.audio.song.stop();
+                this.game.state.start('Game', true, false, levels['level1'])
+
+            });
         } else {
-            modalShow('arrested', 0,  () => this.game.state.start('Game', true, false, levels['level1']));
+            modalShow('arrested', 0,  () => {
+                this.mz.objects.audio.theme.stop();
+                this.mz.objects.audio.meeting.stop();
+                // this.mz.objects.audio.song.stop();
+                this.game.state.start('Game', true, false, levels['level1'])
+            });
             this.mz.objects.audio.boo.play();
             switch (mode) {
                 case END_GAME_PROTEST_RATE: {
@@ -1821,9 +1846,16 @@ class Game {
         }
     }
 
-    updateSoundTheme(){
-
-    }
+    // updateTheme(){
+    //     if (this.mz.musicStage !== 'prefinal' && this.mz.score > 250)
+    //     {
+    //         this.mz.musicStage = 'prefinal';
+    //         // this.mz.objects.audio.meeting.fadeOut(10000);
+    //         // this.mz.objects.audio.theme.fadeOut(10000);
+    //         this.GameObject.mz.objects.audio.song.loopFull(0.01);
+    //         this.game.add.tween(this.mz.objects.audio.song).to({volume:0.15}, 5000).start();
+    //     }
+    // }
 }
 
 export default Game;

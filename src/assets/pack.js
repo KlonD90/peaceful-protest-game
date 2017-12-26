@@ -441,11 +441,6 @@ const pack = {
         },
         {
             type: 'audio',
-            key: 'bp_song',
-            urls: require('./audio/krovostok.mp3')
-        },
-        {
-            type: 'audio',
             key: 'croud',
             urls: require('./audio/croud.mp3')
         },
