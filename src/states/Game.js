@@ -936,10 +936,10 @@ class Game {
                 this.mz.objects.player.sprite,
                 this.mz.objects.star.sprite
             );
-            this.game.physics.arcade.collide(
-                this.mz.objects.player.sprite,
-                this.mz.objects.star.sprite
-            );
+            // this.game.physics.arcade.collide(
+            //     this.mz.levelObjects.paddyWagon,
+            //     this.mz.objects.star.sprite
+            // );
         }
         this.game.physics.arcade.collide(
             this.mz.arrays.cops,
