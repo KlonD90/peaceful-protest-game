@@ -6,6 +6,8 @@ import style from 'style-loader!css-loader!./style.css';
 import font from  'style-loader!css-loader!./font.css'
 import sha256 from './sha256.js';
 
+const HOST_URL = 'https://v3-stage.zona.media/';
+// const HOST_URL = 'http://localhost:8081';
 const template = Handlebars.compile(templateSource);
 
 const hash = ({score, name, email}) => {
@@ -14,7 +16,15 @@ const hash = ({score, name, email}) => {
 }
 
 const getScore = () => {
-  return axios.get('/game_score')
+  return axios.get(`${HOST_URL}/game_score`, {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
+      withCredentials: true,
+      credentials: 'same-origin',
+    }
+  });
 }
 
 const getScoreFake = () => {
@@ -37,7 +47,7 @@ const sendNewScore = (formData) => {
   const cats = hash(formData);
   return axios({
     method: 'post',
-    url: '/game_score',
+    url: `${HOST_URL}/game_score`,
     data: {
       score: formData.score,
       nick: formData.name,
@@ -131,6 +141,7 @@ const _show = (context, currentScore, cb) => {
     emailEl.onkeyup = validate;
     formEl.onsubmit = function(e) {
       e.preventDefault();
+
       const formData = {
         name: nameEl.value,
         email: emailEl.value,
@@ -139,17 +150,13 @@ const _show = (context, currentScore, cb) => {
       // sendNewScoreFake(formData)
       sendNewScore(formData)
         .then((res) => {
-          debugger;
           const c = context.scores.find(s => s.current);
           c.nick = formData.name;
           c.contact = formData.email;
           c.showForm = false;
           document.body.removeChild(fragment);
           _show(context, cb);
-        })
-        .catch(err => {
-          console.error(err);
-        })
+        });
 
       return false;
     }
@@ -183,7 +190,10 @@ const show = (type, currentScore, cb) => {
       context.text = context.text(i);
 
     _show(context, currentScore, cb);
-  });
+  })
+  .catch((err) => {
+    console.error('getScore error:', err);
+  })
 }
 
 // setTimeout(() => show('arrested', 900, () => console.log('заново')), 1500);
