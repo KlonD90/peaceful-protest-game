@@ -27,6 +27,8 @@ body::before {
     vertical-align: middle;
     box-shadow: 0px 0px 0px 20px rgba(0, 0, 0, 0.1);
     background-color: #000;
+
+    position: relative;
 }
 
 .game-background {
@@ -36,10 +38,11 @@ body::before {
   top: 0px;
   bottom: 0px;
   z-index: -1;
+  background: #d9dde1;
 
-  -webkit-filter: blur(5px);
-  -moz-filter: blur(5px);
-  -o-filter: blur(5px);
-  -ms-filter: blur(5px);
-  filter: blur(5px);
+  // -webkit-filter: blur(5px);
+  // -moz-filter: blur(5px);
+  // -o-filter: blur(5px);
+  // -ms-filter: blur(5px);
+  // filter: blur(5px);
 }
