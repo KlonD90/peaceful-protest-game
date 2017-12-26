@@ -1437,19 +1437,26 @@ class Game {
 
             });
         } else {
-            modalShow('arrested', 0,  () => {
-                this.mz.objects.audio.theme.stop();
-                this.mz.objects.audio.meeting.stop();
-                // this.mz.objects.audio.song.stop();
-                this.game.state.start('Game', true, false, levels['level1'])
-            });
+
             this.mz.objects.audio.boo.play();
             switch (mode) {
                 case END_GAME_PROTEST_RATE: {
                     // this.launchShield();
+                    modalShow('desolation', 0,  () => {
+                        this.mz.objects.audio.theme.stop();
+                        this.mz.objects.audio.meeting.stop();
+                        // this.mz.objects.audio.song.stop();
+                        this.game.state.start('Game', true, false, levels['level1'])
+                    });
                     break;
                 }
                 case END_GAME_PLAYER_KILLED: {
+                    modalShow('arrested', 0,  () => {
+                        this.mz.objects.audio.theme.stop();
+                        this.mz.objects.audio.meeting.stop();
+                        // this.mz.objects.audio.song.stop();
+                        this.game.state.start('Game', true, false, levels['level1'])
+                    });
                     break;
                 }
             }
