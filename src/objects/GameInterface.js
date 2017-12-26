@@ -97,7 +97,8 @@ class GameInterface {
 
     update({ score, protestersAlive, protestersTotal, meanMood, percent, showPoster}) {
         this.buttonSound.frame = this.game.sound.mute ? 1 : 0;
-        this.buttonPoster.frame = showPoster ? 1 : 0;
+        if (this.buttonPoster)
+            this.buttonPoster.frame = showPoster ? 1 : 0;
         this.score.update(percent);
     }
 
