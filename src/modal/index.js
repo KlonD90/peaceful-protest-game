@@ -88,7 +88,7 @@ const validate = (formData) => {
 
 Handlebars.registerHelper('parseScoreTime', function(sec) {
   const h = ~~(sec/3600);
-  const m = ~~(sec/60);
+  const m = ~~(sec/60)-h*60;
   const s = ~~(sec%60);
   return `${h}:${m}:${s}`;
 });
