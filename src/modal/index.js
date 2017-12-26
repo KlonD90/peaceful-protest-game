@@ -170,16 +170,19 @@ const show = (type, currentScore, cb) => {
 
   getScore().then(({data: scores}) => {
   // getScoreFake().then((scores) => {
-    for(var i=0; i<scores.length; i++) {
-      if (scores[i].score > currentScore) {
-        break;
+    if (type === 'success') {
+      for(var i=0; i<scores.length; i++) {
+        if (scores[i].score > currentScore) {
+          break;
+        }
       }
-    }
-    scores.splice(i, 0, { showForm: true, current: true, score: currentScore });
-    context.scores = scores.slice(0, 2);
+      scores.splice(i, 0, { showForm: true, current: true, score: currentScore });
 
-    if (typeof context.text === 'function')
-      context.text = context.text(i);
+      if (typeof context.text === 'function')
+        context.text = context.text(i);
+    }
+    context.scores = scores.slice(0, 2);
+    
 
     _show(context, currentScore, cb);
   })
