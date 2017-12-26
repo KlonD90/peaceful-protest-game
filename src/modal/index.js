@@ -152,7 +152,7 @@ const _show = (context, currentScore, cb) => {
           c.contact = formData.email;
           c.showForm = false;
           document.body.removeChild(fragment);
-          _show(context, cb);
+          _show(context, currentScore, cb);
         });
 
       return false;
@@ -161,7 +161,7 @@ const _show = (context, currentScore, cb) => {
   }
   document.querySelector('[data-js-selector="replay-button"]')
     .onclick = function() {
-      document.body.removeChild(fragment)
+      document.body.removeChild(fragment);
       cb();
     };
 }
