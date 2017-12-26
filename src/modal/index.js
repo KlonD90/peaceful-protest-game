@@ -99,20 +99,25 @@ Handlebars.registerHelper('plus', function(a, b) {
 
 const resultTypes = {
   'success': {
-    title: 'Митинг удался',
+    title: 'Отличный митинг! Вы бодры и на свободе',
     text: (ratingPos) => {
+      const ratingMap = ['первое', 'второе']
       if (ratingPos < 2) {
-        return `“Поздравляем! Вы заняли ${ratingPos+1} место в сегодняшнем топ-2, заполните поле для участия в розыгрыше призов.`;
+        return `Поздравляем! Вы заняли ${ratingMap[ratingPos]} место в сегодняшнем топе, укажите свою почту для участия в розыгрыше призов.`;
       }
 
-      return 'Вы молодец, попробуйте набрать очки быстрее, чтобы получить приз — кофты “Будет хуже” от Кровостока'; 
+      return 'Да вы опытный активист! Попробуйте сыграть снова и набрать очки еще быстрее, тогда вы сможете выиграть наш приз — ватник «Будет хуже».'; 
     },
-    // 'Вы молодец, попробуйте набрать очки быстрее, чтобы получить приз — кофты “Будет хуже” от Кровостока',
     background: require('../assets/win_small.png'),
   },
   'arrested': {
-    title: 'Вас повязали',
-    text: 'Не агитируйте все время, тогда полиция не обратит на вас внимание. Используйте shift, чтобы передвигаться быстрее и ускользать от Омона.',
+    title: 'Вас свинтили. Скучайте в автозаке',
+    text: 'Агитируйте аккуратнее, и тогда полиция не обратит на вас внимание. Используйте shift, чтобы передвигаться быстрее и ускользать из лап Нацгвардии.',
+    background: require('../assets/lose_copy_small.png'),
+  },
+  'desolation': {
+    title: 'Попробуйте одиночные пикеты',
+    text: 'Вы остались в одиночестве. Ваш протест был настолько пассивным, что вас просто никто не заметил.',
     background: require('../assets/lose_copy_small.png'),
   }
 }
@@ -124,7 +129,7 @@ const _show = (context, currentScore, cb) => {
   fragment.innerHTML = html;
   document.body.appendChild(fragment);
 
-  if(context.scores.find(s => s.current)){
+  if(context.scores.find(s => s.showForm)){
     const formEl = document.querySelector('[data-js-selector="participated-form"]');
     const nameEl = document.querySelector('[data-js-selector="participated-form-name"]');
     const emailEl = document.querySelector('[data-js-selector="participated-form-email"]');
@@ -154,7 +159,6 @@ const _show = (context, currentScore, cb) => {
     }
 
   }
-
   document.querySelector('[data-js-selector="replay-button"]')
     .onclick = function() {
       document.body.removeChild(fragment)
@@ -182,7 +186,7 @@ const show = (type, currentScore, cb) => {
         context.text = context.text(i);
     }
     context.scores = scores.slice(0, 2);
-    
+    context.currentURL = encodeURIComponent(window.location.href+`?result=${type}&_share=1`);
 
     _show(context, currentScore, cb);
   })
