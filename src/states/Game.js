@@ -900,6 +900,10 @@ class Game {
                 this.mz.objects.player.sprite,
                 this.mz.objects.star.sprite
             );
+            this.game.physics.arcade.collide(
+                this.mz.objects.player.sprite,
+                this.mz.objects.star.sprite
+            );
         }
         this.game.physics.arcade.collide(
             this.mz.arrays.cops,
@@ -1345,18 +1349,18 @@ class Game {
 
         this.mz.objects.audio.theme.fadeOut(2000);
 
-        this.mz.objects.endMenu = new EndMenu({
-            game: this.game,
-            mode,
-            score: this.mz.objects.interface.score.group,
-            stats: {
-                time: this.mz.timePassed,
-                alive: this.mz.protesters.alive,
-                arrested: this.mz.protesters.arrested,
-                revived: this.mz.protesters.revived,
-                left: this.mz.protesters.left
-            }
-        });
+        // this.mz.objects.endMenu = new EndMenu({
+        //     game: this.game,
+        //     mode,
+        //     score: this.mz.objects.interface.score.group,
+        //     stats: {
+        //         time: this.mz.timePassed,
+        //         alive: this.mz.protesters.alive,
+        //         arrested: this.mz.protesters.arrested,
+        //         revived: this.mz.protesters.revived,
+        //         left: this.mz.protesters.left
+        //     }
+        // });
 
         this.game.camera.unfollow();
         this.mz.objects.interface.kill();
@@ -1378,16 +1382,11 @@ class Game {
             this.mz.arrays.protesters.forEach(sprite => {
                 sprite.mz.moodUp(1);
             });
+            modalShow('success');
         } else {
+            modalShow('arrested');
             this.mz.objects.audio.boo.play();
             switch (mode) {
-                case END_GAME_TIME_OUT: {
-                    this.mz.arrays.protesters.forEach(sprite => {
-                        sprite.mz.moodDown(1);
-                    });
-                    // this.launchShield();
-                    break;
-                }
                 case END_GAME_PROTEST_RATE: {
                     // this.launchShield();
                     break;
@@ -1397,6 +1396,7 @@ class Game {
                 }
             }
         }
+
     }
 
     playRandomSound() {
