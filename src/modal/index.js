@@ -108,7 +108,6 @@ const resultTypes = {
 
       return 'Да вы опытный активист! Попробуйте сыграть снова и набрать очки еще быстрее, тогда вы сможете выиграть наш приз — ватник «Будет хуже».'; 
     },
-    // 'Вы молодец, попробуйте набрать очки быстрее, чтобы получить приз — кофты “Будет хуже” от Кровостока',
     background: require('../assets/win_small.png'),
   },
   'arrested': {
@@ -188,7 +187,7 @@ const show = (type, currentScore, cb) => {
         context.text = context.text(i);
     }
     context.scores = scores.slice(0, 2);
-    
+    context.currentURL = encodeURIComponent(window.location.href+`?result=${type}`);
 
     _show(context, currentScore, cb);
   })
