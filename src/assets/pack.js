@@ -663,6 +663,13 @@ const pack = {
         },
         {
             type: 'spritesheet',
+            key: 'mobile_poster',
+            url: require('./mobile_poster.png'),
+            frameWidth: 50,
+            frameHeight: 50
+        },
+        {
+            type: 'spritesheet',
             key: 'dropped_poster',
             url: require('./dropped_poster.png'),
             frameWidth: 44,

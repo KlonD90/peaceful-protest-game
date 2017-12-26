@@ -67,8 +67,8 @@ class GameInterface {
         if (!Phaser.Device.desktop) {
             this.buttonPoster = this.game.add.button(
                 this.game.width - 20,
-                this.game.height - 140,
-                'helpPoster',
+                this.game.height - 120,
+                'mobile_poster',
                 this.handleTogglePoster,
                 this,
                 1, 1, 1, 1,
@@ -76,6 +76,7 @@ class GameInterface {
             );
             this.buttonPoster.anchor.set(1, 1);
             this.buttonPoster.input.priorityID = 2;
+            this.buttonPoster.frame = 0;
         }
         else
         {
@@ -94,9 +95,9 @@ class GameInterface {
 
     }
 
-    update({ score, protestersAlive, protestersTotal, meanMood, percent }) {
+    update({ score, protestersAlive, protestersTotal, meanMood, percent, showPoster}) {
         this.buttonSound.frame = this.game.sound.mute ? 1 : 0;
-
+        this.buttonPoster.frame = showPoster ? 1 : 0;
         this.score.update(percent);
     }
 
@@ -113,6 +114,7 @@ class GameInterface {
     }
 
     handleTogglePoster() {
+
         this.onTogglePoster();
     }
 

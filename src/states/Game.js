@@ -508,7 +508,8 @@ class Game {
                 protestersAlive: this.mz.protesters.alive,
                 protestersTotal: this.mz.level.protesters.count.max,
                 meanMood: this.mz.protesters.meanMood,
-                percent: this.mz.score/this.mz.limitScore
+                percent: this.mz.score/this.mz.limitScore,
+                showPoster: Player.instance.showPoster
             });
         }
 

@@ -257,11 +257,7 @@ class Player extends Protester {
 
         if (this.keys.space.justDown && this.mode !== PLAYER_MODE_FIGHT) {
             this.togglePoster();
-            if (this.GameObject.mz.advices.space !== null)
-            {
-                this.GameObject.mz.advices.space.hide();
-                this.GameObject.mz.advices.space = null;
-            }
+
 
         }
         this.updateAnimation();
@@ -346,6 +342,12 @@ class Player extends Protester {
     togglePoster(on = !this.showPoster) {
         if (on === this.showPoster) {
             return;
+        }
+
+        if (this.GameObject.mz.advices.space !== null)
+        {
+            this.GameObject.mz.advices.space.hide();
+            this.GameObject.mz.advices.space = null;
         }
 
         // play sound
