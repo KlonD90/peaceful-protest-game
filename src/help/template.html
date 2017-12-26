@@ -1,0 +1,18 @@
+<div class="help-container">
+  <div class="help">
+    <span data-js-selector="help-close" class='help_close'> </span>
+    {{#each data}}
+      <div class="help_line help-line">
+        <div class="help-line_pic">
+          <img src="{{ image }}" />
+        </div>
+        <div class="help-line_separator">
+          <img src="{{../separator }}" />
+        </div>
+        <div class="help-line_text">
+          {{{ text }}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>
