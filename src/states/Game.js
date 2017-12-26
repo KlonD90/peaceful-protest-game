@@ -1386,7 +1386,7 @@ class Game {
             this.mz.arrays.protesters.forEach(sprite => {
                 sprite.mz.moodUp(1);
             });
-            modalShow('success', this.mz.timers.gameTime.second, () => this.game.state.start('Game', true, false, levels['level1']));
+            modalShow('success', this.mz.timers.gameTime.seconds, () => this.game.state.start('Game', true, false, levels['level1']));
         } else {
             modalShow('arrested', 0,  () => this.game.state.start('Game', true, false, levels['level1']));
             this.mz.objects.audio.boo.play();
