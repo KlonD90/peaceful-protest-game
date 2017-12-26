@@ -1,7 +1,11 @@
 const path = require('path');
 const webpack = require('webpack');
 
+console.log(`process.env.NODE_ENV is ${process.env.NODE_ENV}`);
 plugins = process.env.NO_UGLIFY ? [] : [new webpack.optimize.UglifyJsPlugin()]
+plugins.push(
+  new webpack.EnvironmentPlugin(['NODE_ENV'])
+);
 
 module.exports = {
     entry: {
@@ -43,7 +47,7 @@ module.exports = {
                 test: /\.(jpg|png|mp3|jpeg|gif)$/,
                 loader: 'file-loader',
                 query: {
-                    outputPath: 'assets/'
+                  outputPath: 'assets/'
                 }
             },
             {
