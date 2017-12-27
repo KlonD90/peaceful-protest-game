@@ -258,10 +258,7 @@ class NPCProtester extends Protester {
                 const x = this.sprite.x < this.game.world.width / 2 ? -100 : this.game.world.width + 100
                 const y = this.sprite.y
 
-                this.moveTo({ x, y }, { callback: () => this.handleLeft(), shouldStop: (prefab, target) =>  {
-                    const prefabCenter = prefab.sprite.body.center
-                    return Math.abs(target.x - prefabCenter.x) + Math.abs(target.y - prefabCenter.y) < 5;
-                }});
+                this.moveTo({ x, y }, { callback: () => this.handleLeft(), phasing: true});
                 break;
             }
         }

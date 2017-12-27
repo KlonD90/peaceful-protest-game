@@ -1,4 +1,20 @@
 const pack = {
+    boot: [
+        {
+            type: 'spritesheet',
+            key: 'enter_bg',
+            url: require('./enter_bg.png'),
+            frameWidth: 135,
+            frameHeight: 106
+        },
+        {
+            type: 'spritesheet',
+            key: 'enter_logo',
+            url: require('./logo.png'),
+            frameWidth: 669,
+            frameHeight: 312
+        },
+    ],
     initial: [
         {
             type: 'spritesheet',
@@ -278,10 +294,24 @@ const pack = {
     levelCommon: [
         {
             type: 'spritesheet',
+            key: 'defend',
+            url: require('./defend.png'),
+            frameWidth: 360,
+            frameHeight: 81
+        },
+        {
+            type: 'spritesheet',
             key: 'playButton',
             url: require('./playButton.png'),
             frameWidth: 100,
             frameHeight: 100
+        },
+        {
+            type: 'spritesheet',
+            key: 'help',
+            url: require('./help.png'),
+            frameWidth: 48,
+            frameHeight: 48
         },
         {
             type: 'spritesheet',

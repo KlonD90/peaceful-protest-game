@@ -37,8 +37,9 @@ export class Collider {
       personalMatrix: this.compilePersonalMatrix(sprite),
       times: 0,
       lastDecisionTime: 0,
-      lastCoords: [0, 0]
-
+      lastCoords: [0, 0],
+      decision: 0,
+      lastTarget: null
     })
   }
 

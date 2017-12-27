@@ -9,7 +9,8 @@ import type {
 } from "./types.js"
 
 
-const decisionTimeout = 2000;
+const decisionTimeout = 1000;
+// const phasingDecisionTime = 100;
 const timesTimeout = 2;
 
 const matrixTimeout = 2000;
@@ -45,11 +46,8 @@ class Updater {
     const { collider, converter } = this
     const now = (new Date()).getTime();
     collider.entities.forEach((entity) => {
-      const { move, sprite, object, personalMatrix, lastDecisionTime, lastCoords } = entity;
-      if (now - lastDecisionTime < decisionTimeout)
-      {
-          return;
-      }
+      const { move, sprite, object, personalMatrix, lastDecisionTime, lastCoords, decision, lastTarget } = entity;
+
       if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
       let { target, phasing, follow, callback, superphasing } = move[0]
       const moveFrom = converter.rCoordsToMCoords(sprite.body.center)
@@ -70,17 +68,25 @@ class Updater {
         var path = [moveFrom, moveTo]
         var pathClear = !equals(moveFrom, moveTo)
       } else {
-
-        const finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true})
-        if (superphasing)
+        if (decision && lastDecisionTime < now && lastTarget === target)
         {
-            var path = this._findImmovablePath({finder, from: moveFrom, to: moveTo})
+          var path = decision;
         }
         else
         {
-            var path = this._findPath({finder, from: moveFrom, to: moveTo, personalMatrix})
+          entity.lastDecisionTime = now + decisionTimeout;
+          entity.lastTarget = target;
+            const finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true})
+            if (superphasing)
+            {
+                var path = this._findImmovablePath({finder, from: moveFrom, to: moveTo})
+            }
+            else
+            {
+                var path = this._findPath({finder, from: moveFrom, to: moveTo, personalMatrix})
+            }
         }
-        var pathClear = path[2] || mget(this.matrix, path[1]) === false
+        var pathClear = path[2] || mget(this.matrix, path[1]) === false;
       }
 
       if (pathClear) {

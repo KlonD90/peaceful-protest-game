@@ -11,6 +11,10 @@ class Boot {
         this.game.mz = {};
     }
 
+    preload() {
+        this.load.pack('boot', null, pack);
+    }
+
     create() {
         this.game.mz.i18n = new i18n({
             game: this.game

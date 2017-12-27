@@ -39,11 +39,11 @@ class Player extends Protester {
         this.direction = 0;
 
         this.power = 1;
-        this.powerUpValue = powerUp;
-        this.powerDownValue = powerDown;
-        this.powerTimer = this.game.time.create(false);
-        this.powerTimer.loop(2000, this.powerDown, this);
-        this.powerTimer.start();
+        // this.powerUpValue = powerUp;
+        // this.powerDownValue = powerDown;
+        // this.powerTimer = this.game.time.create(false);
+        // this.powerTimer.loop(2000, this.powerDown, this);
+        // this.powerTimer.start();
 
         this.cheering = cheering;
 
@@ -281,6 +281,7 @@ class Player extends Protester {
                 break;
             }
             case PLAYER_MODE_FIGHT: {
+
                 this.showPoster = false;
                 this.fightBar = 10;
                 this.GameObject.mz.timers.fight.stop();
@@ -290,11 +291,13 @@ class Player extends Protester {
                 this.GameObject.mz.timers.fight.start();
                 this.sprite.body.immovable = true;
                 // HelpInfo.show('space_fight')
+                this.GameObject.mz.objects.fightAdvice.visible = true;
                 console.log(this.GameObject.mz.timers.fight);
                 break;
             }
             case PLAYER_MODE_STUN: {
                 // HelpInfo.hide('space_fight')
+                this.GameObject.mz.objects.fightAdvice.visible = false;
                 this.showPoster = false;
                 this.GameObject.mz.timers.fight.stop();
                 this.GameObject.mz.timers.fight.removeAll();
@@ -313,6 +316,7 @@ class Player extends Protester {
             }
             case PLAYER_MODE_NORMAL: {
                 // HelpInfo.hide('space_fight')
+                this.GameObject.mz.objects.fightAdvice.visible = false;
                 this.showPoster = false;
                 this.stunTimer.removeAll();
                 this.stunTimer.stop();
@@ -358,24 +362,24 @@ class Player extends Protester {
         this.showPoster = on;
     }
 
-    powerUp(value = this.powerUpValue) {
-        if (value !== 0) {
-            this.powerChange(value);
-        }
-    }
-
-    powerDown(value = this.powerDownValue) {
-        const power = Math.max(1, this.power - value);
-        if (power !== this.power) {
-            this.powerChange(-value);
-        }
-    }
-
-    powerChange(value) {
-        this.power += value;
-
-        this.posterSprite.scale.set(this.power);
-    }
+    // powerUp(value = this.powerUpValue) {
+    //     if (value !== 0) {
+    //         this.powerChange(value);
+    //     }
+    // }
+    //
+    // powerDown(value = this.powerDownValue) {
+    //     const power = Math.max(1, this.power - value);
+    //     if (power !== this.power) {
+    //         this.powerChange(-value);
+    //     }
+    // }
+    //
+    // powerChange(value) {
+    //     this.power += value;
+    //
+    //     this.posterSprite.scale.set(this.power);
+    // }
 
     resetClickSpeed(discard) {
         if (discard) {
@@ -421,7 +425,7 @@ class Player extends Protester {
 
     kill() {
         this.game.onResume.removeAll();
-        this.powerTimer.stop(true);
+        // this.powerTimer.stop(true);
 
         super.kill();
     }

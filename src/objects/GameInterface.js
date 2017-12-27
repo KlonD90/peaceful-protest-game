@@ -1,5 +1,6 @@
 import ScoreMeter from './../objects/ScoreMeter.js';
 import levels from '../levels';
+import helpShow from '../help/';
 
 class GameInterface {
     constructor({ game, onTogglePoster }) {
@@ -54,8 +55,8 @@ class GameInterface {
 
 
         this.buttonSound = this.game.add.button(
-            10,
-            10,
+            isWide ? 20 : 10,
+            isWide ? 20 : 10,
             'soundButtons',
             this.handleClickSound,
             this,
@@ -63,6 +64,8 @@ class GameInterface {
             this.group
         );
         this.buttonSound.input.priorityID = 2;
+
+
 
         if (!Phaser.Device.desktop) {
             this.buttonPoster = this.game.add.button(
@@ -77,12 +80,24 @@ class GameInterface {
             this.buttonPoster.anchor.set(1, 1);
             this.buttonPoster.input.priorityID = 2;
             this.buttonPoster.frame = 0;
+
+            this.buttonHelp = this.game.add.button(
+                10,
+                10 + 48 + 10,
+                'help',
+                this.handleHelp,
+                this,
+                1, 1, 1, 1,
+                this.group
+            );
+            this.buttonHelp.input.priorityID = 2;
+            this.buttonHelp.anchor.set(0, 0);
         }
         else
         {
             this.restartButton = this.game.add.button(
-                this.game.width - 10,
-                isWide ? 10 : 10,
+                this.game.width - (isWide ? 20 : 10),
+                isWide ? 20 : 10,
                 'restartButton',
                 this.handleRestartButton,
                 this,
@@ -91,6 +106,18 @@ class GameInterface {
             );
             this.restartButton.anchor.set(1, 0);
             this.restartButton.input.priorityID = 2;
+
+            this.buttonHelp = this.game.add.button(
+                this.game.width - ((isWide ? 20 : 10)+48+20),
+                isWide ? 20 : 10,
+                'help',
+                this.handleHelp,
+                this,
+                1, 1, 1, 1,
+                this.group
+            );
+            this.buttonHelp.input.priorityID = 2;
+            this.buttonHelp.anchor.set(1, 0);
         }
 
     }
@@ -125,6 +152,13 @@ class GameInterface {
 
     handleRestartButton(){
         this.game.state.start('Game', true, false, levels['level1']);
+    }
+
+    handleHelp(){
+        this.game.paused = true;
+        helpShow(Phaser.Device.desktop, () => {
+            this.game.paused = false;
+        })
     }
 }
 

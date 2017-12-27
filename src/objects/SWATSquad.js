@@ -8,7 +8,7 @@ import Star from "./Star.js"
 
 const SQUAD_DENSITY = 35;
 const SQUAD_DISCIPLINE = 0.4;
-const TURN_FREQUENCY = 10;
+const TURN_FREQUENCY = 30;
 
 class SWATSquad {
     // TODO: prefab???? ? ?
@@ -51,7 +51,7 @@ class SWATSquad {
                 this.game.math.fuzzyEqual(
                     this.game.math.distanceSq(firstSprite.x, firstSprite.y, this.moveTargets[0].x, this.moveTargets[0].y),
                     0,
-                    firstSprite.width*2
+                    50
                 )
             ) {
                 this.moveTargets[0].callback && this.moveTargets[0].callback()
@@ -131,21 +131,19 @@ class SWATSquad {
       if (protester instanceof Star) {
         console.log("Arrested star")
         this.gameObject.mz.tweet.rTweet({type: 'star_'+protester.name+'_arrest'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
-        const paddyWagon = this.gameObject.mz.arrays.wagons[0];
-        const callback = () => {
-            this.gameObject.mz.tweet.rTweet({type: 'star_'+protester.name+'_bus'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
-            this.gameObject.handleLeaveWagon(paddyWagon, -300, 0);
-            for (let i = 0; i < this.sprites.length; i++) {
-                for (let j = 0; j < this.sprites[i].children.length; j++) {
-                    this.sprites[i].getChildAt(j).mz.kill();
-                }
-                this.sprites[i].removeChildren();
-                this.sprites[i].visible = false;
-                this.sprites[i].body.stop();
+        // const paddyWagon = this.gameObject.mz.arrays.wagons[0];
+        this.gameObject.mz.tweet.rTweet({type: 'star_'+protester.name+'_bus'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
+        // this.gameObject.handleLeaveWagon(paddyWagon, -300, 0);
+        for (let i = 0; i < this.sprites.length; i++) {
+            for (let j = 0; j < this.sprites[i].children.length; j++) {
+                this.sprites[i].getChildAt(j).mz.kill();
             }
-            this.moveTargets = [{x: 0, y: 200}];
-        };
-        this.moveTargets.unshift({x: paddyWagon.body.x + paddyWagon.body.width, y: paddyWagon.body.y + paddyWagon.body.height, callback })
+            this.sprites[i].removeChildren();
+            this.sprites[i].visible = false;
+            this.sprites[i].body.stop();
+        }
+        this.moveTargets = [{x: 0, y: 200}];
+        // this.moveTargets.unshift({x: paddyWagon.body.x + paddyWagon.body.width, y: paddyWagon.body.y + paddyWagon.body.height, callback })
       }
     }
 }

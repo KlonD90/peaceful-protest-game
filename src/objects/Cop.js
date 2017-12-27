@@ -27,6 +27,7 @@ class Cop extends Prefab {
         this.attractionPoint = null;
         this.attractionStrength = 0;
         this.returnCoords = null;
+        this.lastDecisionTime = 0;
 
         this.sprite.body.immovable = true;
         this.sprite.body.setSize(37, 37);
@@ -74,7 +75,7 @@ class Cop extends Prefab {
                     this.FOV.revive();
                 }
                 if (coords) {
-                    this.moveTo(coords, { callback: () => this.wander() });
+                    this.moveTo(coords, { callback: () => this.wander(), superphasing: true});
                 } else {
                     this.wander();
                 }
@@ -195,7 +196,7 @@ class Cop extends Prefab {
     wander() {
         const nextAction = this.attractionStrength > 0 ? 1 : this.game.rnd.between(0, 2);
         if (nextAction !== 0) {
-            this.moveTo(this.getNextCoords(), { callback: () => this.wander() });
+            this.moveTo(this.getNextCoords(), { callback: () => this.wander(), superphasing: true });
         } else {
             this.stayingTimer.stop(true);
             this.stayingTimer.add(this.game.rnd.between(1000, 3000), this.wander, this);

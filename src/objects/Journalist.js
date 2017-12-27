@@ -123,7 +123,7 @@ class Journalist extends Prefab {
     wander() {
         const nextAction = this.game.rnd.between(0, 2);
         if (nextAction !== 0) {
-            this.moveTo(this.getNextCoords(), { callback: () => this.wander() });
+            this.moveTo(this.getNextCoords(), { callback: () => this.wander(), superphasing: true });
         } else {
             this.stayingTimer.stop(true);
             this.stayingTimer.add(this.game.rnd.between(1000, 3000), this.wander, this);

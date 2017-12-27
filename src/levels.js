@@ -8,15 +8,16 @@ export default {
         scoreWin: 500,
         cops: {
             count: [
-                [100, 10],
-                // [100, 2],
-                // [200, 3],
-                // [300, 6],
-                // [400, 7],
-                [1000, 12]
+                [4, 0],
+                [20, 1],
+                [100, 2],
+                [200, 3],
+                [300, 6],
+                [400, 7],
+                [1000, 10]
             ],
             speed: {
-                value: 50,
+                value: 60,
                 running: 1.7
             },
             fov: {
@@ -27,11 +28,9 @@ export default {
         press: {
             count: [
                 [4, 0],
-                [50, 1],
+                [40, 1],
                 [100, 2],
-                [300, 3],
-                [400, 4],
-                [1000, 5]
+                [1000, 4]
             ],
             speed: {
                 value: 50
@@ -45,14 +44,14 @@ export default {
         },
         protesters: {
             count: {
-                start: 90,
+                start: 1,
                 max: 100,
-                add: 10
+                add: 14
             },
             speed: {
                 value: 60
             },
-            mood: 1,
+            mood: 0.3,
             moodUp: 0.002,
             moodDown: 0.0001,
             poster: {
@@ -64,7 +63,7 @@ export default {
             speed: {
                 value: 100,
                 withPoster: 0.6,
-                running: 1.5
+                running: 1.7
             },
             radius: 120,
             stamina: 100,
@@ -77,8 +76,8 @@ export default {
             speed: {
                 value: 200
             },
-            frequency: 10000,
-            scoreThreshold: 0
+            frequency: 5000,
+            scoreThreshold: 300
         },
         star: {
             score: 200
