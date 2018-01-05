@@ -42,7 +42,8 @@ import {
 } from '../constants.js';
 
 import {
-    getFormattedTime
+    getFormattedTime,
+    lineIntersection
 } from '../utils.js';
 import {
     COP_MODE_FIGHT, COP_MODE_STUN, JOURNALIST_MODE_ARRESTED, JOURNALIST_MODE_FOLLOW, PROTESTER_MODE_NOD,
@@ -180,8 +181,8 @@ class Game {
         this.mz.objects.garbage_01.visible = false;
         this.mz.objects.garbage_02.visible = false;
         this.mz.objects.garbage_03.visible = false;
-        this.mz.objects.fightAdvice = this.game.add.sprite(this.game.width/2, this.game.height/2, 'defend');
-        this.mz.objects.fightAdvice.anchor.setTo(0.5);
+        this.mz.objects.fightAdvice = this.game.add.sprite(this.game.width/2, this.game.height/2-50, 'defend');
+        this.mz.objects.fightAdvice.anchor.setTo(0.5, 1);
         this.mz.objects.fightAdvice.fixedToCamera = true;
         this.mz.objects.fightAdvice.visible = false;
 
@@ -410,6 +411,9 @@ class Game {
 
         levelObjectReset();
         // setTimeout(this.screenAttack.bind(this), 200);
+
+        if (!this.circleGraphic)
+            this.circleGraphic = this.game.add.graphics();
     }
 
     update() {
@@ -1054,6 +1058,11 @@ class Game {
             this.mz.objects.audio.meeting.loopFull(0.01);
             this.game.add.tween(this.mz.objects.audio.meeting).to({volume:0.15}, 30000).start();
                 // .fadeIn(20000);
+        }
+
+        if (!Phaser.Device.desktop)
+        {
+            this.updateCircle()
         }
     }
 
@@ -1907,6 +1916,76 @@ class Game {
             this.mz.garbageLevel = garbageLevel;
             if (this.mz.objects['garbage_0'+this.mz.garbageLevel])
                 this.mz.objects['garbage_0'+this.mz.garbageLevel].visible = true;
+        }
+    }
+
+    updateCircle(){
+        const circles = this.mz.arrays.press.map(x => ({sprite: x, color: 0xf7c169}))
+            .concat(this.mz.arrays.protesters.map(x => ({sprite: x, color: 0x6eed83})))
+            .concat(this.mz.arrays.cops.map(x => ({sprite: x, color: 0x2b3992})))
+            .filter(x => !x.sprite.inCamera && x.sprite.visible)
+        const cameraBounds = new Phaser.Rectangle(
+            this.game.camera.view.x + 10,
+            this.game.camera.view.y + 10,
+            this.game.camera.view.width - 20,
+            this.game.camera.height - 20
+        );
+        const c = {x: cameraBounds.centerX, y: cameraBounds.centerY};
+        const lines = {
+            top: [
+                {x: cameraBounds.x, y: cameraBounds.y},
+                {x: cameraBounds.x + cameraBounds.width, y: cameraBounds.y}
+            ],
+            right: [
+                {x: cameraBounds.x + cameraBounds.width, y: cameraBounds.y},
+                {x: cameraBounds.x + cameraBounds.width, y: cameraBounds.y + cameraBounds.height}
+            ],
+            bottom: [
+                {x: cameraBounds.x, y: cameraBounds.y + cameraBounds.height},
+                {x: cameraBounds.x + cameraBounds.width, y: cameraBounds.y + cameraBounds.height}
+            ],
+            left: [
+                {x: cameraBounds.x, y: cameraBounds.y},
+                {x: cameraBounds.x, y: cameraBounds.y + cameraBounds.height}
+            ]
+        };
+        this.circleGraphic.clear();
+        for (let i=0; i<circles.length; i++)
+        {
+            const {sprite, color} = circles[i];
+
+            if (sprite.alive && !this.game.camera.view.contains(sprite.x, sprite.y))
+            {
+                let positions = [];
+                if (cameraBounds.x > sprite.x)
+                    positions.push('right');
+                else
+                    positions.push('left');
+                if (cameraBounds.y > sprite.y)
+                    positions.push('bottom');
+                else
+                    positions.push('top');
+
+                const mainLine = [{x: sprite.x, y: sprite.y}, c];
+                let interPoint = null;
+                for (let p of positions)
+                {
+                    let line = lines[p];
+                    let shouldBePoint = lineIntersection(line, mainLine);
+                    // console.log(shouldBePoint, line, mainLine, sprite);
+                    if (this.game.camera.view.contains(shouldBePoint.x, shouldBePoint.y))
+                    {
+                        interPoint = shouldBePoint;
+                        break;
+                    }
+                }
+
+                // console.log('intersection point', interPoint);
+
+                this.circleGraphic.beginFill(color, 0.8).drawCircle(interPoint.x, interPoint.y, 10).endFill()
+                // Phaser.Line.intersectionWithRectangle(line, cameraBounds, intersectionPoint);
+                // console.log(intersectionPoint, sprite);
+            }
         }
     }
 

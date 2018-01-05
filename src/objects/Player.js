@@ -281,7 +281,7 @@ class Player extends Protester {
                 break;
             }
             case PLAYER_MODE_FIGHT: {
-
+                this.moveTo(null);
                 this.showPoster = false;
                 this.fightBar = 10;
                 this.GameObject.mz.timers.fight.stop();
