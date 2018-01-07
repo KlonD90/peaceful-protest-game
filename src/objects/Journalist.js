@@ -33,7 +33,7 @@ class Journalist extends Prefab {
         this.sprite.addChild(this.cooldownBar.graphics);
 
         // this.sprite.addChild(this.progressBar);
-        this.sprite.body.setCircle(37);
+        this.sprite.body.setSize(37, 37);
 
         this.shootingTimer = this.game.time.create(false);
         this.shootingDuration = shootingDuration * 1000;

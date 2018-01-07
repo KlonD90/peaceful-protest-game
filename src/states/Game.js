@@ -181,10 +181,6 @@ class Game {
         this.mz.objects.garbage_01.visible = false;
         this.mz.objects.garbage_02.visible = false;
         this.mz.objects.garbage_03.visible = false;
-        this.mz.objects.fightAdvice = this.game.add.sprite(this.game.width/2, this.game.height/2-50, 'defend');
-        this.mz.objects.fightAdvice.anchor.setTo(0.5, 1);
-        this.mz.objects.fightAdvice.fixedToCamera = true;
-        this.mz.objects.fightAdvice.visible = false;
 
         this.mz.objects.audio.theme = this.game.add.audio('bp_loop');
         this.mz.objects.audio.theme.loopFull(0.001);
@@ -414,6 +410,11 @@ class Game {
 
         if (!this.circleGraphic)
             this.circleGraphic = this.game.add.graphics();
+
+        this.mz.objects.fightAdvice = this.game.add.sprite(this.game.width/2, this.game.height/2-50, 'defend');
+        this.mz.objects.fightAdvice.anchor.setTo(0.5, 1);
+        this.mz.objects.fightAdvice.fixedToCamera = true;
+        this.mz.objects.fightAdvice.visible = false;
     }
 
     update() {
@@ -692,7 +693,7 @@ class Game {
                 const diffCop = Math.abs(copSprite.body.center.x - playerCenter.x)+Math.abs(copSprite.body.center.y - playerCenter.y);
                 if (diffCop < 40)
                 {
-                    this.mz.objects.player.setMode(PLAYER_MODE_FIGHT);
+                    this.mz.objects.player.setMode(PLAYER_MODE_FIGHT, {target: copSprite});
                     cop.setMode(COP_MODE_FIGHT);
                 }
             }
@@ -1957,11 +1958,11 @@ class Game {
             if (sprite.alive && !this.game.camera.view.contains(sprite.x, sprite.y))
             {
                 let positions = [];
-                if (cameraBounds.x > sprite.x)
+                if (cameraBounds.x < sprite.x)
                     positions.push('right');
                 else
                     positions.push('left');
-                if (cameraBounds.y > sprite.y)
+                if (cameraBounds.y < sprite.y)
                     positions.push('bottom');
                 else
                     positions.push('top');
@@ -1982,7 +1983,7 @@ class Game {
 
                 // console.log('intersection point', interPoint);
 
-                this.circleGraphic.beginFill(color, 0.8).drawCircle(interPoint.x, interPoint.y, 10).endFill()
+                this.circleGraphic.beginFill(color, 0.7).drawCircle(interPoint.x, interPoint.y, 20).endFill()
                 // Phaser.Line.intersectionWithRectangle(line, cameraBounds, intersectionPoint);
                 // console.log(intersectionPoint, sprite);
             }

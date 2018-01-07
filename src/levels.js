@@ -18,7 +18,8 @@ export default {
             ],
             speed: {
                 value: 60,
-                running: 1.7
+                running: 1.7,
+                convoy: 0.5
             },
             fov: {
                 distance: 150,
@@ -44,7 +45,7 @@ export default {
         },
         protesters: {
             count: {
-                start: 30,
+                start: 90,
                 max: 100,
                 add: 14
             },

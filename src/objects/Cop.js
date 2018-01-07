@@ -48,6 +48,8 @@ class Cop extends Prefab {
         if (this.mode === COP_MODE_PURSUE || this.mode === COP_MODE_ENTER) {
             newSpeed *= this.speed.running;
         }
+        if (this.mode === COP_MODE_CONVOY)
+            newSpeed *= this.speed.convoy;
         this.setSpeed(newSpeed);
 
         super.update()
@@ -187,6 +189,14 @@ class Cop extends Prefab {
         // const tweet = tweets[Math.floor(tweets.length * Math.random())];
         if (Math.random() < 0.3)
             this.GameObject.mz.tweet.rTweet({type: 'arrest'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
+    }
+
+    getArrestedSprite() {
+        for (let i = 0; i < this.sprite.children.length; i++) {
+            if (this.sprite.getChildAt(i) !== this.viewSprite)
+                return this.sprite.getChildAt(i);
+        }
+        return null;
     }
 
     handleFightWin() {

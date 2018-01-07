@@ -29,6 +29,8 @@ class Player extends Protester {
             ...protesterOptions,
         });
 
+        this.fightCount = 0;
+
         this.sprite.inputEnabled = true;
         this.sprite.input.priorityID = 1;
 
@@ -50,6 +52,7 @@ class Player extends Protester {
         this.stamina = stamina;
         this.maxStamina = stamina;
         this.cooldownTimer = this.game.time.create(false);
+        this.noPosterTimer = this.game.time.create(false);
         this.staminaCooldown = staminaCooldown * 1000;
 
         this.tapStartTimestamp = Date.now();
@@ -139,10 +142,11 @@ class Player extends Protester {
 
         if (this.mode === PLAYER_MODE_FIGHT)
         {
-            this.updateAnimation();
+            // this.updateAnimation();
             if (this.keys.space.justDown)
             {
                 this.fightBar+=1;
+                this.viewSprite.frame = this.viewSprite.frame === 3 ? 4 : 3;
             }
             this.updateFightBar();
             return;
@@ -179,24 +183,23 @@ class Player extends Protester {
                 } else {
                     this.cooldownTimer.add(this.staminaCooldown, () => {
                         this.cooldownTimer.stop(true);
+                        this.stamina = this.maxStamina;
                     });
                     this.cooldownTimer.start();
                 }
             } else if (this.stamina < this.maxStamina) {
                 this.stamina += 1;
             }
-        } else {
-            this.stamina = this.maxStamina * this.cooldownTimer.ms / this.staminaCooldown;
         }
 
         if (this.stamina < this.maxStamina) {
-            const percentBar = this.stamina / this.maxStamina;
             if (this.cooldownTimer.running)
             {
-                this.updateCooldownBar(percentBar);
+                this.updateCooldownBar(this.cooldownTimer.ms / this.staminaCooldown);
             }
             else
             {
+                const percentBar = this.stamina / this.maxStamina;
                 this.updateStaminaBar(percentBar)
             }
         } else {
@@ -255,7 +258,7 @@ class Player extends Protester {
             this.stop();
         }
 
-        if (this.keys.space.justDown && this.mode !== PLAYER_MODE_FIGHT) {
+        if (this.keys.space.justDown && this.mode !== PLAYER_MODE_FIGHT && !this.noPosterTimer.running) {
             this.togglePoster();
 
 
@@ -281,15 +284,23 @@ class Player extends Protester {
                 break;
             }
             case PLAYER_MODE_FIGHT: {
+                const target = props.target;
+                const arrested = target.mz.getArrestedSprite();
+
                 this.moveTo(null);
+                if (arrested)
+                {
+                    this.viewSprite.angle = Math.atan2((target.y+arrested.y) - this.sprite.y, (target.x+arrested.x) - this.sprite.x) * 180 / Math.PI - 90;
+                }
                 this.showPoster = false;
                 this.fightBar = 10;
                 this.GameObject.mz.timers.fight.stop();
                 this.GameObject.mz.timers.fight.removeAll();
-                this.GameObject.mz.timers.fight.loop(300, this.handleTickFight, this);
+                this.GameObject.mz.timers.fight.loop(Math.max(400 - (this.fightCount*20), 160), this.handleTickFight, this);
                 this.GameObject.mz.timers.fight.add(5000, this.handleFightLose, this);
                 this.GameObject.mz.timers.fight.start();
                 this.sprite.body.immovable = true;
+                this.viewSprite.animations.stop(null, true);
                 // HelpInfo.show('space_fight')
                 this.GameObject.mz.objects.fightAdvice.visible = true;
                 console.log(this.GameObject.mz.timers.fight);
@@ -473,7 +484,11 @@ class Player extends Protester {
         this.clearTimers();
         this.hideProgressBars();
         this.setMode(PLAYER_MODE_NORMAL);
-
+        this.fightCount++;
+        this.noPosterTimer.add(1000, () => {
+            this.noPosterTimer.stop(true);
+        });
+        this.noPosterTimer.start();
         this.GameObject.fightWin();
         // this.game.winCop();
     }
