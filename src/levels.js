@@ -45,7 +45,7 @@ export default {
         },
         protesters: {
             count: {
-                start: 90,
+                start: 1,
                 max: 100,
                 add: 14
             },

@@ -46,7 +46,10 @@ module.exports = {
             {
                 test: /\.(jpg|png|mp3|jpeg|gif)$/,
                 loader: 'file-loader',
-                query: {
+                query: process.env.NODE_ENV === 'production' ? {
+                  outputPath: 'assets/',
+                  publicPath: '/protest/'
+                } : {
                   outputPath: 'assets/'
                 }
             },
