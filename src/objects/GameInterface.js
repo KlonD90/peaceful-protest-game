@@ -45,6 +45,7 @@ class GameInterface {
             }
         );
         this.textTime.anchor.set(0.5, 0);
+        this.textTime.resolution = window.devicePixelRatio || 1;
         // this.textTime.setShadow(2, 2, 'rgba(0, 0, 0, .8)', 0);
 
         this.textTime.setText('00:00:00')

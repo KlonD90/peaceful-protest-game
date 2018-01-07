@@ -74,6 +74,7 @@ class Loading {
                 fill: '#000'
             }
         );
+        this.mz.objects.textProgress.resolution = window.devicePixelRatio || 1;
         this.mz.objects.textProgress.anchor.set(0.5, 0);
     }
 

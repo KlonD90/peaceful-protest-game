@@ -15,6 +15,7 @@ import Camera from '../objects/Camera';
 import Tweet from '../objects/Tweets/';
 import modalShow from '../modal/';
 import levels from '../levels';
+import CirclePool from '../objects/CirclePool';
 
 
 
@@ -124,7 +125,8 @@ class Game {
                 playerFOV: null,
                 npcProtesters: null,
                 levelObjects: null,
-                player: null
+                player: null,
+                circles: null
             },
             zoomLevel: -1,
             advices: {
@@ -148,6 +150,11 @@ class Game {
                 omon: false,
                 shift: false,
                 cops: false
+            },
+            circles: {
+                npc: null,
+                cop: null,
+                press: null
             },
             tweet: null,
             limitScore: level.scoreWin,
@@ -411,10 +418,19 @@ class Game {
         if (!this.circleGraphic)
             this.circleGraphic = this.game.add.graphics();
 
+        this.mz.groups.circles = this.game.add.group();
+
         this.mz.objects.fightAdvice = this.game.add.sprite(this.game.width/2, this.game.height/2-50, 'defend');
         this.mz.objects.fightAdvice.anchor.setTo(0.5, 1);
         this.mz.objects.fightAdvice.fixedToCamera = true;
         this.mz.objects.fightAdvice.visible = false;
+
+        var processingGraphic = this.game.add.graphics();
+        var ratio = window.devicePixelRatio || 1;
+        this.mz.circles.press = processingGraphic.clear().beginFill(0xf7c169, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
+        this.mz.circles.npc = processingGraphic.clear().beginFill(0x6eed83, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
+        this.mz.circles.cop = processingGraphic.clear().beginFill(0x2b3992, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
+        this.circlePool = new CirclePool(this.game);
     }
 
     update() {
@@ -1921,9 +1937,9 @@ class Game {
     }
 
     updateCircle(){
-        const circles = this.mz.arrays.press.map(x => ({sprite: x, color: 0xf7c169}))
-            .concat(this.mz.arrays.protesters.map(x => ({sprite: x, color: 0x6eed83})))
-            .concat(this.mz.arrays.cops.map(x => ({sprite: x, color: 0x2b3992})))
+        const circles = this.mz.arrays.press.map(x => ({sprite: x, color: 0xf7c169, circle: this.mz.circles.press, key: 'press'}))
+            .concat(this.mz.arrays.protesters.map(x => ({sprite: x, color: 0x6eed83, circle: this.mz.circles.npc, key: 'npc'})))
+            .concat(this.mz.arrays.cops.map(x => ({sprite: x, color: 0x2b3992, circle: this.mz.circles.cop, key: 'cop'})))
             .filter(x => !x.sprite.inCamera && x.sprite.visible)
         const cameraBounds = new Phaser.Rectangle(
             this.game.camera.view.x + 10,
@@ -1950,10 +1966,10 @@ class Game {
                 {x: cameraBounds.x, y: cameraBounds.y + cameraBounds.height}
             ]
         };
-        this.circleGraphic.clear();
+        // this.circleGraphic.clear();
         for (let i=0; i<circles.length; i++)
         {
-            const {sprite, color} = circles[i];
+            const {sprite, color, circle, key} = circles[i];
 
             if (sprite.alive && !this.game.camera.view.contains(sprite.x, sprite.y))
             {
@@ -1982,12 +1998,13 @@ class Game {
                 }
 
                 // console.log('intersection point', interPoint);
-
-                this.circleGraphic.beginFill(color, 0.7).drawCircle(interPoint.x, interPoint.y, 20).endFill()
+                this.circlePool.add(key, circle, interPoint.x, interPoint.y);
+                // this.circleGraphic.beginFill(color, 0.7).drawCircle(interPoint.x, interPoint.y, 20).endFill()
                 // Phaser.Line.intersectionWithRectangle(line, cameraBounds, intersectionPoint);
                 // console.log(intersectionPoint, sprite);
             }
         }
+        this.circlePool.reset();
     }
 
     // updateTheme(){

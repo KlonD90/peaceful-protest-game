@@ -20,6 +20,7 @@ function init() {
       parent: containerNode,
       antialias: true,
       renderer: Phaser.CANVAS
+      // resolution: window.devicePixelRatio || 1
   });
 
   game.state.add('Boot', Boot);

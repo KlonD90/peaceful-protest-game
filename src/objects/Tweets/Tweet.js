@@ -58,6 +58,7 @@ export default class BaseTweet {
           fill: '#ddecff',
         });
       nameGameObject.font = 'Graphik LC, Arial';
+      nameGameObject.resolution = window.devicePixelRatio || 1;
       nameGameObject.fixedToCamera = true;
 
       textGameObject = this.game.add.text(
@@ -66,7 +67,7 @@ export default class BaseTweet {
         text, 
         getTextStyle(width),
       );
-
+      textGameObject.resolution = window.devicePixelRatio || 1;
       textGameObject.font = 'Arial';
       textGameObject.fixedToCamera = true;
     } else {
@@ -76,7 +77,7 @@ export default class BaseTweet {
         text, 
         getTextStyle(width),
       );
-
+      textGameObject.resolution = window.devicePixelRatio || 1;
       textGameObject.font = 'Arial';
       textGameObject.fixedToCamera = true;
     }
