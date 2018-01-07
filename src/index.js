@@ -19,7 +19,7 @@ function init() {
       height: containerNode.clientHeight,
       parent: containerNode,
       antialias: true,
-      renderer: Phaser.WEBGL_MULTI
+      renderer: Phaser.CANVAS
       // resolution: window.devicePixelRatio || 1
   });
 
