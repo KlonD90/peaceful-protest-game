@@ -9,6 +9,8 @@ import type {
 } from "./types.js"
 
 
+const FORCE_DISABLE_PATHFINDING_ON_MOBILE = true;
+
 const decisionTimeout = 1000;
 // const phasingDecisionTime = 100;
 const timesTimeout = 2;
@@ -21,7 +23,10 @@ const savedMatrix = {
   move: {time: 0, matrix: null},
   immovable: {time: 0, matrix: null}
 };
+
 let obstacleTimer = 0;
+let isPathinfindingDisabled = true;
+
 class Updater {
   collider: Collider
   converter: Converter
@@ -39,6 +44,12 @@ class Updater {
       obstacleTimer = now + obstaclesTimeout;
       this.collider.entities.filter(x => x.obstacle)
           .forEach((x) => this.collider.updatePersonalMatrix(x.sprite))
+    }
+
+    if(FORCE_DISABLE_PATHFINDING_ON_MOBILE){
+      isPathinfindingDisabled = !Phaser.Device.desktop;
+      if(isPathinfindingDisabled)
+        console.warn('Force disable pathfinding!!!');
     }
   }
 
@@ -63,10 +74,14 @@ class Updater {
         entity.lastCoords = moveFrom;
       }
 
-      if (phasing) {
+      phasing = true;
+
+      if (phasing || FORCE_DISABLE_PATHFINDING) {
+     
         sprite.phasing = true
         var path = [moveFrom, moveTo]
         var pathClear = !equals(moveFrom, moveTo)
+     
       } else {
         if (decision && lastDecisionTime < now && lastTarget === target)
         {
@@ -133,6 +148,9 @@ class Updater {
       if (save.time < time) {
           savedMatrix[type].matrix = type === 'move' ? this._buildMatrix() : this._buildImmovableMatrix();
           savedMatrix[type].time = time + matrixTimeout;
+          console.log("[GET New matrix]");
+      } else {
+        console.log("[GET Cached matrix]");
       }
       return savedMatrix[type].matrix;
   }

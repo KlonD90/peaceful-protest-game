@@ -30,7 +30,7 @@ class   Prefab {
         this.viewSprite.anchor.set(0.5);
         this.viewSprite.reset(0, 0)
 
-        console.log(this.viewSprite);
+       // console.log(this.viewSprite);
 
         this.stayingTimer = this.game.time.create(false);
         this.curAnimationState = 'stop';
@@ -204,7 +204,7 @@ class   Prefab {
         if (newState != this.curAnimationState)
         {
             this.curAnimationState = newState;
-            console.log('new state', newState);
+           // console.log('new state', newState);
             if (newState.substr(0, 4) === 'stop')
             {
                 this.viewSprite.animations.stop(null, true);

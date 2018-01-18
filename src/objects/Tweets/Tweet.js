@@ -105,7 +105,12 @@ export default class BaseTweet {
 
     tweet.add(mask);
     tweet.add(avatar);
-    if (name) tweet.add(nameGameObject);
+    if (name) {
+      //nameGameObject.cacheAsBitmap = true;
+      tweet.add(nameGameObject);
+    }
+
+    //textGameObject.cacheAsBitmap = true;
     tweet.add(textGameObject);
     this.groupTweet = tweet;
     
@@ -122,10 +127,12 @@ export default class BaseTweet {
     all.alpha = 0;
     all.add(bg);
     all.add(tweet);
+    
+    //enable cahing of bitmap
+
+   // all.cacheAsBitmap = true;
+    console.log("TEXT GROUP:" + name + " CACHED!");
     this.groupAll = all;
-
-
-
     this.showedY = calcGroupPosition(textGameObject, tweet);
     return this;
   }

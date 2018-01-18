@@ -19,6 +19,8 @@ function init() {
       height: containerNode.clientHeight,
       parent: containerNode,
       antialias: true,
+      enableDebug:false,
+      multiTexture:true,
       renderer: Phaser.CANVAS
       // resolution: window.devicePixelRatio || 1
   });

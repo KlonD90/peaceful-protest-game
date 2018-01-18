@@ -146,7 +146,7 @@ class NPCProtester extends Protester {
             }
         }
 
-        this.sprite.tint = 0xffffff;
+        //this.sprite.tint = 0xffffff;
         // if (this.mood >= 0.75) {
         //     const tintSaturation = (this.mood - 0.75) / (1 - 0.75) * 0.25;
         //     this.sprite.tint = Phaser.Color.RGBArrayToHex([
