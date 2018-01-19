@@ -292,6 +292,7 @@ const pack = {
       },
     ],
     levelCommon: [
+
         {
             type: 'spritesheet',
             key: 'defend',
@@ -488,11 +489,21 @@ const pack = {
             type: 'audio',
             key: 'pick',
             urls: require('./audio/pick.mp3')
-        }
+        },
+        
+        {
+            type: 'atlasJSONArray',
+            key: 'humans',
+            textureURL: require('./humans.png'),
+            atlasURL: require('./humans.json'),
+            atlasData: null
+        },
+
     ],
     level1: [
-
+        
         /*
+        
         {
             type: 'spritesheet',
             key: 'border',
@@ -830,5 +841,4 @@ const pack = {
         }
     ]*/
 };
-
 export default JSON.stringify(pack);

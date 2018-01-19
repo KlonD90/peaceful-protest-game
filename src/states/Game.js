@@ -1085,7 +1085,7 @@ class Game {
 
         if (!Phaser.Device.desktop)
         {
-            //this.updateCircle()
+            this.updateCircle()
         }
     }
 
@@ -1251,7 +1251,7 @@ class Game {
                 ...coords,
                 group: this.mz.groups.d,
                 speed: this.mz.level.protesters.speed,
-                spriteKey: 'npc_01',//+(Math.floor(Math.random()*8)+1),
+                spriteKey: 'humans/npc_01-0',//+(Math.floor(Math.random()*8)+1),
                 spriteName: `protester${i}`,
                 mood: this.mz.level.protesters.mood,
                 moodUp: this.mz.level.protesters.moodUp,

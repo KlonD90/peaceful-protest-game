@@ -8,7 +8,9 @@
   },
   "scripts": {
     "start": "http-server -c-1",
-    "build": "webpack && cp node_modules/phaser-ce/build/custom/phaser-arcade-physics.min.js dist/phaser.js",
+    "build": "webpack",
+    "copy": "webpack && cp node_modules/phaser-ce/build/custom/phaser-arcade-physics.min.js dist/phaser.js",
+   
     "watch": "webpack --watch",
     "wds": "webpack-dev-server"
   },

@@ -230,11 +230,17 @@ class   Prefab {
 
         this.curAnimationState = 'stop';
 
+        let last = this.viewSprite.animations.getAnimation("walk");
+        if(last)
+            last.destroy();
+
         if (canWalk && canWalk > 0)
         {
-            this.viewSprite.animations.add('walk', [1, 2], canWalk, true);
+            let walk_anim = Phaser.Animation.generateFrameNames(spriteKey+'-', 1, 2, '', 0);
+            this.viewSprite.animations.add('walk', walk_anim, canWalk, true);
         }
     }
+
 }
 
 export default Prefab;

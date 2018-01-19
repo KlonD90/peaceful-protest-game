@@ -3,7 +3,6 @@ const webpack = require('webpack');
 
 //process.env.NO_UGLIFY
 process.env["NO_UGLIFY"] = true;
-
 console.log(`process.env.NODE_ENV is ${process.env.NODE_ENV}`);
 plugins = process.env.NO_UGLIFY ? [] : [new webpack.optimize.UglifyJsPlugin()]
 plugins.push(
@@ -53,7 +52,7 @@ module.exports = {
                 }
             },
             {
-                test: /\.(jpg|png|mp3|jpeg|gif)$/,
+                test: /\.(jpg|png|mp3|jpeg|gif|json)$/,
                 loader: 'file-loader',
                 query: process.env.NODE_ENV === 'production' ? {
                   outputPath: 'assets/',
