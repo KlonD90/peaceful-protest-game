@@ -21,7 +21,7 @@ function init() {
       antialias: true,
       enableDebug:false,
       multiTexture:true,
-      renderer: Phaser.CANVAS
+      renderer: Phaser.WEBGL
       // resolution: window.devicePixelRatio || 1
   });
 

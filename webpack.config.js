@@ -2,12 +2,16 @@ const path = require('path');
 const webpack = require('webpack');
 
 //process.env.NO_UGLIFY
-//process.env["NO_UGLIFY"] = true;
+process.env["NO_UGLIFY"] = true;
 
 console.log(`process.env.NODE_ENV is ${process.env.NODE_ENV}`);
 plugins = process.env.NO_UGLIFY ? [] : [new webpack.optimize.UglifyJsPlugin()]
 plugins.push(
   new webpack.EnvironmentPlugin(['NODE_ENV'])
+);
+
+plugins.push(
+    new webpack.SourceMapDevToolPlugin({filename: '[name].js.map'})
 );
 
 module.exports = {
@@ -18,8 +22,10 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         publicPath: 'dist/',
-        filename: '[name].js'
+        filename: '[name].js',
     },
+    devtool: 'source-map',
+    
     module: {
         rules: [
             {
@@ -62,6 +68,11 @@ module.exports = {
               options: {
                 limit: 10000
               }
+            },
+            {
+                test: /\.js$/,
+                use: ["source-map-loader"],
+                enforce: "pre"
             }
         ]
     },

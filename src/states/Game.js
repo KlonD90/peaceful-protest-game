@@ -52,6 +52,8 @@ import {
 } from "../constants";
 import ManuallyBehavior from "../objects/Tweets/ManuallyBehavior";
 
+let fpsSpan = document.querySelector("#FPS-span");
+
 class Game {
     init(level) {
         // FIXME: debug
@@ -431,10 +433,14 @@ class Game {
         this.mz.circles.npc = processingGraphic.clear().beginFill(0x6eed83, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
         this.mz.circles.cop = processingGraphic.clear().beginFill(0x2b3992, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
         this.circlePool = new CirclePool(this.game);
+
+        window.game.time.advancedTiming = true;
     }
 
     update() {
         const now = Date.now();
+        fpsSpan.innerHTML  = window.game.time.fps;
+
         this.updateGarbage()
         // this.mz.pressJailed = false;
         // update background
@@ -969,7 +975,7 @@ class Game {
                                 break;
                             }
                             default:
-                                console.log(xSide, ySide);
+                                //console.log(xSide, ySide);
                         }
                     }
                 }
@@ -1245,7 +1251,7 @@ class Game {
                 ...coords,
                 group: this.mz.groups.d,
                 speed: this.mz.level.protesters.speed,
-                spriteKey: `protester_sprite`,
+                spriteKey: 'npc_01',//+(Math.floor(Math.random()*8)+1),
                 spriteName: `protester${i}`,
                 mood: this.mz.level.protesters.mood,
                 moodUp: this.mz.level.protesters.moodUp,
@@ -1449,20 +1455,6 @@ class Game {
         this.mz.gameEnded = true;
 
 
-
-        // this.mz.objects.endMenu = new EndMenu({
-        //     game: this.game,
-        //     mode,
-        //     score: this.mz.objects.interface.score.group,
-        //     stats: {
-        //         time: this.mz.timePassed,
-        //         alive: this.mz.protesters.alive,
-        //         arrested: this.mz.protesters.arrested,
-        //         revived: this.mz.protesters.revived,
-        //         left: this.mz.protesters.left
-        //     }
-        // });
-
         this.game.camera.unfollow();
         this.mz.objects.interface.kill();
         // this.mz.objects.timer.stop();
@@ -1587,14 +1579,10 @@ class Game {
         const spriteWidth = 1035;
         if (this.mz.screenAttacked)
         {
-            // this.mz.objects.screenAttack;
             this.mz.timers.screen.stop();
             this.mz.timers.screen.removeAll();
             this.mz.timers.screen.add(awaitStop, this.screenAttackStop, this);
-            // for (let i=0; i<alphaStops; i++)
-            // {
-            //     this.mz.timers.screen.add(alphaStep * (i +1), this.screenAttackAlpha, this);
-            // }
+
             this.mz.timers.screen.start();
         }
         else
@@ -1612,34 +1600,9 @@ class Game {
                 .lineTo(this.game.world.width, 0)
                 .lineTo(0, 0)
                 .endFill();
-            // this.mz.objects.screenAttack.fixedToCamera = true;
-            // this.mz.objects.screenAttack.reset(0, 0);
-            // this.mz.objects.screenAttack.beginFill(0x00ff00, 1);
-            // this.mz.objects.screenAttack.lineTo(this.game.camera.width, 0)
-            //     .lineTo(this.game.camera.width, this.game.camera.height)
-            //     .lineTo(0, this.game.camera.height)
-            //     .lineTo(0, 0)
-            //     .endFill();
-            // this.mz.objects.screenAttack.scale.setTo(2.5);
-//	A mask is a Graphics object
-//             this.mz.objects.mask = this.game.make.graphics(
-//                 0,
-//                 0
-//             );
-//             this.mz.objects.mask.beginFill(0xffffff);
-//             this.mz.objects.mask.drawCircle(100, 100, 100);
-//             this.mz.objects.mask.x = this.mz.objects.player.sprite.x ;
-//             this.mz.objects.mask.y = this.mz.objects.player.sprite.y ;
-//             for (let group in this.mz.groups ){
-//                 this.mz.groups[group].mask = this.mz.objects.mask;
-//             }
-//             console.log('x', this.game.camera.width/2, this.mz.objects.screenAttack.width/2);
-//             console.log(this.mz.objects.screenAttack);
+
             this.mz.timers.screen.add(awaitStop, this.screenAttackStop, this);
-            // for (let i=0xx; i<alphaStops; i++)
-            // {
-            //     this.mz.timers.screen.add(alphaStep * (i +1), this.screenAttackAlpha, this);
-            // }
+
             this.mz.timers.screen.start();
         }
     }
@@ -1647,12 +1610,6 @@ class Game {
     screenAttackStop(){
         this.mz.objects.screenAttack.destroy();
         this.mz.objects.screenAttack = null;
-
-        // for (let group in this.mz.groups ){
-        //     this.mz.groups[group].mask = null;
-        // }
-        // this.mz.objects.mask.destroy();
-        // this.mz.objects.mask = null;
         this.mz.screenAttacked = false;
     }
 

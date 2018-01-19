@@ -655,7 +655,9 @@ const pack = {
             frameMax: 3,
             margin: 0,
             spacing: 0
-        },
+        }
+
+        /*,
         {
             type: 'spritesheet',
             key: 'protester1',
@@ -676,7 +678,7 @@ const pack = {
             url: require('./protester03.png'),
             frameWidth: 30,
             frameHeight: 47
-        },
+        }*/,
         {
             type: 'spritesheet',
             key: 'injury',
@@ -736,6 +738,7 @@ const pack = {
             overwrite: false
         }
     ],
+    /*
     level2: [
         {
             type: 'spritesheet',
@@ -820,7 +823,7 @@ const pack = {
             url: require('./ground02.png'),
             overwrite: false
         }
-    ]
+    ]*/
 };
 
 export default JSON.stringify(pack);
