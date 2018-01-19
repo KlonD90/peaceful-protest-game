@@ -491,6 +491,8 @@ const pack = {
         }
     ],
     level1: [
+
+        /*
         {
             type: 'spritesheet',
             key: 'border',
@@ -518,14 +520,14 @@ const pack = {
             url: require('./shield.png'),
             frameWidth: 316,
             frameHeight: 140
-        },
-        {
+        }
+        ,{
             type: 'spritesheet',
             key: 'journalist',
             url: require('./journalist01.png'),
             frameWidth: 32,
             frameHeight: 49
-        },
+        },*/
         {
             type: 'spritesheet',
             key: 'player_sprite',
@@ -616,6 +618,8 @@ const pack = {
             margin: 0,
             spacing: 0
         },
+
+       
         {
             type: 'spritesheet',
             key: 'cop_sprite',
@@ -626,6 +630,7 @@ const pack = {
             margin: 0,
             spacing: 0
         },
+         /*
         {
             type: 'spritesheet',
             key: 'press_sprite',
@@ -635,7 +640,7 @@ const pack = {
             frameMax: 3,
             margin: 0,
             spacing: 0
-        },
+        },*/
         {
             type: 'spritesheet',
             key: 'press_01',
@@ -655,7 +660,7 @@ const pack = {
             frameMax: 3,
             margin: 0,
             spacing: 0
-        }
+        },
 
         /*,
         {
@@ -678,7 +683,7 @@ const pack = {
             url: require('./protester03.png'),
             frameWidth: 30,
             frameHeight: 47
-        }*/,
+        },*/
         {
             type: 'spritesheet',
             key: 'injury',

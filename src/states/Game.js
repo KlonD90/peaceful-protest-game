@@ -1085,7 +1085,7 @@ class Game {
 
         if (!Phaser.Device.desktop)
         {
-            this.updateCircle()
+            //this.updateCircle()
         }
     }
 

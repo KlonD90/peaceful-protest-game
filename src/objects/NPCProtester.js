@@ -329,7 +329,7 @@ class NPCProtester extends Protester {
         }
         else
         {
-            //this.changeViewSprite('npc_0'+(Math.floor(Math.random()*8)+1), 3);
+            this.changeViewSprite('npc_0'+(Math.floor(Math.random()*8)+1), 3);
         }
         this.nodDone = false;
         this.slot = null;
