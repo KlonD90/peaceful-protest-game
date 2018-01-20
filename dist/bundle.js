@@ -2784,15 +2784,14 @@ var pack = {
         url: __webpack_require__(403),
         frameWidth: 360,
         frameHeight: 81
-    },
-    /*
-    {
+    }, {
         type: 'spritesheet',
         key: 'playButton',
-        url: require('./playButton.png'),
+        url: __webpack_require__(404),
         frameWidth: 100,
         frameHeight: 100
     },
+    /*
     {
         type: 'spritesheet',
         key: 'help',
@@ -4166,16 +4165,15 @@ var FOV = function () {
         this.halfViewAngle = this.game.math.degToRad(angle / 2);
         this.colors = colors;
 
-        this.graphics = this.game.add.graphics(0, 0);
+        this.graphics = this.game.add.sprite(0, 0, "ALL_IMAGES", "FOV");
+        this.graphics.anchor.set(0);
         this.center = null;
         this.isActive = true;
     }
 
     _createClass(FOV, [{
-        key: 'update',
+        key: "update",
         value: function update(_ref2) {
-            var _graphics;
-
             var x = _ref2.x,
                 y = _ref2.y,
                 angle = _ref2.angle,
@@ -4184,25 +4182,22 @@ var FOV = function () {
             this.center = { x: x, y: y };
             this.angle = angle;
 
-            this.graphics.clear();
+            // this.graphics.clear();
 
             if (!this.isActive) {
                 return;
             }
 
-            var startAngle = this.angle - this.halfViewAngle;
-            var endAngle = this.angle + this.halfViewAngle;
-            var arcStart = [x + Math.cos(startAngle) * this.radius, y + Math.sin(startAngle) * this.radius];
+            this.graphics.tint = this.colors[mode || __WEBPACK_IMPORTED_MODULE_0__constants_js__["m" /* FOV_MODE_NORMAL */]];
+            this.graphics.alpha = mode === __WEBPACK_IMPORTED_MODULE_0__constants_js__["m" /* FOV_MODE_NORMAL */] ? 0.2 : 0.5;
+            this.graphics.x = x;
+            this.graphics.y = y;
 
-            this.graphics.beginFill(this.colors[mode || __WEBPACK_IMPORTED_MODULE_0__constants_js__["m" /* FOV_MODE_NORMAL */]], mode === __WEBPACK_IMPORTED_MODULE_0__constants_js__["m" /* FOV_MODE_NORMAL */] ? 0.2 : 0.5);
-            this.graphics.moveTo(x, y);
-            (_graphics = this.graphics).lineTo.apply(_graphics, arcStart);
-            this.graphics.arc(x, y, this.radius, startAngle, endAngle, false, 10);
-            this.graphics.lineTo(x, y);
-            this.graphics.endFill();
+            this.graphics.angle = this.game.math.radToDeg(angle) - 45; // - this.halfViewAngle;
+
         }
     }, {
-        key: 'containsPoint',
+        key: "containsPoint",
         value: function containsPoint(_ref3) {
             var x = _ref3.x,
                 y = _ref3.y;
@@ -4228,19 +4223,19 @@ var FOV = function () {
             return leftAngle <= angle && angle <= rightAngle;
         }
     }, {
-        key: 'destroy',
+        key: "destroy",
         value: function destroy() {
             this.graphics.destroy();
             this.isActive = false;
         }
     }, {
-        key: 'kill',
+        key: "kill",
         value: function kill() {
             this.graphics.kill();
             this.isActive = false;
         }
     }, {
-        key: 'revive',
+        key: "revive",
         value: function revive() {
             this.graphics.revive();
             this.isActive = true;
@@ -10201,7 +10196,12 @@ module.exports = __webpack_require__.p + "assets/df26508edc26ee3ebb6284d6467783f
 module.exports = __webpack_require__.p + "assets/02e6feea7a1f6d5e79c4b6af7347842f.png";
 
 /***/ }),
-/* 404 */,
+/* 404 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "assets/784a4a24da47767dec8d65b727fc8383.png";
+
+/***/ }),
 /* 405 */,
 /* 406 */,
 /* 407 */,
@@ -19894,7 +19894,7 @@ module.exports = __webpack_require__.p + "assets/72231af2e2a74389efaa0d890faed13
 /* 533 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/00158ee6ec2944aad19fc78292a59a98.json";
+module.exports = __webpack_require__.p + "assets/c8af1f499007ca03804386d9bb24b3cd.json";
 
 /***/ })
 /******/ ]);

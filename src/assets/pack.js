@@ -119,7 +119,6 @@ const pack = {
             frameWidth: 360,
             frameHeight: 81
         },
-        /*
         {
             type: 'spritesheet',
             key: 'playButton',
@@ -127,6 +126,7 @@ const pack = {
             frameWidth: 100,
             frameHeight: 100
         },
+        /*
         {
             type: 'spritesheet',
             key: 'help',
