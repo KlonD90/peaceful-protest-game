@@ -764,7 +764,7 @@ class Game {
                         newTarget = protester.sprite;
                         distanceToTargetSq = distanceToProtesterSq;
                     }
-                    console.log('new target', newTarget);
+                    //console.log('new target', newTarget);
                 }
                 if (cop.target && cop.target.mz.mode !== PROTESTER_MODE_ARRESTED && cop.FOV.containsPoint(cop.target.body.center))
                 {
