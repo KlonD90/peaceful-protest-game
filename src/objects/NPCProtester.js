@@ -327,11 +327,11 @@ class NPCProtester extends Protester {
 
         if (this.isNOD)
         {
-            this.changeViewSprite('humans/nod', 3);
+            this.changeViewSprite('humans','nod', 3);
         }
         else
         {
-            this.changeViewSprite('humans/npc_0'+(Math.floor(Math.random()*8)+1), 3);
+            this.changeViewSprite('humans','npc_0'+(Math.floor(Math.random()*8)+1), 3);
         }
 
         this.nodDone = false;
@@ -339,28 +339,10 @@ class NPCProtester extends Protester {
         this.shownPoster = false;
     }
 
-    changeViewSprite(key, canWalk) {    
-        super.changeViewSprite(key + "-0", canWalk);
+    changeViewSprite(atlasKey, key, canWalk) {    
+        super.changeViewSprite(atlasKey,  key, canWalk);
 
-        const fpsAnimation = 3;
-        
-        let last = this.viewSprite.animations.getAnimation("walk");
-        if(last)
-            last.destroy();
-
-        last = this.viewSprite.animations.getAnimation("walkPoster");
-        if(last)
-            last.destroy();
-        
-        let walk_anim = Phaser.Animation.generateFrameNames(key+'-', 1, 2, '', 0);
-        this.viewSprite.animations.add('walk', walk_anim, fpsAnimation, true);
-        
-        if(!this.isNOD){
-
-            let walkPoster_anim = Phaser.Animation.generateFrameNames(key+'-', 4, 5, '', 0);
-            this.viewSprite.animations.add('walkPoster', walkPoster_anim, fpsAnimation, true);
-        }
-    
+        //this.changeAnimations(key, canWalk);
     }
 
     kill() {

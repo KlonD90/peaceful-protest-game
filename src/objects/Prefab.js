@@ -3,23 +3,31 @@ import {
 } from '../constants.js';
 
 class   Prefab {
-    constructor({ game, x, y, speed, spriteKey, spriteName, props, GameObject, moveTo }) {
+    constructor({ game, x, y, speed, atlasKey = null, spriteKey, spriteName, props, GameObject, moveTo }) {
         this.props = props;
         this.game = game;
         this.GameObject = GameObject;
-
+        this.spriteKey = spriteKey;
         this.speed = {
             current: speed.value,
             ...speed
         };
 
-        this.viewSprite = this.game.add.sprite(x, y, spriteKey, 0);
+        if(atlasKey && atlasKey !== ""){
+            this.viewSprite = this.game.add.sprite(x, y, atlasKey, spriteKey + "-0");
+        } else {
+            this.viewSprite = this.game.add.sprite(x, y, spriteKey, 0);
+        }
+
         this.sprite = this.game.add.sprite(x, y);
         this.sprite.mz = this;
         this.viewSprite.mz = this;
         this.sprite.name = spriteName;
         this.sprite.anchor.set(0.5);
         this.sprite.addChild(this.viewSprite);
+        
+        //this.changeAnimations(spriteKey, 3);
+
         // this.sprite.width = this.viewSprite.width;
         // this.sprite.height = this.viewSprite.height;
 
@@ -36,23 +44,12 @@ class   Prefab {
         this.curAnimationState = 'stop';
 
         this.mode = null;
-        this.moveTo = moveTo
+        this.moveTo = moveTo;
     }
 
     update() {
-        // const moveTarget = this.moveTarget[0]
-        // if (!moveTarget) return void this.sprite.body.stop();
-        // if (moveTarget.update(this)) return
-        //
-        // if (this.mode === 'leave')
-        // {
-        //     console.log('leave', moveTarget, this);
-        // }
-        //
-        // this.moveTarget.shift()
-        // this.update()
+        
     }
-
     setMode(mode) {
         this.mode = mode;
     }
@@ -182,6 +179,7 @@ class   Prefab {
         const velocity = this.sprite.body.velocity;
         const withPoster = !!this.showPoster;
         let newState = 'stop'
+        
         if (velocity.x != 0 || velocity.y != 0)
         {
             if (this.canRun)
@@ -200,27 +198,78 @@ class   Prefab {
                 newState = 'walk';
             }
         }
-        newState = newState + (withPoster?'Poster':'');
+
+        newState = newState + (withPoster ? 'Poster':'');
         if (newState != this.curAnimationState)
         {
             this.curAnimationState = newState;
+            /*
            // console.log('new state', newState);
             if (newState.substr(0, 4) === 'stop')
             {
                 this.viewSprite.animations.stop(null, true);
-                this.viewSprite.frame = withPoster ? 3 : 0;
+                let frame  = this.spriteKey + "-" + (withPoster ? 3 : 0);
+                this.viewSprite.frame = frame;
+                console.log('Frame:', this.spriteKey, frame);
+
             }
             else
-                this.viewSprite.animations.play(newState);
+            */
+           //console.log(this.spriteKey, newState);
+            this.viewSprite.animations.play(newState);
         }
     }
 
-    changeViewSprite(spriteKey, canWalk = 0){
+    changeAnimations(spriteKey, canWalk){
+
+        let last = this.viewSprite.animations.getAnimation("walk");
+        if(last)
+            last.destroy();
+
+        last = this.viewSprite.animations.getAnimation("stop");
+        if(last)
+            last.destroy();
+        
+        let walk_anim = Phaser.Animation.generateFrameNames(spriteKey +'-', 1, 2, '', 0);
+        this.viewSprite.animations.add('walk', walk_anim, 3, true);
+        
+        //let stop_anim = //Phaser.Animation.generateFrameNames(spriteKey +'-', 0, 0, '', 0);
+        this.viewSprite.animations.add('stop', [spriteKey + "-0", spriteKey + "-0"], canWalk, true);
+        //console.log(this.spriteKey, this.viewSprite.animations);
+        
+        if(!this.isNOD){
+
+
+            last = this.viewSprite.animations.getAnimation("walkPoster");
+            if(last)
+                last.destroy();
+
+            last = this.viewSprite.animations.getAnimation("stopPoster");
+            if(last)
+                last.destroy();
+
+            let walkPoster_anim = Phaser.Animation.generateFrameNames(spriteKey + '-', 4, 5, '', 0);
+            this.viewSprite.animations.add('walkPoster', walkPoster_anim, canWalk, true);
+
+            //let stopPoster_anim = Phaser.Animation.generateFrameNames(spriteKey + '-', 3, 3, '', 0);
+            this.viewSprite.animations.add('stopPoster', [spriteKey + "-3", spriteKey + "-3"], canWalk, false);
+
+        }
+
+
+    }
+    changeViewSprite(atlasKey, spriteKey, canWalk = 0){
         this.sprite.removeChild(this.viewSprite);
         this.viewSprite.kill();
         this.viewSprite.destroy();
+        this.spriteKey = spriteKey;
 
-        this.viewSprite = this.game.add.sprite(0, 0, spriteKey, 0);
+        if(atlasKey && atlasKey !== ""){
+            this.viewSprite = this.game.add.sprite(0, 0, atlasKey, spriteKey + "-0");
+        } else {
+            this.viewSprite = this.game.add.sprite(0, 0, spriteKey, 0);
+        }
+
         this.viewSprite.mz = this;
         this.sprite.addChild(this.viewSprite);
 
@@ -229,18 +278,8 @@ class   Prefab {
         this.viewSprite.reset(0, 0)
 
         this.curAnimationState = 'stop';
-
-        let last = this.viewSprite.animations.getAnimation("walk");
-        if(last)
-            last.destroy();
-
-        if (canWalk && canWalk > 0)
-        {
-            let walk_anim = Phaser.Animation.generateFrameNames(spriteKey+'-', 1, 2, '', 0);
-            this.viewSprite.animations.add('walk', walk_anim, canWalk, true);
-        }
+        this.changeAnimations(spriteKey, canWalk);
     }
-
 }
 
 export default Prefab;

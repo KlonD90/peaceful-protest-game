@@ -24,6 +24,7 @@ class Player extends Protester {
         ...protesterOptions,
     }) {
         super({
+            atlasKey:'humans',
             spriteKey: 'player_sprite',
             spriteName: 'player',
             ...protesterOptions,
@@ -109,19 +110,28 @@ class Player extends Protester {
             shift: this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT)
         };
 
+        
         this.sprite.smoothed = true;
         // this.sprite.body.setCircle(20);
+
+        var n = "player_sprite";
         const fpsAnimation = 3;
-        this.viewSprite.animations.add('walk', [1, 2], fpsAnimation, true);
-        this.viewSprite.animations.add('run', [1, 2], fpsAnimation*this.speed.running, true);
-        this.viewSprite.animations.add('walkPoster', [5, 6], fpsAnimation, true);
-        this.viewSprite.animations.add('runPoster', [5, 6], fpsAnimation*this.speed.running, true);
+        this.viewSprite.animations.add('walk', [n + "-1", n + "-2"], fpsAnimation, true);
+        this.viewSprite.animations.add('run', [n + "-1", n + "-2"], fpsAnimation*this.speed.running, true);
+        this.viewSprite.animations.add('walkPoster', [n + "-5", n + "-6"], fpsAnimation, true);
+        this.viewSprite.animations.add('runPoster', [n + "-5", n + "-6"], fpsAnimation*this.speed.running, true);
+        this.viewSprite.animations.add('stop', [n + "-0", n + "-0"], fpsAnimation, true);
+        this.viewSprite.animations.add('stopPoster', [n + "-3", n + "-3"], fpsAnimation, true);
+
+
+        //this.changeAnimations("player_sprite",3);
         this.fightBar = 0;
 
         this.canRun = true;
 
 
-        Player.instance = this
+        Player.instance = this;
+        window.Player = this;
     }
 
 

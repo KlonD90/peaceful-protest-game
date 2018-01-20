@@ -7,15 +7,6 @@ class Protester extends Prefab {
     constructor({ onDropPoster, ...prefabOptions }) {
         super(prefabOptions);
 
-        // this.injurySprite = this.viewSprite.addChild(
-        //     this.game.make.sprite(
-        //         -15,
-        //         -this.sprite.height / 2 - 2,
-        //         'injury'
-        //     )
-        // );
-        // this.injurySprite.bringToTop();
-        // this.injurySprite.visible = false;
 
         this.posterSprite = this.viewSprite.addChild(this.game.make.sprite(-8, 13, 'plakat', 0));
         this.posterSprite.bringToTop();
@@ -61,9 +52,9 @@ class Protester extends Prefab {
         }
     }
 
-    changeViewSprite(spriteKey, canWalk = 0)
+    changeViewSprite(atlasKey, spriteKey, canWalk = 0)
     {
-        super.changeViewSprite(spriteKey, canWalk);
+        super.changeViewSprite(atlasKey, spriteKey, canWalk);
         this.posterSprite = this.viewSprite.addChild(this.game.make.sprite(-8, 13, 'plakat', 0));
         this.posterSprite.frame = 1;
         this.posterSprite.bringToTop();

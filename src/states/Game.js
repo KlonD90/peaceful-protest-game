@@ -17,6 +17,7 @@ import modalShow from '../modal/';
 import levels from '../levels';
 import CirclePool from '../objects/CirclePool';
 
+import Debuger from '../debug.js';
 
 
 import levelObjects, {reset as levelObjectReset} from "../levelObjects.js"
@@ -52,7 +53,6 @@ import {
 } from "../constants";
 import ManuallyBehavior from "../objects/Tweets/ManuallyBehavior";
 
-let fpsSpan = document.querySelector("#FPS-span");
 
 class Game {
     init(level) {
@@ -169,6 +169,7 @@ class Game {
     }
 
     create() {
+        this.debuger = new Debuger(this.game);
         this.collider = new Collider({ game: this.game, gameObject: this, scale: 20 })
         this.mz.tweet = new Tweet(this.game);
         this.mz.pressJailed = false;
@@ -324,7 +325,8 @@ class Game {
                 shootingDuration: this.mz.level.press.duration,
                 cooldownDuration: this.mz.level.press.duration * pressRequired * 2,
                 onFinishShooting: this.onFinishShooting,
-                spriteName: `journalist${i}`
+                atlasKey:'humans', 
+                spriteName: `journalist${i}`, 
             });
             this.mz.arrays.press.push(journalist.sprite);
             this.mz.groups.d.add(journalist.sprite);
@@ -434,12 +436,11 @@ class Game {
         this.mz.circles.cop = processingGraphic.clear().beginFill(0x2b3992, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
         this.circlePool = new CirclePool(this.game);
 
-        window.game.time.advancedTiming = true;
     }
 
     update() {
+         this.debuger.update(); // update debuger, for reset counter
         const now = Date.now();
-        fpsSpan.innerHTML  = window.game.time.fps;
 
         this.updateGarbage()
         // this.mz.pressJailed = false;
@@ -667,6 +668,7 @@ class Game {
                 :
                 this.getRandomCoordinates();
             console.log('press first', isFirst, coords);
+
             const journalist = this.createPrefab(Journalist, {
                 ...coords,
                 fov: {
@@ -678,8 +680,10 @@ class Game {
                 shootingDuration: this.mz.level.press.duration,
                 cooldownDuration: this.mz.level.press.duration * pressRequired * 2,
                 onFinishShooting: this.onFinishShooting,
+                atlasKey: "humans",
                 spriteName: `journalist${i}`
             });
+
             this.mz.arrays.press.push(journalist.sprite);
             this.mz.groups.d.add(journalist.sprite);
             journalist.setMode(JOURNALIST_MODE_WANDER);
@@ -982,6 +986,8 @@ class Game {
 
             }
         );
+
+
         if (this.mz.objects.star)
         {
             this.game.physics.arcade.collide(
@@ -1015,9 +1021,11 @@ class Game {
                 droppedPoster.update();
             }
         });
+
         this.mz.postersToRevive.forEach(this.createPoster, this);
         this.mz.postersToRevive = [];
 
+        //TODO - remove this
         this.mz.groups.d.sort('y', Phaser.Group.SORT_ASCENDING);
 
         if (!this.mz.gameEnded) {
@@ -1031,32 +1039,6 @@ class Game {
 
         this.mz.objects.star && this.mz.objects.star.update()
 
-
-        // const zoomLevels = [[30, 1, 2000, 800]];
-        // let desiredZoomLevel = -1;
-        // for (let l =0; l< zoomLevels.length; l++)
-        // {
-        //     const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[l];
-        //     if (this.mz.protesters.alive > countProtester)
-        //     {
-        //         desiredZoomLevel = l;
-        //     }
-        // }
-        //
-        // if (this.mz.zoomLevel < desiredZoomLevel)
-        // {
-        //     const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[desiredZoomLevel];
-        //     // this.game.camera.scale.x = zoom;
-        //     // this.game.camera.scale.y = zoom;
-        //     this.game.world.resize(worldWidth, worldHeight);
-        //     // this.mz.zoomLevel = desiredZoomLevel;
-        //     // this.mz.timers.resize.removeAll();
-        //     // this.mz.timers.resize.stop();
-        //     // const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
-        //     // for (let i=1; i<zoomSteps+1; i++)
-        //     //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
-        //     // this.mz.timers.resize.start();
-        // }
 
         if (this.mz.screenAttacked)
         {
@@ -1198,6 +1180,7 @@ class Game {
                   angle: this.mz.level.cops.fov.angle
               },
               speed: this.mz.level.cops.speed,
+              spriteKey:'humans',
               spriteName: `cop${i}`
             })
 
@@ -1251,7 +1234,8 @@ class Game {
                 ...coords,
                 group: this.mz.groups.d,
                 speed: this.mz.level.protesters.speed,
-                spriteKey: 'humans/npc_01-0',//+(Math.floor(Math.random()*8)+1),
+                atlasKey: "humans",
+                spriteKey: 'npc_0' +(Math.floor(Math.random()*8)+1),
                 spriteName: `protester${i}`,
                 mood: this.mz.level.protesters.mood,
                 moodUp: this.mz.level.protesters.moodUp,

@@ -14,7 +14,7 @@ import {
 
 class Cop extends Prefab {
     constructor({ alive, fov, x = 0, y = 0, ...prefabOptions }) {
-        super({ x, y, spriteKey: 'cop_sprite', ...prefabOptions });
+        super({ x, y, atlasKey:"humans", spriteKey: 'cop', ...prefabOptions });
 
         this.FOV = new FOV({
             game: this.game,
@@ -34,8 +34,8 @@ class Cop extends Prefab {
         this.stunTimer = this.game.time.create(false);
 
         const fpsAnimation = 3;
-        this.viewSprite.animations.add('walk', [1, 2], fpsAnimation, true);
-
+        this.viewSprite.animations.add('walk', ["cop-1", "cop-2"], fpsAnimation, true);
+        this.viewSprite.animations.add('stop', ["cop-0", "cop-0"], fpsAnimation, true);
 
 
         if (!alive) {

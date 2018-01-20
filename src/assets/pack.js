@@ -497,8 +497,7 @@ const pack = {
             textureURL: require('./humans.png'),
             atlasURL: require('./humans.json'),
             atlasData: null
-        },
-
+        }
     ],
     level1: [
         
@@ -630,6 +629,7 @@ const pack = {
             spacing: 0
         },
 
+         /*
        
         {
             type: 'spritesheet',
@@ -641,7 +641,6 @@ const pack = {
             margin: 0,
             spacing: 0
         },
-         /*
         {
             type: 'spritesheet',
             key: 'press_sprite',

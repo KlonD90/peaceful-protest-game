@@ -5,6 +5,7 @@ import Help from './states/Help.js';
 import Controls from './states/Controls.js';
 import Game from './states/Game.js';
 
+
 function init() {
   const windowInnerHeight = window.innerHeight;
   if (document.body.clientHeight > windowInnerHeight) {
@@ -34,6 +35,7 @@ function init() {
 
   game.state.start('Boot');
   window.game = game;
+
 }
 
 if (process.env.NODE_ENV === 'production')
