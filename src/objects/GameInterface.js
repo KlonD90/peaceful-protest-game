@@ -1,4 +1,4 @@
-import ScoreMeter from './../objects/ScoreMeter.js';
+import ProgressBar from './../objects/ProgressBar.js';
 import levels from '../levels';
 import helpShow from '../help/';
 
@@ -6,22 +6,30 @@ class GameInterface {
     constructor({ game, onTogglePoster }) {
         this.game = game;
         this.onTogglePoster = onTogglePoster;
-
+        this.lastMute = false;
         this.group = this.game.add.group();
         this.group.fixedToCamera = true;
 
         const isWide = this.game.width > 500;
 
-        this.score = new ScoreMeter({
-            game: this.game,
-            x: this.game.width / 2,
-            y: isWide ? 20 : 10,
-            width: 180,
-            radius: 10
-        });
-        this.group.add(this.score.group);
+        // Ибо нефиг плодить классы, будем юзать стандартный прогесс-бар
+        this.score = new ProgressBar({
+            radius:10,
+             width:180,
+             color:0xf0526f,
+             lineWidth:10,
+             game:this.game,
+             sprite_type:"big_progress"
+         }
+        );
+        this.score.graphics.visible = true;
+        this.score.graphics.y = isWide ? 20 : 10;
+        this.score.graphics.x = this.game.width / 2 - 90;
+        this.group.add(this.score.graphics);
+        //this.score.update(0.01);
+
         if (!isWide)
-            this.score.group.x = this.game.width - this.score.fullWidth - 10;
+            this.score.graphics.x = this.game.width - this.score.fullWidth - 10;
 
         this.textScore = this.game.add.text(
             this.game.width - 20,
@@ -58,12 +66,13 @@ class GameInterface {
         this.buttonSound = this.game.add.button(
             isWide ? 20 : 10,
             isWide ? 20 : 10,
-            'soundButtons',
+            'ALL_IMAGES',
             this.handleClickSound,
             this,
-            1, 1, 1, 1,
-            this.group
+            "volume_off", "volume_off", "volume_off"//, "volume_on",
+           // this.group
         );
+        this.group.add(this.buttonSound);
         this.buttonSound.input.priorityID = 2;
 
 
@@ -72,25 +81,27 @@ class GameInterface {
             this.buttonPoster = this.game.add.button(
                 this.game.width - 20,
                 this.game.height - 120,
-                'mobile_poster',
+                'ALL_IMAGES',
                 this.handleTogglePoster,
                 this,
-                1, 1, 1, 1,
-                this.group
+                "mobile_poster-0", "mobile_poster-0",  "mobile_poster-0"
             );
+
+            this.group.add(this.buttonPoster);
+
             this.buttonPoster.anchor.set(1, 1);
             this.buttonPoster.input.priorityID = 2;
-            this.buttonPoster.frame = 0;
-
+          
             this.buttonHelp = this.game.add.button(
                 10,
                 10 + 48 + 10,
-                'help',
+                'ALL_IMAGES',
                 this.handleHelp,
                 this,
-                1, 1, 1, 1,
-                this.group
+                "help", "help",  "help"
             );
+
+            this.group.add(this.buttonHelp);
             this.buttonHelp.input.priorityID = 2;
             this.buttonHelp.anchor.set(0, 0);
         }
@@ -99,35 +110,47 @@ class GameInterface {
             this.restartButton = this.game.add.button(
                 this.game.width - (isWide ? 20 : 10),
                 isWide ? 20 : 10,
-                'restartButton',
+                'ALL_IMAGES',
                 this.handleRestartButton,
                 this,
-                1, 1, 1, 1,
-                this.group
+                "restart", "restart", "restart"
             );
+
+            this.group.add(this.restartButton);
+
             this.restartButton.anchor.set(1, 0);
             this.restartButton.input.priorityID = 2;
 
             this.buttonHelp = this.game.add.button(
                 this.game.width - ((isWide ? 20 : 10)+48+20),
                 isWide ? 20 : 10,
-                'help',
+                'ALL_IMAGES',
                 this.handleHelp,
                 this,
-                1, 1, 1, 1,
-                this.group
+                "help", "help",  "help"
             );
+
+            this.group.add(this.buttonHelp);
             this.buttonHelp.input.priorityID = 2;
             this.buttonHelp.anchor.set(1, 0);
         }
 
+        this.lastPost = false;
     }
 
     update({ score, protestersAlive, protestersTotal, meanMood, percent, showPoster}) {
-        this.buttonSound.frame = this.game.sound.mute ? 1 : 0;
-        if (this.buttonPoster)
-            this.buttonPoster.frame = showPoster ? 1 : 0;
+
         this.score.update(percent);
+        this.score.graphics.visible = true;
+
+        if (this.buttonPoster)
+        {
+            if(showPoster != this.lastPost){
+                let name =  "mobile_poster-" + (showPoster ? 1 : 0);
+                this.buttonPoster.setFrames(name, name, name);
+            }
+            this.lastPost = showPoster;
+        }
     }
 
     updateTimer(time){
@@ -140,6 +163,12 @@ class GameInterface {
 
     handleClickSound() {
         this.game.sound.mute = !this.game.sound.mute;
+
+        if(this.game.sound.mute){
+            this.buttonSound.setFrames("volume_on","volume_on","volume_on");  
+        } else {
+            this.buttonSound.setFrames("volume_off","volume_off","volume_off");
+        }
     }
 
     handleTogglePoster() {

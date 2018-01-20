@@ -1633,75 +1633,77 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 //let CACHED_TEXTURE = null;
 
 var ProgressBar = function () {
-        function ProgressBar(_ref) {
-                var radius = _ref.radius,
-                    width = _ref.width,
-                    color = _ref.color,
-                    lineWidth = _ref.lineWidth,
-                    game = _ref.game,
-                    sprite_type = _ref.sprite_type;
+    function ProgressBar(_ref) {
+        var radius = _ref.radius,
+            width = _ref.width,
+            color = _ref.color,
+            lineWidth = _ref.lineWidth,
+            game = _ref.game,
+            sprite_type = _ref.sprite_type;
 
-                _classCallCheck(this, ProgressBar);
+        _classCallCheck(this, ProgressBar);
+
+        this.lastWidth = 0;
+        this.game = game;
+        this.graphics = this.game.add.group();
+
+        this.fullWidth = width; // + radius * 2;
+        this.graphics.y = -30;
+        this.graphics.x = -this.fullWidth / 2;
+
+        //this.radius = radius;
+        //this.width = width;
+        this.color = color;
+        //this.lineWidth = lineWidth;
+
+        var s = sprite_type ? sprite_type : "small_progress";
+
+        var bg = game.add.sprite(0, 0, "ALL_IMAGES", s);
+
+        this.graphics.addChild(bg);
+
+        this.fillSprite = game.add.sprite(0, 0, "ALL_IMAGES", s);
+        this.fillSprite.tint = this.color;
+
+        this.graphics.addChild(this.fillSprite);
+
+        this.cropRect = new Phaser.Rectangle(0, 0, width / 2, radius * 2); //width);
+        this.fillSprite.crop(this.cropRect);
+
+        this.graphics.visible = false;
+    }
+
+    _createClass(ProgressBar, [{
+        key: "update",
+        value: function update(percent) {
+
+            percent = this.game.math.clamp(percent, 0, 1);
+
+            if (this.fillSprite.tint !== this.color) this.fillSprite.tint = this.color;
+
+            if (percent !== 0) {
+
+                var fillWidth = Math.round(percent * this.fullWidth);
+                if (this.lastWidth === fillWidth) {
+                    return;
+                }
+
+                this.graphics.visible = true;
+
+                this.lastWidth = fillWidth;
+
+                this.cropRect.width = fillWidth;
+                this.fillSprite.updateCrop();
+            } else {
+                if (this.lastWidth === 0) return;
 
                 this.lastWidth = 0;
-                this.game = game;
-                this.graphics = this.game.add.group();
-
-                this.fullWidth = width + radius * 2;
-                this.graphics.y = -30;
-                this.graphics.x = -this.fullWidth / 2;
-
-                //this.radius = radius;
-                //this.width = width;
-                this.color = color;
-                //this.lineWidth = lineWidth;
-
-                var s = sprite_type ? sprite_type : "small_progress";
-
-                var bg = game.add.sprite(0, 0, "ALL_IMAGES", s);
-
-                this.graphics.addChild(bg);
-
-                this.fillSprite = game.add.sprite(0, 0, "ALL_IMAGES", s);
-                this.fillSprite.tint = this.color;
-
-                this.graphics.addChild(this.fillSprite);
-
-                this.cropRect = new Phaser.Rectangle(0, 0, width / 2, radius * 2); //width);
-                this.fillSprite.crop(this.cropRect);
-
                 this.graphics.visible = false;
+            }
         }
+    }]);
 
-        _createClass(ProgressBar, [{
-                key: "update",
-                value: function update(percent) {
-
-                        percent = this.game.math.clamp(percent, 0, 1);
-
-                        if (percent !== 0) {
-
-                                var fillWidth = Math.round(percent * this.fullWidth);
-                                if (this.lastWidth === fillWidth) {
-                                        return;
-                                }
-
-                                this.graphics.visible = true;
-
-                                this.lastWidth = fillWidth;
-
-                                this.cropRect.width = fillWidth;
-                                this.fillSprite.updateCrop();
-                        } else {
-                                if (this.lastWidth === 0) return;
-
-                                this.lastWidth = 0;
-                                this.graphics.visible = false;
-                        }
-                }
-        }]);
-
-        return ProgressBar;
+    return ProgressBar;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (ProgressBar);
@@ -14532,7 +14534,7 @@ var DroppedPoster = function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__objects_ScoreMeter_js__ = __webpack_require__(452);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__objects_ProgressBar_js__ = __webpack_require__(97);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__levels__ = __webpack_require__(67);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__help___ = __webpack_require__(453);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -14552,21 +14554,28 @@ var GameInterface = function () {
 
         this.game = game;
         this.onTogglePoster = onTogglePoster;
-
+        this.lastMute = false;
         this.group = this.game.add.group();
         this.group.fixedToCamera = true;
 
         var isWide = this.game.width > 500;
 
-        this.score = new __WEBPACK_IMPORTED_MODULE_0__objects_ScoreMeter_js__["a" /* default */]({
-            game: this.game,
-            x: this.game.width / 2,
-            y: isWide ? 20 : 10,
+        // Ибо нефиг плодить классы, будем юзать стандартный прогесс-бар
+        this.score = new __WEBPACK_IMPORTED_MODULE_0__objects_ProgressBar_js__["a" /* default */]({
+            radius: 10,
             width: 180,
-            radius: 10
+            color: 0xf0526f,
+            lineWidth: 10,
+            game: this.game,
+            sprite_type: "big_progress"
         });
-        this.group.add(this.score.group);
-        if (!isWide) this.score.group.x = this.game.width - this.score.fullWidth - 10;
+        this.score.graphics.visible = true;
+        this.score.graphics.y = isWide ? 20 : 10;
+        this.score.graphics.x = this.game.width / 2 - 90;
+        this.group.add(this.score.graphics);
+        //this.score.update(0.01);
+
+        if (!isWide) this.score.graphics.x = this.game.width - this.score.fullWidth - 10;
 
         this.textScore = this.game.add.text(this.game.width - 20, 20, '', {
             font: '25px Arial',
@@ -14588,27 +14597,41 @@ var GameInterface = function () {
         this.group.add(this.textScore);
         this.group.add(this.textTime);
 
-        this.buttonSound = this.game.add.button(isWide ? 20 : 10, isWide ? 20 : 10, 'soundButtons', this.handleClickSound, this, 1, 1, 1, 1, this.group);
+        this.buttonSound = this.game.add.button(isWide ? 20 : 10, isWide ? 20 : 10, 'ALL_IMAGES', this.handleClickSound, this, "volume_off", "volume_off", "volume_off" //, "volume_on",
+        // this.group
+        );
+        this.group.add(this.buttonSound);
         this.buttonSound.input.priorityID = 2;
 
         if (!Phaser.Device.desktop) {
-            this.buttonPoster = this.game.add.button(this.game.width - 20, this.game.height - 120, 'mobile_poster', this.handleTogglePoster, this, 1, 1, 1, 1, this.group);
+            this.buttonPoster = this.game.add.button(this.game.width - 20, this.game.height - 120, 'ALL_IMAGES', this.handleTogglePoster, this, "mobile_poster-0", "mobile_poster-0", "mobile_poster-0");
+
+            this.group.add(this.buttonPoster);
+
             this.buttonPoster.anchor.set(1, 1);
             this.buttonPoster.input.priorityID = 2;
-            this.buttonPoster.frame = 0;
 
-            this.buttonHelp = this.game.add.button(10, 10 + 48 + 10, 'help', this.handleHelp, this, 1, 1, 1, 1, this.group);
+            this.buttonHelp = this.game.add.button(10, 10 + 48 + 10, 'ALL_IMAGES', this.handleHelp, this, "help", "help", "help");
+
+            this.group.add(this.buttonHelp);
             this.buttonHelp.input.priorityID = 2;
             this.buttonHelp.anchor.set(0, 0);
         } else {
-            this.restartButton = this.game.add.button(this.game.width - (isWide ? 20 : 10), isWide ? 20 : 10, 'restartButton', this.handleRestartButton, this, 1, 1, 1, 1, this.group);
+            this.restartButton = this.game.add.button(this.game.width - (isWide ? 20 : 10), isWide ? 20 : 10, 'ALL_IMAGES', this.handleRestartButton, this, "restart", "restart", "restart");
+
+            this.group.add(this.restartButton);
+
             this.restartButton.anchor.set(1, 0);
             this.restartButton.input.priorityID = 2;
 
-            this.buttonHelp = this.game.add.button(this.game.width - ((isWide ? 20 : 10) + 48 + 20), isWide ? 20 : 10, 'help', this.handleHelp, this, 1, 1, 1, 1, this.group);
+            this.buttonHelp = this.game.add.button(this.game.width - ((isWide ? 20 : 10) + 48 + 20), isWide ? 20 : 10, 'ALL_IMAGES', this.handleHelp, this, "help", "help", "help");
+
+            this.group.add(this.buttonHelp);
             this.buttonHelp.input.priorityID = 2;
             this.buttonHelp.anchor.set(1, 0);
         }
+
+        this.lastPost = false;
     }
 
     _createClass(GameInterface, [{
@@ -14621,9 +14644,17 @@ var GameInterface = function () {
                 percent = _ref2.percent,
                 showPoster = _ref2.showPoster;
 
-            this.buttonSound.frame = this.game.sound.mute ? 1 : 0;
-            if (this.buttonPoster) this.buttonPoster.frame = showPoster ? 1 : 0;
+
             this.score.update(percent);
+            this.score.graphics.visible = true;
+
+            if (this.buttonPoster) {
+                if (showPoster != this.lastPost) {
+                    var name = "mobile_poster-" + (showPoster ? 1 : 0);
+                    this.buttonPoster.setFrames(name, name, name);
+                }
+                this.lastPost = showPoster;
+            }
         }
     }, {
         key: 'updateTimer',
@@ -14639,6 +14670,12 @@ var GameInterface = function () {
         key: 'handleClickSound',
         value: function handleClickSound() {
             this.game.sound.mute = !this.game.sound.mute;
+
+            if (this.game.sound.mute) {
+                this.buttonSound.setFrames("volume_on", "volume_on", "volume_on");
+            } else {
+                this.buttonSound.setFrames("volume_off", "volume_off", "volume_off");
+            }
         }
     }, {
         key: 'handleTogglePoster',
@@ -14674,177 +14711,7 @@ var GameInterface = function () {
 /* harmony default export */ __webpack_exports__["a"] = (GameInterface);
 
 /***/ }),
-/* 452 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants__ = __webpack_require__(6);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-var colors = [0xf0526f, 0xeddd15, 0x6eed83];
-
-var ScoreMeter = function () {
-        function ScoreMeter(_ref) {
-                var game = _ref.game,
-                    x = _ref.x,
-                    y = _ref.y,
-                    width = _ref.width,
-                    radius = _ref.radius;
-
-                _classCallCheck(this, ScoreMeter);
-
-                this.percent = 0;
-                this.game = game;
-
-                this.group = this.game.add.group();
-
-                this.group.y = y;
-                this.radius = radius;
-                this.width = width;
-                this.fullWidth = this.width + this.radius * 2;
-                this.blank = this.game.add.graphics();
-                this.blank.beginFill(0xffffff);
-                this.drawFigure(this.blank);
-                this.blank.endFill();
-                this.group.addChild(this.blank);
-
-                this.group.x = x - this.fullWidth / 2;
-
-                this.fillGroup = this.game.add.group();
-
-                this.fillBase = this.game.add.graphics();
-
-                this.partSizes = [];
-
-                var restWidth = this.fullWidth;
-
-                for (var i = 0; i < colors.length; i++) {
-                        var size = Math.round(restWidth / (colors.length - i));
-                        this.partSizes.push(size);
-                        restWidth -= size;
-                }
-
-                this.fillBase.moveTo(0, 0);
-                var offsetWidth = 0;
-                for (var _i = 0; _i < this.partSizes.length; _i++) {
-                        var partSize = this.partSizes[_i];
-                        this.fillBase.beginFill(colors[_i]).drawRect(offsetWidth, 0, partSize, this.radius * 2).endFill();
-                        offsetWidth += partSize;
-                }
-
-                this.fillFigureMask = this.game.add.graphics();
-                this.fillFigureMask.beginFill(0xffffff);
-                this.drawFigure(this.fillFigureMask);
-                this.fillFigureMask.endFill();
-
-                this.fillGroup.addChild(this.fillBase);
-                this.fillGroup.addChild(this.fillFigureMask);
-
-                this.percentMask = this.game.add.graphics();
-                this.percentMask.clear().beginFill(0xffffff).drawRect(0, 0, 0, this.radius * 2).endFill();
-
-                this.fillGroup.addChild(this.percentMask);
-
-                this.fillBase.mask = this.fillFigureMask;
-
-                this.fillGroup.mask = this.percentMask;
-
-                this.group.addChild(this.fillGroup);
-        }
-
-        _createClass(ScoreMeter, [{
-                key: 'update',
-                value: function update(percent) {
-                        if (percent != this.percent) {
-                                this.percent = percent;
-                                this.percentMask.clear();
-                                var width = Math.floor(this.fullWidth * percent);
-                                this.percentMask.beginFill(0xffffff).drawRect(0, 0, width, this.radius * 2).endFill();
-                        }
-                        // this.updateScoreMeter(score);
-                        // this.updateAliveMeter(protestersAlive, protestersTotal);
-                        // this.updateMoodMeter(mood);
-                }
-                //
-                // updateScoreMeter(value) {
-                //     this.updateMeter({
-                //         graphics: this.scoreMeter,
-                //         value,
-                //         width: this.width,
-                //         height: 16,
-                //         x: -this.width / 2,
-                //         y: 0,
-                //         colorThreshold: 30
-                //     });
-                // }
-
-                // updateAliveMeter(protestersAlive, protestersTotal) {
-                //     this.updateMeter({
-                //         graphics: this.aliveMeter,
-                //         value: 100 * protestersAlive / protestersTotal,
-                //         width: this.width / 2 - 1,
-                //         height: 6,
-                //         x: -this.width / 2,
-                //         y: 13,
-                //         colorThreshold: 50
-                //     });
-                //
-                //     // this.aliveNumber.setText(`${protestersAlive} / ${protestersTotal}`);
-                // }
-
-                // updateMoodMeter(value) {
-                //     this.updateMeter({
-                //         graphics: this.moodMeter,
-                //         value,
-                //         width: this.width / 2 - 1,
-                //         height: 6,
-                //         x: 1,
-                //         y: 13,
-                //         colorThreshold: 50
-                //     });
-                //
-                //     // this.moodNumber.setText(Math.round(value));
-                // }
-                //
-                // updateMeter({ graphics, value, width, height, x, y, colorThreshold }) {
-                //     graphics.clear();
-                //
-                //     const color = Phaser.Color.RGBArrayToHex([
-                //         this.game.math.clamp(1 + (colorThreshold - value) / (100 - colorThreshold), 0, 1),
-                //         this.game.math.clamp(value / colorThreshold, 0, 1),
-                //         0
-                //     ]);
-                //
-                //     graphics.lineStyle(height, 0xffffff, 0.9);
-                //     graphics.moveTo(x, y);
-                //     graphics.lineTo(x + width, y);
-                //
-                //     graphics.lineStyle(height, color, 1);
-                //     graphics.moveTo(x, y);
-                //     graphics.lineTo(x + Math.round(width * value / 100), y);
-                // }
-
-        }, {
-                key: 'drawFigure',
-                value: function drawFigure(graphic) {
-                        graphic
-                        // .lineStyle(this.lineWidth, this.color, 1)
-                        .moveTo(this.radius, 0).lineTo(this.radius + this.width, 0).arc(this.radius + this.width, this.radius, this.radius, -Math.PI / 2, Math.PI / 2).lineTo(this.radius, this.radius * 2).arc(this.radius, this.radius, this.radius, Math.PI / 2, 3 * Math.PI / 2)
-                        // .lineTo(this.radius, 0)
-                        .lineTo(this.radius + this.width, 0);
-                }
-        }]);
-
-        return ScoreMeter;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (ScoreMeter);
-
-/***/ }),
+/* 452 */,
 /* 453 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -18301,6 +18168,7 @@ var BaseTweet = function () {
   }, {
     key: 'setBehavior',
     value: function setBehavior(Strgy) {
+
       this.behavior = new Strgy();
       this.behavior.set('tweet', this);
     }
@@ -18334,6 +18202,7 @@ var BaseTweet = function () {
         textGameObject.font = 'Arial';
         textGameObject.fixedToCamera = true;
       } else {
+
         textGameObject = this.game.add.text(__WEBPACK_IMPORTED_MODULE_1__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["b" /* AVATAR_TEXT_SPACING */], height, text, getTextStyle(width));
         textGameObject.resolution = window.devicePixelRatio || 1;
         textGameObject.font = 'Arial';
@@ -18344,12 +18213,14 @@ var BaseTweet = function () {
         textGameObject.fontSize = this.styles.fontSize;
       }
 
-      var avatar = this.game.add.sprite(0, 0, image);
+      var avatar = this.game.add.sprite(0, 0, "ALL_IMAGES", image);
+
       if (name) {
         avatar.alignTo(nameGameObject, Phaser.LEFT_TOP, __WEBPACK_IMPORTED_MODULE_1__const_js__["b" /* AVATAR_TEXT_SPACING */]);
       } else {
         avatar.alignTo(textGameObject, Phaser.LEFT_TOP, __WEBPACK_IMPORTED_MODULE_1__const_js__["b" /* AVATAR_TEXT_SPACING */]);
       }
+
       avatar.fixedToCamera = true;
 
       var mask = this.game.add.graphics(__WEBPACK_IMPORTED_MODULE_1__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["a" /* AVATAR_SIZE */] / 2, height + __WEBPACK_IMPORTED_MODULE_1__const_js__["a" /* AVATAR_SIZE */] / 2);
@@ -20391,7 +20262,7 @@ module.exports = __webpack_require__.p + "assets/6904d619c1ec6661282e0b22a9455e8
 /* 533 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/ea583901237a8d83edbd413e7b378f9a.json";
+module.exports = __webpack_require__.p + "assets/75dd4fe599b012f14bd6fb668476c80f.json";
 
 /***/ })
 /******/ ]);

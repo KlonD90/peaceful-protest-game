@@ -35,9 +35,12 @@ export default class BaseTweet {
   set(key, val) {
     this[key] = val;
   }
+  
   setBehavior(Strgy) {
+
     this.behavior = new Strgy();
     this.behavior.set('tweet', this);
+  
   }
 
   build() {
@@ -70,7 +73,9 @@ export default class BaseTweet {
       textGameObject.resolution = window.devicePixelRatio || 1;
       textGameObject.font = 'Arial';
       textGameObject.fixedToCamera = true;
+
     } else {
+      
       textGameObject = this.game.add.text(
         (MARGIN_LEFT + AVATAR_SIZE + AVATAR_TEXT_SPACING), 
         height, 
@@ -87,14 +92,14 @@ export default class BaseTweet {
     }
     
 
-    const avatar = this.game.add.sprite(
-      0, 0, image
-    );
+    const avatar = this.game.add.sprite( 0, 0, "ALL_IMAGES", image);
+    
     if (name) {
       avatar.alignTo(nameGameObject, Phaser.LEFT_TOP, AVATAR_TEXT_SPACING)
     } else {
       avatar.alignTo(textGameObject, Phaser.LEFT_TOP, AVATAR_TEXT_SPACING)
     }
+
     avatar.fixedToCamera = true;
     
     const mask = this.game.add.graphics(MARGIN_LEFT+AVATAR_SIZE/2, height+AVATAR_SIZE/2);

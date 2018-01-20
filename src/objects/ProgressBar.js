@@ -8,7 +8,7 @@ export default class ProgressBar{
         this.game = game;
         this.graphics = this.game.add.group();
 
-        this.fullWidth = width + radius * 2;
+        this.fullWidth = width;// + radius * 2;
         this.graphics.y = -30;
         this.graphics.x = -this.fullWidth/2;
         
@@ -34,9 +34,13 @@ export default class ProgressBar{
 
         this.graphics.visible = false;
     }
+
     update(percent){
         
         percent = this.game.math.clamp(percent, 0, 1);
+        
+        if(this.fillSprite.tint !== this.color)
+             this.fillSprite.tint = this.color;
 
         if (percent !== 0) {
             
