@@ -17,7 +17,7 @@ import modalShow from '../modal/';
 import levels from '../levels';
 import CirclePool from '../objects/CirclePool';
 
-import Debuger from '../debug.js';
+//import Debuger from '../debug.js';
 
 
 import levelObjects, {reset as levelObjectReset} from "../levelObjects.js"
@@ -169,7 +169,7 @@ class Game {
     }
 
     create() {
-        this.debuger = new Debuger(this.game);
+       // this.debuger = new Debuger(this.game);
         this.collider = new Collider({ game: this.game, gameObject: this, scale: 20 })
         this.mz.tweet = new Tweet(this.game);
         this.mz.pressJailed = false;
@@ -325,7 +325,7 @@ class Game {
                 shootingDuration: this.mz.level.press.duration,
                 cooldownDuration: this.mz.level.press.duration * pressRequired * 2,
                 onFinishShooting: this.onFinishShooting,
-                atlasKey:'humans', 
+                atlasKey:'ALL_IMAGES', 
                 spriteName: `journalist${i}`, 
             });
             this.mz.arrays.press.push(journalist.sprite);
@@ -440,7 +440,7 @@ class Game {
     }
 
     update() {
-         this.debuger.update(); // update debuger, for reset counter
+        //this.debuger.update(); // update debuger, for reset counter
         const now = Date.now();
 
         this.updateGarbage()
@@ -681,7 +681,7 @@ class Game {
                 shootingDuration: this.mz.level.press.duration,
                 cooldownDuration: this.mz.level.press.duration * pressRequired * 2,
                 onFinishShooting: this.onFinishShooting,
-                atlasKey: "humans",
+                atlasKey: "ALL_IMAGES",
                 spriteName: `journalist${i}`
             });
 
@@ -1162,7 +1162,7 @@ class Game {
                   angle: this.mz.level.cops.fov.angle
               },
               speed: this.mz.level.cops.speed,
-              atlasKey:'humans',
+              atlasKey:'ALL_IMAGES',
               spriteKey:"cop",
               spriteName: `cop${i}`
             })
@@ -1217,7 +1217,7 @@ class Game {
                 ...coords,
                 group: this.mz.groups.d,
                 speed: this.mz.level.protesters.speed,
-                atlasKey: "humans",
+                atlasKey: "ALL_IMAGES",
                 spriteKey: 'npc_0' +(Math.floor(Math.random()*8)+1),
                 spriteName: `protester${i}`,
                 mood: this.mz.level.protesters.mood,

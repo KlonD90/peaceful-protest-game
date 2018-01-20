@@ -24,7 +24,7 @@ class Player extends Protester {
         ...protesterOptions,
     }) {
         super({
-            atlasKey:'humans',
+            atlasKey:'ALL_IMAGES',
             spriteKey: 'player_sprite',
             spriteName: 'player',
             ...protesterOptions,

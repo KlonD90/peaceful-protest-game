@@ -9,7 +9,7 @@ import type {
 } from "./types.js"
 
 
-const FORCE_DISABLE_PATHFINDING_ON_MOBILE = true;
+const FORCE_DISABLE_PATHFINDING_ON_MOBILE = false;
 
 const decisionTimeout = 1000;
 // const phasingDecisionTime = 100;

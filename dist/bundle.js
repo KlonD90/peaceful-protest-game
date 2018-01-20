@@ -933,7 +933,7 @@ module.exports = {
         },
         protesters: {
             count: {
-                start: 50, //100,
+                start: 100, //100,
                 max: 100,
                 add: 14
             },
@@ -1091,7 +1091,7 @@ var Prefab = function () {
             this.viewSprite = this.game.add.sprite(x, y, spriteKey, 0);
         }
 
-        this.sprite = this.game.add.sprite(x, y, "humans", "empty");
+        this.sprite = this.game.add.sprite(x, y, "ALL_IMAGES", "empty");
 
         this.sprite.mz = this;
         this.viewSprite.mz = this;
@@ -2964,12 +2964,6 @@ var pack = {
         type: 'audio',
         key: 'pick',
         urls: __webpack_require__(425)
-    }, {
-        type: 'atlasJSONArray',
-        key: 'humans',
-        textureURL: __webpack_require__(426),
-        atlasURL: __webpack_require__(427),
-        atlasData: null
     }],
     level1: [
 
@@ -3359,7 +3353,7 @@ var Player = function (_Protester) {
         _classCallCheck(this, Player);
 
         var _this = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, _extends({
-            atlasKey: 'humans',
+            atlasKey: 'ALL_IMAGES',
             spriteKey: 'player_sprite',
             spriteName: 'player'
         }, protesterOptions)));
@@ -4307,7 +4301,7 @@ var Star = function (_Protester) {
     var rand = Math.floor(Math.random() * 3);
 
     var _this = _possibleConstructorReturn(this, (Star.__proto__ || Object.getPrototypeOf(Star)).call(this, _extends({}, GameObject.getRandomCoordinates(), {
-      atlasKey: "humans",
+      atlasKey: "ALL_IMAGES",
       spriteKey: "star_0" + (rand + 1),
       spriteName: "star_0" + (rand + 1),
       speed: { value: fullConfig.speed }
@@ -10288,18 +10282,8 @@ module.exports = __webpack_require__.p + "assets/b2187268a6f521f79c03adf9bedcf45
 module.exports = __webpack_require__.p + "assets/dd570435d42a0e42441e1fc12af0f4fa.mp3";
 
 /***/ }),
-/* 426 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/04e51a9c81f3c17041b4159c792bc719.png";
-
-/***/ }),
-/* 427 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/dbead97c97e4f04869efc8a67edf18d5.json";
-
-/***/ }),
+/* 426 */,
+/* 427 */,
 /* 428 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10883,12 +10867,11 @@ var Controls = function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__modal___ = __webpack_require__(493);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__levels__ = __webpack_require__(67);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__objects_CirclePool__ = __webpack_require__(529);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__debug_js__ = __webpack_require__(530);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__levelObjects_js__ = __webpack_require__(531);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__constants_js__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__utils_js__ = __webpack_require__(156);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__constants__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__ = __webpack_require__(98);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__levelObjects_js__ = __webpack_require__(531);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__constants_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__utils_js__ = __webpack_require__(156);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__constants__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__objects_Tweets_ManuallyBehavior__ = __webpack_require__(98);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -10918,6 +10901,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 
+//import Debuger from '../debug.js';
 
 
 
@@ -11052,7 +11036,7 @@ var Game = function () {
         value: function create() {
             var _this = this;
 
-            this.debuger = new __WEBPACK_IMPORTED_MODULE_18__debug_js__["a" /* default */](this.game);
+            // this.debuger = new Debuger(this.game);
             this.collider = new __WEBPACK_IMPORTED_MODULE_11__Collider_Collider_js__["a" /* default */]({ game: this.game, gameObject: this, scale: 20 });
             this.mz.tweet = new __WEBPACK_IMPORTED_MODULE_14__objects_Tweets___["a" /* default */](this.game);
             this.mz.pressJailed = false;
@@ -11193,12 +11177,12 @@ var Game = function () {
                     shootingDuration: this.mz.level.press.duration,
                     cooldownDuration: this.mz.level.press.duration * pressRequired * 2,
                     onFinishShooting: this.onFinishShooting,
-                    atlasKey: 'humans',
+                    atlasKey: 'ALL_IMAGES',
                     spriteName: 'journalist' + _i
                 }));
                 this.mz.arrays.press.push(journalist.sprite);
                 this.mz.groups.d.add(journalist.sprite);
-                journalist.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
+                journalist.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
             }
 
             // protesters
@@ -11257,9 +11241,9 @@ var Game = function () {
             this.game.camera.setBoundsToWorld();
             this.customCamera = new __WEBPACK_IMPORTED_MODULE_13__objects_Camera__["a" /* default */](this.game.camera, this.game);
             __WEBPACK_IMPORTED_MODULE_12__objects_HelpInfo_js__["a" /* default */].setGame(this.game);
-            this.mz.advices.move = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__["a" /* default */] });
-            this.mz.advices.space = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Нажмите ПРОБЕЛ, чтобы начать агитацию/перестать агитировать' : 'Нажмите на значок справа внизу экрана, чтобы начать/закончить агитацию', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__["a" /* default */] });
-            this.mz.advices.agitate = this.mz.tweet.tweet('Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__["a" /* default */] });
+            this.mz.advices.move = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_22__objects_Tweets_ManuallyBehavior__["a" /* default */] });
+            this.mz.advices.space = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Нажмите ПРОБЕЛ, чтобы начать агитацию/перестать агитировать' : 'Нажмите на значок справа внизу экрана, чтобы начать/закончить агитацию', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_22__objects_Tweets_ManuallyBehavior__["a" /* default */] });
+            this.mz.advices.agitate = this.mz.tweet.tweet('Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_22__objects_Tweets_ManuallyBehavior__["a" /* default */] });
             // this.mz.advices.shift = this.mz.tweet.tweet(
             //     'Чтобы бегать нажмите shift',
             //     'tw_help',
@@ -11267,7 +11251,7 @@ var Game = function () {
             // );
 
 
-            Object(__WEBPACK_IMPORTED_MODULE_19__levelObjects_js__["b" /* reset */])();
+            Object(__WEBPACK_IMPORTED_MODULE_18__levelObjects_js__["b" /* reset */])();
             // setTimeout(this.screenAttack.bind(this), 200);
 
             if (!this.circleGraphic) this.circleGraphic = this.game.add.graphics();
@@ -11292,7 +11276,7 @@ var Game = function () {
         value: function update() {
             var _this2 = this;
 
-            this.debuger.update(); // update debuger, for reset counter
+            //this.debuger.update(); // update debuger, for reset counter
             var now = Date.now();
 
             this.updateGarbage();
@@ -11405,7 +11389,7 @@ var Game = function () {
             // update journalists
             this.mz.arrays.press.forEach(function (journalistSprite) {
                 var journalist = journalistSprite.mz;
-                if (journalist.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["M" /* JOURNALIST_MODE_ARRESTED */]) {
+                if (journalist.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["M" /* JOURNALIST_MODE_ARRESTED */]) {
                     return;
                 }
                 if (journalistSprite.alive) {
@@ -11421,7 +11405,7 @@ var Game = function () {
                         // vs cops
                         for (var j = 0; j < _this2.mz.arrays.cops.length; j++) {
                             var copSprite = _this2.mz.arrays.cops[j];
-                            if (!copSprite.alive || copSprite.mz.target !== journalistSprite || !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["e" /* COP_MODE_STUN */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["c" /* COP_MODE_FIGHT */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */]) {
+                            if (!copSprite.alive || copSprite.mz.target !== journalistSprite || !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["e" /* COP_MODE_STUN */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */]) {
                                 continue;
                             }
 
@@ -11433,9 +11417,9 @@ var Game = function () {
                     }
 
                     if (newTarget) {
-                        journalist.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["O" /* JOURNALIST_MODE_SHOOTING */], { target: newTarget });
-                    } else if (journalist.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["P" /* JOURNALIST_MODE_WANDER */] && journalist.mode !== __WEBPACK_IMPORTED_MODULE_22__constants__["N" /* JOURNALIST_MODE_FOLLOW */]) {
-                        journalist.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
+                        journalist.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["O" /* JOURNALIST_MODE_SHOOTING */], { target: newTarget });
+                    } else if (journalist.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["P" /* JOURNALIST_MODE_WANDER */] && journalist.mode !== __WEBPACK_IMPORTED_MODULE_21__constants__["N" /* JOURNALIST_MODE_FOLLOW */]) {
+                        journalist.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
                     }
 
                     journalist.update();
@@ -11444,7 +11428,7 @@ var Game = function () {
 
             // update swat
             if (this.mz.objects.swat) {
-                if ((this.mz.score >= this.mz.level.swat.scoreThreshold || this.mz.gameEnded) && this.mz.objects.swat.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["_2" /* SWAT_MODE_HIDE */] && !this.mz.timers.swat.running) {
+                if ((this.mz.score >= this.mz.level.swat.scoreThreshold || this.mz.gameEnded) && this.mz.objects.swat.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["_2" /* SWAT_MODE_HIDE */] && !this.mz.timers.swat.running) {
                     this.mz.timers.swat.add(this.mz.level.swat.frequency, this.launchSWAT, this);
                     this.mz.timers.swat.start();
                 } else if (this.mz.timers.swat.running && this.mz.score < this.mz.level.swat.scoreThreshold) {
@@ -11498,13 +11482,13 @@ var Game = function () {
                     shootingDuration: this.mz.level.press.duration,
                     cooldownDuration: this.mz.level.press.duration * pressRequired * 2,
                     onFinishShooting: this.onFinishShooting,
-                    atlasKey: "humans",
+                    atlasKey: "ALL_IMAGES",
                     spriteName: 'journalist' + _i3
                 }));
 
                 this.mz.arrays.press.push(journalist.sprite);
                 this.mz.groups.d.add(journalist.sprite);
-                journalist.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
+                journalist.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
             }
             var protesterTargets = this.mz.arrays.protesters.filter(function (x) {
                 return x.mz.showPoster;
@@ -11514,7 +11498,7 @@ var Game = function () {
             if (this.mz.objects.player.showPoster) {
                 attractionStrength = 0.2;
                 for (var p = 0; p < this.mz.arrays.press; p++) {
-                    if (this.mz.arrays.press[i].mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["O" /* JOURNALIST_MODE_SHOOTING */]) {
+                    if (this.mz.arrays.press[i].mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["O" /* JOURNALIST_MODE_SHOOTING */]) {
                         attractionStrength += 0.4;
                     }
                 }
@@ -11525,16 +11509,16 @@ var Game = function () {
                 var copSprite = this.mz.arrays.cops[_i4];
                 var cop = copSprite.mz;
 
-                if (cop.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["S" /* PLAYER_MODE_FIGHT */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["U" /* PLAYER_MODE_STUN */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["V" /* PROTESTER_MODE_ARRESTED */]) {
+                if (cop.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["S" /* PLAYER_MODE_FIGHT */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["U" /* PLAYER_MODE_STUN */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */]) {
                     var playerCenter = this.mz.objects.player.sprite.body.center;
                     var diffCop = Math.abs(copSprite.body.center.x - playerCenter.x) + Math.abs(copSprite.body.center.y - playerCenter.y);
                     if (diffCop < 40) {
-                        this.mz.objects.player.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["S" /* PLAYER_MODE_FIGHT */], { target: copSprite });
-                        cop.setMode(__WEBPACK_IMPORTED_MODULE_22__constants__["c" /* COP_MODE_FIGHT */]);
+                        this.mz.objects.player.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["S" /* PLAYER_MODE_FIGHT */], { target: copSprite });
+                        cop.setMode(__WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */]);
                     }
                 }
 
-                if (cop.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */] && cop.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["b" /* COP_MODE_ENTER */] && cop.mode !== __WEBPACK_IMPORTED_MODULE_22__constants__["c" /* COP_MODE_FIGHT */] && cop.mode !== __WEBPACK_IMPORTED_MODULE_22__constants__["e" /* COP_MODE_STUN */] && cop.lastDecisionTime < now) {
+                if (cop.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */] && cop.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["b" /* COP_MODE_ENTER */] && cop.mode !== __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */] && cop.mode !== __WEBPACK_IMPORTED_MODULE_21__constants__["e" /* COP_MODE_STUN */] && cop.lastDecisionTime < now) {
                     cop.lastDecisionTime = now + lastCopDecisionTimeout + Math.random() * 50;
                     // set attraction point and strength
                     cop.attractionPoint = _extends({}, this.mz.objects.player.sprite.body.center);
@@ -11561,7 +11545,7 @@ var Game = function () {
                         }
                         //console.log('new target', newTarget);
                     }
-                    if (cop.target && cop.target.mz.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] && cop.FOV.containsPoint(cop.target.body.center)) {
+                    if (cop.target && cop.target.mz.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] && cop.FOV.containsPoint(cop.target.body.center)) {
                         var _distanceToProtesterSq = this.getDistanceSq(copSprite.body.center, cop.target.body.center) * 3 / 4;;
                         if (_distanceToProtesterSq < distanceToTargetSq) {
                             newTarget = cop.target;
@@ -11569,10 +11553,10 @@ var Game = function () {
                     }
                     if (newTarget) {
                         // if theres a target in a view, pursue him
-                        cop.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["d" /* COP_MODE_PURSUE */], { target: newTarget });
-                    } else if (cop.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["f" /* COP_MODE_WANDER */]) {
+                        cop.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["d" /* COP_MODE_PURSUE */], { target: newTarget });
+                    } else if (cop.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["f" /* COP_MODE_WANDER */]) {
                         // else wander around, if not yet
-                        cop.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["f" /* COP_MODE_WANDER */]);
+                        cop.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["f" /* COP_MODE_WANDER */]);
                     }
                 }
 
@@ -11594,7 +11578,7 @@ var Game = function () {
                     var _protesterSprite = _step2.value;
 
 
-                    if (!_protesterSprite.alive || _protesterSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["V" /* PROTESTER_MODE_ARRESTED */]) {
+                    if (!_protesterSprite.alive || _protesterSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */]) {
                         continue;
                     }
 
@@ -11627,7 +11611,7 @@ var Game = function () {
                 }
             }
 
-            if (this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] && !this.mz.gameEnded) {
+            if (this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] && !this.mz.gameEnded) {
                 // vs posters
                 for (var _i6 = 0; _i6 < this.mz.arrays.droppedPosters.length; _i6++) {
                     var droppedPoster = this.mz.arrays.droppedPosters[_i6];
@@ -11648,13 +11632,13 @@ var Game = function () {
             //     this.mz.arrays.borders
             // );
             var checkFollowPlayer = function checkFollowPlayer(sprite) {
-                return !(sprite && sprite.mz && sprite.mz.mode && sprite.mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["W" /* PROTESTER_MODE_FOLLOW */] && sprite.mz.following && sprite.mz.following.target === _this2.mz.objects.player.sprite);
+                return !(sprite && sprite.mz && sprite.mz.mode && sprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["W" /* PROTESTER_MODE_FOLLOW */] && sprite.mz.following && sprite.mz.following.target === _this2.mz.objects.player.sprite);
             };
             var pursueTarget = function pursueTarget(mode, isArrest) {
                 return function (copSprite, protesterSprite) {
                     var isTarget = copSprite.mz.target === protesterSprite && copSprite.mz.mode === mode;
                     if (isArrest && isTarget) {
-                        if (!copSprite.alive || protesterSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["S" /* PLAYER_MODE_FIGHT */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["e" /* COP_MODE_STUN */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["c" /* COP_MODE_FIGHT */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */]) {
+                        if (!copSprite.alive || protesterSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["S" /* PLAYER_MODE_FIGHT */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["e" /* COP_MODE_STUN */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */]) {
                             return false;
                         }
                         _this2.proceedToJail(protesterSprite, copSprite);
@@ -11663,7 +11647,7 @@ var Game = function () {
                 };
             };
             this.game.physics.arcade.collide(this.mz.objects.player.sprite, this.mz.arrays.protesters, null, function (sprite1, sprite2) {
-                return pursueTarget(__WEBPACK_IMPORTED_MODULE_22__constants__["Y" /* PROTESTER_MODE_NOD */])(sprite2, sprite1) && checkFollowPlayer(sprite1) && checkFollowPlayer(sprite2);
+                return pursueTarget(__WEBPACK_IMPORTED_MODULE_21__constants__["Y" /* PROTESTER_MODE_NOD */])(sprite2, sprite1) && checkFollowPlayer(sprite1) && checkFollowPlayer(sprite2);
             });
             // this.game.physics.arcade.collide(
             //     this.mz.objects.player.sprite,
@@ -11688,7 +11672,7 @@ var Game = function () {
                     var target = moveEntry.target;
                     if (moveEntry.phasing && _this2.checkContainWagon(target)) {
                         protester.mz.moveTo(null);
-                        if (protester.mz.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["Z" /* PROTESTER_MODE_WANDER */]) protester.mz.wander();
+                        if (protester.mz.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["Z" /* PROTESTER_MODE_WANDER */]) protester.mz.wander();
                     } else {
                         var xSide = null;
                         if (protester.x > wagon.body.x + wagon.body.width) {
@@ -11743,9 +11727,9 @@ var Game = function () {
                 //     this.mz.objects.star.sprite
                 // );
             }
-            this.game.physics.arcade.collide(this.mz.arrays.cops, this.mz.arrays.protesters, null, pursueTarget(__WEBPACK_IMPORTED_MODULE_20__constants_js__["d" /* COP_MODE_PURSUE */], true));
+            this.game.physics.arcade.collide(this.mz.arrays.cops, this.mz.arrays.protesters, null, pursueTarget(__WEBPACK_IMPORTED_MODULE_19__constants_js__["d" /* COP_MODE_PURSUE */], true));
 
-            var handlePlayerPursue = pursueTarget(__WEBPACK_IMPORTED_MODULE_20__constants_js__["d" /* COP_MODE_PURSUE */], true);
+            var handlePlayerPursue = pursueTarget(__WEBPACK_IMPORTED_MODULE_19__constants_js__["d" /* COP_MODE_PURSUE */], true);
 
             this.game.physics.arcade.collide(this.mz.arrays.cops, this.mz.objects.player.sprite, null, function (cop, player) {
                 return handlePlayerPursue(cop, player) && false;
@@ -11822,7 +11806,7 @@ var Game = function () {
             };
 
             var player = this.mz.objects.player;
-            if (player.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["S" /* PLAYER_MODE_FIGHT */] && player.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["U" /* PLAYER_MODE_STUN */]) {
+            if (player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["S" /* PLAYER_MODE_FIGHT */] && player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["U" /* PLAYER_MODE_STUN */]) {
                 if (this.mz.advices.move) {
                     this.mz.advices.move.hide();
                     this.mz.advices.move = null;
@@ -11835,7 +11819,7 @@ var Game = function () {
                         return player.resetClickSpeed(true);
                     }, phasing: true });
             }
-            if (player.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["S" /* PLAYER_MODE_FIGHT */]) {
+            if (player.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["S" /* PLAYER_MODE_FIGHT */]) {
                 player.fightBar += 1;
             }
         }
@@ -11883,7 +11867,7 @@ var Game = function () {
         key: 'updateTimer',
         value: function updateTimer() {
             this.mz.timePassed++;
-            this.mz.objects.interface.updateTimer(Object(__WEBPACK_IMPORTED_MODULE_21__utils_js__["a" /* getFormattedTime */])(this.mz.timePassed));
+            this.mz.objects.interface.updateTimer(Object(__WEBPACK_IMPORTED_MODULE_20__utils_js__["a" /* getFormattedTime */])(this.mz.timePassed));
         }
     }, {
         key: 'createCops',
@@ -11912,7 +11896,7 @@ var Game = function () {
                         angle: this.mz.level.cops.fov.angle
                     },
                     speed: this.mz.level.cops.speed,
-                    atlasKey: 'humans',
+                    atlasKey: 'ALL_IMAGES',
                     spriteKey: "cop",
                     spriteName: 'cop' + _i7
                 });
@@ -11970,7 +11954,7 @@ var Game = function () {
                 var protester = this.createPrefab(__WEBPACK_IMPORTED_MODULE_1__objects_NPCProtester_js__["a" /* default */], _extends({}, coords, {
                     group: this.mz.groups.d,
                     speed: this.mz.level.protesters.speed,
-                    atlasKey: "humans",
+                    atlasKey: "ALL_IMAGES",
                     spriteKey: 'npc_0' + (Math.floor(Math.random() * 8) + 1),
                     spriteName: 'protester' + _i11,
                     mood: this.mz.level.protesters.mood,
@@ -12058,7 +12042,7 @@ var Game = function () {
             });
 
             this.arrest(protesterSprite, copSprite);
-            copSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */], { jailCoords: closestCarCoords });
+            copSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */], { jailCoords: closestCarCoords });
         }
     }, {
         key: 'arrest',
@@ -12072,7 +12056,7 @@ var Game = function () {
             }
             var x = protesterSprite.body.center.x - copSprite.body.center.x;
             var y = protesterSprite.body.center.y - copSprite.body.center.y;
-            protesterSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["V" /* PROTESTER_MODE_ARRESTED */], {
+            protesterSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */], {
                 x: Math.sign(x) * Math.min(Math.abs(x), 17),
                 y: Math.sign(y) * Math.min(Math.abs(y), 17),
                 by: copSprite.mz
@@ -12116,7 +12100,7 @@ var Game = function () {
                 protesterSprite.visible = true;
                 var slot = __WEBPACK_IMPORTED_MODULE_0__objects_Player_js__["a" /* default */].instance.slots.take(this);
                 if (slot) {
-                    protesterSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["W" /* PROTESTER_MODE_FOLLOW */], { slot: slot });
+                    protesterSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["W" /* PROTESTER_MODE_FOLLOW */], { slot: slot });
                 }
                 // protesterSprite.mz.setMode(PROTESTER_MODE_WANDER);
             }
@@ -12155,12 +12139,12 @@ var Game = function () {
                 y: this.getRandomCoordinateY()
             });
 
-            this.mz.objects.swat.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["_3" /* SWAT_MODE_HUNT */], { start: start, targets: targets });
+            this.mz.objects.swat.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["_3" /* SWAT_MODE_HUNT */], { start: start, targets: targets });
         }
     }, {
         key: 'launchShield',
         value: function launchShield() {
-            this.mz.objects.shield.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["_0" /* SHIELD_MODE_DRIVE */], {
+            this.mz.objects.shield.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["_0" /* SHIELD_MODE_DRIVE */], {
                 y: this.game.height / 2 + this.game.camera.y
             });
         }
@@ -12168,11 +12152,11 @@ var Game = function () {
         key: 'checkWin',
         value: function checkWin() {
             if (this.mz.protesters.alive <= 0) {
-                this.endGame(__WEBPACK_IMPORTED_MODULE_20__constants_js__["h" /* END_GAME_PROTEST_RATE */]);
+                this.endGame(__WEBPACK_IMPORTED_MODULE_19__constants_js__["h" /* END_GAME_PROTEST_RATE */]);
             } else if (this.mz.score >= this.mz.limitScore) {
-                this.endGame(__WEBPACK_IMPORTED_MODULE_20__constants_js__["j" /* END_GAME_WIN */]);
-            } else if (this.mz.objects.player.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] || !this.mz.objects.player.sprite.alive) {
-                this.endGame(__WEBPACK_IMPORTED_MODULE_20__constants_js__["g" /* END_GAME_PLAYER_KILLED */]);
+                this.endGame(__WEBPACK_IMPORTED_MODULE_19__constants_js__["j" /* END_GAME_WIN */]);
+            } else if (this.mz.objects.player.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] || !this.mz.objects.player.sprite.alive) {
+                this.endGame(__WEBPACK_IMPORTED_MODULE_19__constants_js__["g" /* END_GAME_PLAYER_KILLED */]);
             }
         }
     }, {
@@ -12197,7 +12181,7 @@ var Game = function () {
             this.game.input.keyboard.removeKey(Phaser.Keyboard.ESC);
             this.game.input.onDown.remove(this.handleUnpause, this);
 
-            if (mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["j" /* END_GAME_WIN */]) {
+            if (mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["j" /* END_GAME_WIN */]) {
                 this.mz.objects.audio.applause.play('', 0, 0.25);
                 this.mz.arrays.protesters.forEach(function (sprite) {
                     sprite.mz.moodUp(1);
@@ -12212,7 +12196,7 @@ var Game = function () {
 
                 this.mz.objects.audio.boo.play();
                 switch (mode) {
-                    case __WEBPACK_IMPORTED_MODULE_20__constants_js__["h" /* END_GAME_PROTEST_RATE */]:
+                    case __WEBPACK_IMPORTED_MODULE_19__constants_js__["h" /* END_GAME_PROTEST_RATE */]:
                         {
                             // this.launchShield();
                             Object(__WEBPACK_IMPORTED_MODULE_15__modal___["a" /* default */])('desolation', 0, function () {
@@ -12223,7 +12207,7 @@ var Game = function () {
                             });
                             break;
                         }
-                    case __WEBPACK_IMPORTED_MODULE_20__constants_js__["g" /* END_GAME_PLAYER_KILLED */]:
+                    case __WEBPACK_IMPORTED_MODULE_19__constants_js__["g" /* END_GAME_PLAYER_KILLED */]:
                         {
                             Object(__WEBPACK_IMPORTED_MODULE_15__modal___["a" /* default */])('arrested', 0, function () {
                                 _this4.mz.objects.audio.theme.stop();
@@ -12311,12 +12295,12 @@ var Game = function () {
     }, {
         key: 'getRandomCoordinateX',
         value: function getRandomCoordinateX() {
-            return this.game.math.clamp(this.game.world.randomX, __WEBPACK_IMPORTED_MODULE_20__constants_js__["k" /* FIELD_OFFSET */].left, this.game.world.width - __WEBPACK_IMPORTED_MODULE_20__constants_js__["k" /* FIELD_OFFSET */].right);
+            return this.game.math.clamp(this.game.world.randomX, __WEBPACK_IMPORTED_MODULE_19__constants_js__["k" /* FIELD_OFFSET */].left, this.game.world.width - __WEBPACK_IMPORTED_MODULE_19__constants_js__["k" /* FIELD_OFFSET */].right);
         }
     }, {
         key: 'getRandomCoordinateY',
         value: function getRandomCoordinateY() {
-            return this.game.math.clamp(this.game.world.randomY, __WEBPACK_IMPORTED_MODULE_20__constants_js__["k" /* FIELD_OFFSET */].top, this.game.world.height - __WEBPACK_IMPORTED_MODULE_20__constants_js__["k" /* FIELD_OFFSET */].bottom);
+            return this.game.math.clamp(this.game.world.randomY, __WEBPACK_IMPORTED_MODULE_19__constants_js__["k" /* FIELD_OFFSET */].top, this.game.world.height - __WEBPACK_IMPORTED_MODULE_19__constants_js__["k" /* FIELD_OFFSET */].bottom);
         }
     }, {
         key: 'screenAttack',
@@ -12396,7 +12380,7 @@ var Game = function () {
             var _loop = function _loop(_i13) {
                 var copSprite = _this5.mz.arrays.cops[_i13];
                 var cop = copSprite.mz;
-                if (cop.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["c" /* COP_MODE_FIGHT */]) {
+                if (cop.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */]) {
                     var closestCarCoords = null;
                     var minDistanceSq = Infinity;
                     _this5.mz.arrays.wagons.forEach(function (carSprite) {
@@ -12411,7 +12395,7 @@ var Game = function () {
                         }
                     });
 
-                    copSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */], { jailCoords: closestCarCoords });
+                    copSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */], { jailCoords: closestCarCoords });
                 }
             };
 
@@ -12443,9 +12427,9 @@ var Game = function () {
             for (var _i15 = 0; _i15 < this.mz.cops.alive; _i15++) {
                 var _copSprite = this.mz.arrays.cops[_i15];
                 var cop = _copSprite.mz;
-                if (cop.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["c" /* COP_MODE_FIGHT */]) {
+                if (cop.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */]) {
                     this.unarrest(_copSprite);
-                    cop.setMode(__WEBPACK_IMPORTED_MODULE_22__constants__["e" /* COP_MODE_STUN */]);
+                    cop.setMode(__WEBPACK_IMPORTED_MODULE_21__constants__["e" /* COP_MODE_STUN */]);
                     this.increaseScore(10, _copSprite);
                 }
             }
@@ -12506,7 +12490,7 @@ var Game = function () {
             }
 
             var _loop2 = function _loop2(cop) {
-                if (cop.alive && cop.mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */]) {
+                if (cop.alive && cop.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */]) {
                     var closestCarCoords = null;
                     var minDistanceSq = Infinity;
                     _this6.mz.arrays.wagons.forEach(function (carSprite) {
@@ -12520,7 +12504,7 @@ var Game = function () {
                             minDistanceSq = distanceToCarSq;
                         }
                     });
-                    cop.mz.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */], { jailCoords: closestCarCoords });
+                    cop.mz.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */], { jailCoords: closestCarCoords });
                 }
             };
 
@@ -12579,7 +12563,7 @@ var Game = function () {
             var _this7 = this;
 
             var _loop3 = function _loop3(key) {
-                var _levelObjects$key = __WEBPACK_IMPORTED_MODULE_19__levelObjects_js__["a" /* default */][key],
+                var _levelObjects$key = __WEBPACK_IMPORTED_MODULE_18__levelObjects_js__["a" /* default */][key],
                     speed = _levelObjects$key.speed,
                     personalMatrix = _levelObjects$key.personalMatrix,
                     sprite = _levelObjects$key.sprite,
@@ -12636,7 +12620,7 @@ var Game = function () {
                 }));
             };
 
-            for (var key in __WEBPACK_IMPORTED_MODULE_19__levelObjects_js__["a" /* default */]) {
+            for (var key in __WEBPACK_IMPORTED_MODULE_18__levelObjects_js__["a" /* default */]) {
                 _loop3(key);
             }
         }
@@ -12709,7 +12693,7 @@ var Game = function () {
                             var p = _step5.value;
 
                             var line = lines[p];
-                            var shouldBePoint = Object(__WEBPACK_IMPORTED_MODULE_21__utils_js__["b" /* lineIntersection */])(line, mainLine);
+                            var shouldBePoint = Object(__WEBPACK_IMPORTED_MODULE_20__utils_js__["b" /* lineIntersection */])(line, mainLine);
                             // console.log(shouldBePoint, line, mainLine, sprite);
                             if (this.game.camera.view.contains(shouldBePoint.x, shouldBePoint.y)) {
                                 interPoint = shouldBePoint;
@@ -13172,9 +13156,9 @@ var NPCProtester = function (_Protester) {
             this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.01;
 
             if (this.isNOD) {
-                this.changeViewSprite('humans', 'nod', 3);
+                this.changeViewSprite('ALL_IMAGES', 'nod', 3);
             } else {
-                this.changeViewSprite('humans', 'npc_0' + (Math.floor(Math.random() * 8) + 1), 3);
+                this.changeViewSprite('ALL_IMAGES', 'npc_0' + (Math.floor(Math.random() * 8) + 1), 3);
             }
 
             this.nodDone = false;
@@ -13820,7 +13804,7 @@ var SWATSquad = function () {
 
         this.sprites = [];
         for (var i = 0; i < count; i++) {
-            var swatSprite = this.game.add.sprite(-100, -100, 'humans', 'omon-0');
+            var swatSprite = this.game.add.sprite(-100, -100, 'ALL_IMAGES', 'omon-0');
             swatSprite.anchor.set(0.5);
             swatSprite.visible = false;
             swatSprite.mz = this;
@@ -15009,7 +14993,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 
-var FORCE_DISABLE_PATHFINDING_ON_MOBILE = true;
+var FORCE_DISABLE_PATHFINDING_ON_MOBILE = false;
 
 var decisionTimeout = 1000;
 // const phasingDecisionTime = 100;
@@ -19690,56 +19674,7 @@ var CirclePool = function () {
 /* harmony default export */ __webpack_exports__["a"] = (CirclePool);
 
 /***/ }),
-/* 530 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Debuger = function () {
-	function Debuger(game) {
-		var _this = this;
-
-		_classCallCheck(this, Debuger);
-
-		setTimeout(function () {
-
-			console.log("ADD DEBUGER!:", game);
-			_this.legasyDrawElements = game.renderer.gl.__proto__.drawElements;
-			_this.elements = 0;
-			_this.debug_text = document.querySelector("#debug");
-
-			var _that = _this;
-			game.renderer.gl.__proto__.drawElements = function (mode, count, type, offset) {
-				_that.elements++;
-				_that.legasyDrawElements.call(game.renderer.gl, mode, count, type, offset);
-			};
-
-			console.log("Rebind drawElements!!");
-
-			game.time.advancedTiming = true;
-
-			setInterval(function () {
-				_this.debug_text.innerHTML = "FPS:" + game.time.fps + "<br> DCPF: " + _this.elements;
-			}, 500);
-		}, 500);
-	}
-
-	_createClass(Debuger, [{
-		key: "update",
-		value: function update() {
-			this.elements = 0;
-		}
-	}]);
-
-	return Debuger;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (Debuger);
-
-/***/ }),
+/* 530 */,
 /* 531 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -19824,13 +19759,13 @@ var reset = function reset() {
 /* 532 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/72231af2e2a74389efaa0d890faed132.png";
+module.exports = __webpack_require__.p + "assets/db6f743778d16a9654eae41d35e18b46.png";
 
 /***/ }),
 /* 533 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/c8af1f499007ca03804386d9bb24b3cd.json";
+module.exports = __webpack_require__.p + "assets/1b7f8e84b8a50818e938c6519269505d.json";
 
 /***/ })
 /******/ ]);

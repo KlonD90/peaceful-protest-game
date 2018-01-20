@@ -19,7 +19,7 @@ class   Prefab {
             this.viewSprite = this.game.add.sprite(x, y, spriteKey, 0);
         }
 
-        this.sprite = this.game.add.sprite(x,y,"humans","empty");
+        this.sprite = this.game.add.sprite(x,y,"ALL_IMAGES","empty");
         
         this.sprite.mz = this;
         this.viewSprite.mz = this;

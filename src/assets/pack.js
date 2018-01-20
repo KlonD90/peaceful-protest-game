@@ -312,14 +312,14 @@ const pack = {
             key: 'pick',
             urls: require('./audio/pick.mp3')
         },
-        
+        /*
         {
             type: 'atlasJSONArray',
             key: 'humans',
             textureURL: require('./humans.png'),
             atlasURL: require('./humans.json'),
             atlasData: null
-        }
+        }*/
     ],
     level1: [
         

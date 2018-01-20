@@ -327,11 +327,11 @@ class NPCProtester extends Protester {
 
         if (this.isNOD)
         {
-            this.changeViewSprite('humans','nod', 3);
+            this.changeViewSprite('ALL_IMAGES','nod', 3);
         }
         else
         {
-            this.changeViewSprite('humans','npc_0'+(Math.floor(Math.random()*8)+1), 3);
+            this.changeViewSprite('ALL_IMAGES','npc_0'+(Math.floor(Math.random()*8)+1), 3);
         }
 
         this.nodDone = false;

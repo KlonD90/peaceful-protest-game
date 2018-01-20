@@ -39,7 +39,7 @@ export class Star extends Protester {
     const rand = Math.floor(Math.random()*3);
     super({
       ...GameObject.getRandomCoordinates(),
-      atlasKey:"humans",
+      atlasKey:"ALL_IMAGES",
       spriteKey: `star_0${(rand+1)}`,
       spriteName: `star_0${(rand+1)}`,
       speed: { value: fullConfig.speed },
