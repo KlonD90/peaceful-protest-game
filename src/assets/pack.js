@@ -48,13 +48,14 @@ const pack = {
             frameWidth: 100,
             frameHeight: 100
         },
+        /*
         {
             type: 'spritesheet',
             key: 'helpPoster',
             url: require('./posterButton.png'),
             frameWidth: 70,
             frameHeight: 70
-        }
+        }*/
     ],
     helpDesktop: [
         {
@@ -118,6 +119,7 @@ const pack = {
             frameWidth: 360,
             frameHeight: 81
         },
+        /*
         {
             type: 'spritesheet',
             key: 'playButton',
@@ -159,7 +161,7 @@ const pack = {
             url: require('./points_10.png'),
             frameWidth: 104,
             frameHeight: 47
-        },
+        },*/
         {
             type: 'spritesheet',
             key: 'paddy_wagon',
@@ -204,7 +206,7 @@ const pack = {
             frameMax: 3,
             margin: 0,
             spacing: 0
-        }*/,
+        },
         {
             type: 'spritesheet',
             key: 'repeatButton',
@@ -226,7 +228,7 @@ const pack = {
             frameWidth: 48,
             frameHeight: 48
         },
-        /*
+        
         {
             type: 'spritesheet',
             key: 'omon',
@@ -240,7 +242,7 @@ const pack = {
             url: require('./nod.png'),
             frameWidth: 31,
             frameHeight: 37
-        },*/
+        },
         {
             type: 'spritesheet',
             key: 'podskazka_plakat',
@@ -254,7 +256,7 @@ const pack = {
             url: require('./plakat.png'),
             frameWidth: 44,
             frameHeight: 12
-        },
+        }*/,
         {
             type: 'audio',
             key: 'theme',
@@ -521,6 +523,7 @@ const pack = {
             frameWidth: 30,
             frameHeight: 31
         },
+        /*
         {
             type: 'spritesheet',
             key: 'poster',
@@ -541,7 +544,7 @@ const pack = {
             url: require('./dropped_poster.png'),
             frameWidth: 44,
             frameHeight: 34
-        },
+        },*/
         {
             type: 'image',
             key: 'ground',

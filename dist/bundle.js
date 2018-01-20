@@ -2733,12 +2733,6 @@ var pack = {
         url: __webpack_require__(367),
         frameWidth: 100,
         frameHeight: 100
-    }, {
-        type: 'spritesheet',
-        key: 'helpPoster',
-        url: __webpack_require__(368),
-        frameWidth: 70,
-        frameHeight: 70
     }],
     helpDesktop: [{
         type: 'spritesheet',
@@ -2790,43 +2784,51 @@ var pack = {
         url: __webpack_require__(403),
         frameWidth: 360,
         frameHeight: 81
-    }, {
+    },
+    /*
+    {
         type: 'spritesheet',
         key: 'playButton',
-        url: __webpack_require__(404),
+        url: require('./playButton.png'),
         frameWidth: 100,
         frameHeight: 100
-    }, {
+    },
+    {
         type: 'spritesheet',
         key: 'help',
-        url: __webpack_require__(405),
+        url: require('./help.png'),
         frameWidth: 48,
         frameHeight: 48
-    }, {
+    },
+    {
         type: 'spritesheet',
         key: 'points_1',
-        url: __webpack_require__(406),
+        url: require('./points_1.png'),
         frameWidth: 67,
         frameHeight: 45
-    }, {
+    },
+    {
         type: 'spritesheet',
         key: 'points_2',
-        url: __webpack_require__(407),
+        url: require('./points_2.png'),
         frameWidth: 67,
         frameHeight: 46
-    }, {
+    },
+    {
         type: 'spritesheet',
         key: 'points_5',
-        url: __webpack_require__(408),
+        url: require('./points_5.png'),
         frameWidth: 69,
         frameHeight: 46
-    }, {
+    },
+    {
         type: 'spritesheet',
         key: 'points_10',
-        url: __webpack_require__(409),
+        url: require('./points_10.png'),
         frameWidth: 104,
         frameHeight: 47
-    }, {
+    },*/
+    {
         type: 'spritesheet',
         key: 'paddy_wagon',
         url: __webpack_require__(410),
@@ -2868,53 +2870,57 @@ var pack = {
             frameMax: 3,
             margin: 0,
             spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'repeatButton',
+            url: require('./repeatButton.png'),
+            frameWidth: 100,
+            frameHeight: 100
+        },
+        {
+            type: 'spritesheet',
+            key: 'soundButtons',
+            url: require('./soundButtons.png'),
+            frameWidth: 48,
+            frameHeight: 48
+        },
+        {
+            type: 'spritesheet',
+            key: 'restartButton',
+            url: require('./restart.png'),
+            frameWidth: 48,
+            frameHeight: 48
+        },
+        
+        {
+            type: 'spritesheet',
+            key: 'omon',
+            url: require('./omon.png'),
+            frameWidth: 31,
+            frameHeight: 37
+        },
+        {
+            type: 'spritesheet',
+            key: 'nod',
+            url: require('./nod.png'),
+            frameWidth: 31,
+            frameHeight: 37
+        },
+        {
+            type: 'spritesheet',
+            key: 'podskazka_plakat',
+            url: require('./soundButtons.png'),
+            frameWidth: 50,
+            frameHeight: 50
+        },
+        {
+            type: 'spritesheet',
+            key: 'plakat',
+            url: require('./plakat.png'),
+            frameWidth: 44,
+            frameHeight: 12
         }*/
-    }, {
-        type: 'spritesheet',
-        key: 'repeatButton',
-        url: __webpack_require__(412),
-        frameWidth: 100,
-        frameHeight: 100
-    }, {
-        type: 'spritesheet',
-        key: 'soundButtons',
-        url: __webpack_require__(142),
-        frameWidth: 48,
-        frameHeight: 48
-    }, {
-        type: 'spritesheet',
-        key: 'restartButton',
-        url: __webpack_require__(413),
-        frameWidth: 48,
-        frameHeight: 48
-    },
-    /*
-    {
-        type: 'spritesheet',
-        key: 'omon',
-        url: require('./omon.png'),
-        frameWidth: 31,
-        frameHeight: 37
-    },
-    {
-        type: 'spritesheet',
-        key: 'nod',
-        url: require('./nod.png'),
-        frameWidth: 31,
-        frameHeight: 37
-    },*/
-    {
-        type: 'spritesheet',
-        key: 'podskazka_plakat',
-        url: __webpack_require__(142),
-        frameWidth: 50,
-        frameHeight: 50
-    }, {
-        type: 'spritesheet',
-        key: 'plakat',
-        url: __webpack_require__(414),
-        frameWidth: 44,
-        frameHeight: 12
     }, {
         type: 'audio',
         key: 'theme',
@@ -3165,25 +3171,30 @@ var pack = {
         url: __webpack_require__(428),
         frameWidth: 30,
         frameHeight: 31
-    }, {
+    },
+    /*
+    {
         type: 'spritesheet',
         key: 'poster',
-        url: __webpack_require__(429),
+        url: require('./poster.png'),
         frameWidth: 60,
         frameHeight: 71
-    }, {
+    },
+    {
         type: 'spritesheet',
         key: 'mobile_poster',
-        url: __webpack_require__(430),
+        url: require('./mobile_poster.png'),
         frameWidth: 50,
         frameHeight: 50
-    }, {
+    },
+    {
         type: 'spritesheet',
         key: 'dropped_poster',
-        url: __webpack_require__(431),
+        url: require('./dropped_poster.png'),
         frameWidth: 44,
         frameHeight: 34
-    }, {
+    },*/
+    {
         type: 'image',
         key: 'ground',
         url: __webpack_require__(432),
@@ -3299,12 +3310,7 @@ var pack = {
 /* harmony default export */ __webpack_exports__["a"] = (JSON.stringify(pack));
 
 /***/ }),
-/* 142 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/7986b3adc568860d6103f4ba43b8ee07.png";
-
-/***/ }),
+/* 142 */,
 /* 143 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -10119,12 +10125,7 @@ module.exports = __webpack_require__.p + "assets/3e736cadcb61ec5e4f210df6e7bedd1
 module.exports = __webpack_require__.p + "assets/0a98a949b4886079723975216652cf49.png";
 
 /***/ }),
-/* 368 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/c96144591ab8112e33935164269d6683.png";
-
-/***/ }),
+/* 368 */,
 /* 369 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10200,42 +10201,12 @@ module.exports = __webpack_require__.p + "assets/df26508edc26ee3ebb6284d6467783f
 module.exports = __webpack_require__.p + "assets/02e6feea7a1f6d5e79c4b6af7347842f.png";
 
 /***/ }),
-/* 404 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/784a4a24da47767dec8d65b727fc8383.png";
-
-/***/ }),
-/* 405 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/56b7547af4363943b51c81e401210a40.png";
-
-/***/ }),
-/* 406 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/714cfc1d07a07da6a11f8ea8c99dd73e.png";
-
-/***/ }),
-/* 407 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/95699dcea5eb9c37a078056a95904535.png";
-
-/***/ }),
-/* 408 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/5c90af949e1ed86965df6aacb86b7f00.png";
-
-/***/ }),
-/* 409 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/87bc704d499017ce98ac19c70b6b8a54.png";
-
-/***/ }),
+/* 404 */,
+/* 405 */,
+/* 406 */,
+/* 407 */,
+/* 408 */,
+/* 409 */,
 /* 410 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10248,24 +10219,9 @@ module.exports = __webpack_require__.p + "assets/6415893186a9d405eb58026c9746e68
 module.exports = __webpack_require__.p + "assets/b6f612c9937d49d43dc479b8f14b27b4.png";
 
 /***/ }),
-/* 412 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/414510c3df8e81d30baba58bc049457c.png";
-
-/***/ }),
-/* 413 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/9cd6d0cc464716c355134fb57aaeb01b.png";
-
-/***/ }),
-/* 414 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/2a26da10b1fb67e5d95ddab98fe4f421.png";
-
-/***/ }),
+/* 412 */,
+/* 413 */,
+/* 414 */,
 /* 415 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10350,24 +10306,9 @@ module.exports = __webpack_require__.p + "assets/b36f0d0ff9fe4ff1b22c5c028423566
 module.exports = __webpack_require__.p + "assets/d4bedbdde1c2adef9d869553fe67a350.png";
 
 /***/ }),
-/* 429 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/28dbeb6c57f67cd17abbd912371bac9c.png";
-
-/***/ }),
-/* 430 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/3b9989ad6121134042d7f025e79fa1ae.png";
-
-/***/ }),
-/* 431 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/7a91b31a7170db537179dddf57b51e41.png";
-
-/***/ }),
+/* 429 */,
+/* 430 */,
+/* 431 */,
 /* 432 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12793,8 +12734,6 @@ var Game = function () {
                                 break;
                             }
                         }
-
-                        // console.log('intersection point', interPoint);
                     } catch (err) {
                         _didIteratorError5 = true;
                         _iteratorError5 = err;
@@ -12811,25 +12750,10 @@ var Game = function () {
                     }
 
                     if (interPoint) this.circlePool.pull(key, circle, interPoint.x, interPoint.y);
-                    // this.circleGraphic.beginFill(color, 0.7).drawCircle(interPoint.x, interPoint.y, 20).endFill()
-                    // Phaser.Line.intersectionWithRectangle(line, cameraBounds, intersectionPoint);
-                    // console.log(intersectionPoint, sprite);
                 }
             }
             //this.circlePool.reset();
         }
-
-        // updateTheme(){
-        //     if (this.mz.musicStage !== 'prefinal' && this.mz.score > 250)
-        //     {
-        //         this.mz.musicStage = 'prefinal';
-        //         // this.mz.objects.audio.meeting.fadeOut(10000);
-        //         // this.mz.objects.audio.theme.fadeOut(10000);
-        //         this.GameObject.mz.objects.audio.song.loopFull(0.01);
-        //         this.game.add.tween(this.mz.objects.audio.song).to({volume:0.15}, 5000).start();
-        //     }
-        // }
-
     }]);
 
     return Game;
@@ -19792,10 +19716,7 @@ var CirclePool = function () {
             }
             var item = this.pool[key].list[this.pool[key].offset];
             if (!item) {
-                item = this.game.add.sprite(x, y, "ALL_IMAGES", texture.tex);
-                item.tint = texture.color;
-                item.anchor.set(0.5);
-                this.pool[key].list.push(item);
+                item = this.add(key, texture, x, y);
             }
 
             item.visible = true;
@@ -19810,9 +19731,9 @@ var CirclePool = function () {
 
             var sprite = this.game.add.sprite(x, y, "ALL_IMAGES", texture.tex);
             sprite.tint = texture.color;
-
-            sprite.x = x;
-            sprite.y = y;
+            sprite.anchor.set(0.5);
+            this.pool[key].list.push(sprite);
+            return sprite;
         }
     }, {
         key: "reset",
@@ -19967,13 +19888,13 @@ var reset = function reset() {
 /* 532 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/b7b39f452b749dc7cc9b7b0e63ee5165.png";
+module.exports = __webpack_require__.p + "assets/197450aef02516b2ae88d146ef2e96cf.png";
 
 /***/ }),
 /* 533 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/1981a7679c8596d429ee51c976cac0c2.json";
+module.exports = __webpack_require__.p + "assets/7cebf8b160512c3ef069362b9ccb1696.json";
 
 /***/ })
 /******/ ]);

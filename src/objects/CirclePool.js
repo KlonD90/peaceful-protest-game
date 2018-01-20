@@ -14,10 +14,7 @@ export default class CirclePool{
         var item = this.pool[key].list[this.pool[key].offset];
         if (!item)
         {
-            item = this.game.add.sprite(x, y, "ALL_IMAGES",texture.tex);
-            item.tint = texture.color;
-            item.anchor.set(0.5);
-            this.pool[key].list.push(item);
+            item = this.add(key, texture, x, y);
         }
         
         item.visible = true;
@@ -30,10 +27,11 @@ export default class CirclePool{
 
         let sprite = this.game.add.sprite(x, y, "ALL_IMAGES",texture.tex);
         sprite.tint = texture.color;
-
-        sprite.x = x;
-        sprite.y = y;
+        sprite.anchor.set(0.5);
+        this.pool[key].list.push(sprite);
+        return sprite;
     }
+
     reset(){
         for (var k in this.pool)
         {

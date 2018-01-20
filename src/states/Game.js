@@ -1941,27 +1941,13 @@ class Game {
                     }
                 }
 
-                // console.log('intersection point', interPoint);
                 if(interPoint)
                     this.circlePool.pull(key, circle, interPoint.x, interPoint.y);
-                // this.circleGraphic.beginFill(color, 0.7).drawCircle(interPoint.x, interPoint.y, 20).endFill()
-                // Phaser.Line.intersectionWithRectangle(line, cameraBounds, intersectionPoint);
-                // console.log(intersectionPoint, sprite);
             }
         }
         //this.circlePool.reset();
     }
 
-    // updateTheme(){
-    //     if (this.mz.musicStage !== 'prefinal' && this.mz.score > 250)
-    //     {
-    //         this.mz.musicStage = 'prefinal';
-    //         // this.mz.objects.audio.meeting.fadeOut(10000);
-    //         // this.mz.objects.audio.theme.fadeOut(10000);
-    //         this.GameObject.mz.objects.audio.song.loopFull(0.01);
-    //         this.game.add.tween(this.mz.objects.audio.song).to({volume:0.15}, 5000).start();
-    //     }
-    // }
 }
 
 export default Game;
