@@ -1,5 +1,5 @@
 
-let CACHED_TEXTURE = null;
+//let CACHED_TEXTURE = null;
 
 export default class ProgressBar{
     constructor({radius, width, color, lineWidth, game}){
@@ -17,6 +17,7 @@ export default class ProgressBar{
         this.color = color;
         this.lineWidth = lineWidth;
 
+        /*
         let texture = CACHED_TEXTURE;
         
         if(texture == null){
@@ -30,9 +31,9 @@ export default class ProgressBar{
             restMainPart.destroy();
             CACHED_TEXTURE = texture;
             console.log("PROGRESS_CREATE TEXTURE");
-        }
+        }*/
 
-        let bg = game.add.sprite(0,0,texture);
+        let bg = game.add.sprite(0,0,"ALL_IMAGES","small_progress");
 
         this.graphics.addChild(bg);//this.restMainPart);
 
@@ -43,11 +44,11 @@ export default class ProgressBar{
         //this.drawFigure(this.fillMainPart);
         //this.fillMainPart.endFill();
 
-        this.fillTexture = new PIXI.Texture(texture.baseTexture,
-                   new Phaser.Rectangle(0,0, width, radius * 2));
+        //this.fillTexture = new PIXI.Texture(texture.baseTexture,
+//                   new Phaser.Rectangle(0,0, width, radius * 2));
 
-        this.fillSprite = game.add.sprite(0,0,this.fillTexture);
-        //this.fillSprite.tint = this.color;
+        this.fillSprite = game.add.sprite(0,0,"ALL_IMAGES","small_progress");
+        this.fillSprite.tint = this.color;
         
         this.graphics.addChild(this.fillSprite);
 

@@ -14,8 +14,17 @@ const pack = {
             frameWidth: 669,
             frameHeight: 312
         },
+
     ],
     initial: [
+        {
+            type: 'atlasJSONArray',
+            key: 'ALL_IMAGES',
+            textureURL: require('./IMAGES.png'),
+            atlasURL: require('./IMAGES.json'),
+            atlasData: null
+        },
+
         {
             type: 'spritesheet',
             key: 'langButtons',

@@ -1630,7 +1630,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var CACHED_TEXTURE = null;
+//let CACHED_TEXTURE = null;
 
 var ProgressBar = function () {
         function ProgressBar(_ref) {
@@ -1655,22 +1655,22 @@ var ProgressBar = function () {
                 this.color = color;
                 this.lineWidth = lineWidth;
 
-                var texture = CACHED_TEXTURE;
+                /*
+                let texture = CACHED_TEXTURE;
+                
+                if(texture == null){
+                    let restMainPart = this.game.add.graphics(0,0);
+                      restMainPart.beginFill(0xffffff);
+                    this.drawFigure(restMainPart);
+                    restMainPart.endFill();
+                    
+                    texture = restMainPart.generateTexture();
+                    restMainPart.destroy();
+                    CACHED_TEXTURE = texture;
+                    console.log("PROGRESS_CREATE TEXTURE");
+                }*/
 
-                if (texture == null) {
-                        var restMainPart = this.game.add.graphics(0, 0);
-
-                        restMainPart.beginFill(0xffffff);
-                        this.drawFigure(restMainPart);
-                        restMainPart.endFill();
-
-                        texture = restMainPart.generateTexture();
-                        restMainPart.destroy();
-                        CACHED_TEXTURE = texture;
-                        console.log("PROGRESS_CREATE TEXTURE");
-                }
-
-                var bg = game.add.sprite(0, 0, texture);
+                var bg = game.add.sprite(0, 0, "ALL_IMAGES", "small_progress");
 
                 this.graphics.addChild(bg); //this.restMainPart);
 
@@ -1681,10 +1681,11 @@ var ProgressBar = function () {
                 //this.drawFigure(this.fillMainPart);
                 //this.fillMainPart.endFill();
 
-                this.fillTexture = new PIXI.Texture(texture.baseTexture, new Phaser.Rectangle(0, 0, width, radius * 2));
+                //this.fillTexture = new PIXI.Texture(texture.baseTexture,
+                //                   new Phaser.Rectangle(0,0, width, radius * 2));
 
-                this.fillSprite = game.add.sprite(0, 0, this.fillTexture);
-                //this.fillSprite.tint = this.color;
+                this.fillSprite = game.add.sprite(0, 0, "ALL_IMAGES", "small_progress");
+                this.fillSprite.tint = this.color;
 
                 this.graphics.addChild(this.fillSprite);
 
@@ -2774,6 +2775,12 @@ var pack = {
         frameHeight: 312
     }],
     initial: [{
+        type: 'atlasJSONArray',
+        key: 'ALL_IMAGES',
+        textureURL: __webpack_require__(532),
+        atlasURL: __webpack_require__(533),
+        atlasData: null
+    }, {
         type: 'spritesheet',
         key: 'langButtons',
         url: __webpack_require__(365),
@@ -10716,7 +10723,7 @@ module.exports = __webpack_require__.p + "assets/28dbeb6c57f67cd17abbd912371bac9
 /* 430 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/7d936fc944b160eab73d3dbf7277b03b.png";
+module.exports = __webpack_require__.p + "assets/3b9989ad6121134042d7f025e79fa1ae.png";
 
 /***/ }),
 /* 431 */
@@ -20439,6 +20446,18 @@ var reset = function reset() {
         }
     }
 };
+
+/***/ }),
+/* 532 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "assets/6904d619c1ec6661282e0b22a9455e81.png";
+
+/***/ }),
+/* 533 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "assets/ea583901237a8d83edbd413e7b378f9a.json";
 
 /***/ })
 /******/ ]);
