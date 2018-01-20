@@ -2784,169 +2784,6 @@ var pack = {
         frameWidth: 338,
         frameHeight: 74
     }],
-    tweets: [{
-        type: 'image',
-        key: 'tw_styazshkin',
-        url: __webpack_require__(376),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_granitweet',
-        url: __webpack_require__(377),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_vigimadi',
-        url: __webpack_require__(378),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_ovdinfo',
-        url: __webpack_require__(379),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_koshelyaeva',
-        url: __webpack_require__(380),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_brewerov',
-        url: __webpack_require__(381),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_asilikedem',
-        url: __webpack_require__(382),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_fb_pal',
-        url: __webpack_require__(383),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_ya_yanson',
-        url: __webpack_require__(384),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_galiamina',
-        url: __webpack_require__(385),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_ogonwatch',
-        url: __webpack_require__(386),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_the_ins_ru',
-        url: __webpack_require__(387),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_kirilenko_a',
-        url: __webpack_require__(388),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_tvrain',
-        url: __webpack_require__(389),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_gruppa_voina',
-        url: __webpack_require__(390),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_kszhivago',
-        url: __webpack_require__(391),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_plushev',
-        url: __webpack_require__(392),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_aban_in',
-        url: __webpack_require__(393),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_rrubanov',
-        url: __webpack_require__(394),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_navalny',
-        url: __webpack_require__(395),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_noliquid',
-        url: __webpack_require__(396),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_varlamov',
-        url: __webpack_require__(397),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_mediazzzona',
-        url: __webpack_require__(398),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_zhuravleva',
-        url: __webpack_require__(399),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_asluhn',
-        url: __webpack_require__(400),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_help',
-        url: __webpack_require__(401),
-        frameWidth: 400,
-        frameHeight: 400
-    }, {
-        type: 'image',
-        key: 'tw_evgenyfeldman',
-        url: __webpack_require__(402),
-        frameWidth: 400,
-        frameHeight: 400
-    }],
     levelCommon: [{
         type: 'spritesheet',
         key: 'defend',
@@ -10235,7 +10072,7 @@ var Boot = function () {
                 assets: [
 
                 ///['atlasArray', require('../assets/humans.png'), require('../assets/humans.json')],
-                ['pack', 'initial', null, __WEBPACK_IMPORTED_MODULE_0__assets_pack_js__["a" /* default */]], ['pack', 'help' + (Phaser.Device.desktop ? 'Desktop' : 'Touch'), null, __WEBPACK_IMPORTED_MODULE_0__assets_pack_js__["a" /* default */]], ['pack', 'helpTips', null, __WEBPACK_IMPORTED_MODULE_0__assets_pack_js__["a" /* default */]], ['pack', 'tweets', null, __WEBPACK_IMPORTED_MODULE_0__assets_pack_js__["a" /* default */]], ['pack', 'levelCommon', null, __WEBPACK_IMPORTED_MODULE_0__assets_pack_js__["a" /* default */]], ['pack', 'level1', null, __WEBPACK_IMPORTED_MODULE_0__assets_pack_js__["a" /* default */]]],
+                ['pack', 'initial', null, __WEBPACK_IMPORTED_MODULE_0__assets_pack_js__["a" /* default */]], ['pack', 'help' + (Phaser.Device.desktop ? 'Desktop' : 'Touch'), null, __WEBPACK_IMPORTED_MODULE_0__assets_pack_js__["a" /* default */]], ['pack', 'helpTips', null, __WEBPACK_IMPORTED_MODULE_0__assets_pack_js__["a" /* default */]], ['pack', 'levelCommon', null, __WEBPACK_IMPORTED_MODULE_0__assets_pack_js__["a" /* default */]], ['pack', 'level1', null, __WEBPACK_IMPORTED_MODULE_0__assets_pack_js__["a" /* default */]]],
                 nextState: ['Game', true, false, __WEBPACK_IMPORTED_MODULE_2__levels__["a" /* default */]['level1']]
             });
         }
@@ -10330,168 +10167,33 @@ module.exports = __webpack_require__.p + "assets/e0ebce32899a3e8c50f5dbf32d26491
 module.exports = __webpack_require__.p + "assets/df26508edc26ee3ebb6284d6467783fe.png";
 
 /***/ }),
-/* 376 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/9fa556559461c3286dc52836c3f71295.jpg";
-
-/***/ }),
-/* 377 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/6fdca65403892d28a5cb3c41916027dd.jpeg";
-
-/***/ }),
-/* 378 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/73f9d1a24b95edc21231f34bd969fe60.jpg";
-
-/***/ }),
-/* 379 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/ae25b01cae3eac0aae527614dea051c2.png";
-
-/***/ }),
-/* 380 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/ac5e583c05f4cd726f78f03969f33638.jpg";
-
-/***/ }),
-/* 381 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/7826dc2b3c0031a0b6ffdb4aaefec6b1.jpeg";
-
-/***/ }),
-/* 382 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/1a3f7728b040b95b206686e4077441ee.jpg";
-
-/***/ }),
-/* 383 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/90af67382ae02ee96bcf4ab4ab75d5b8.jpg";
-
-/***/ }),
-/* 384 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/d57ac0086872987c1950144c4791527a.jpg";
-
-/***/ }),
-/* 385 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/81739b51326452e4e37b5bbd473f9f11.jpg";
-
-/***/ }),
-/* 386 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/5199bf9235868222797eba63d089fef4.jpg";
-
-/***/ }),
-/* 387 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/d3291cd3470e278aac6c709a5d7e1d7a.jpeg";
-
-/***/ }),
-/* 388 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/81f3d17c788178b49146a0815c54170a.jpg";
-
-/***/ }),
-/* 389 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/7ca8239d678965070d563133c7ede9db.jpg";
-
-/***/ }),
-/* 390 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/bc4359c1a8417a4299621e2eff961ea3.jpg";
-
-/***/ }),
-/* 391 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/a038756be158829b8f3ff2f57ee34b32.jpeg";
-
-/***/ }),
-/* 392 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/bab50b5ea286de92d3841a1acb66eb3f.jpeg";
-
-/***/ }),
-/* 393 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/47b2bfe8b945cdf2c70cb0835d0ac419.jpeg";
-
-/***/ }),
-/* 394 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/73a34c439fb4eeadcd0a201e40630ac1.png";
-
-/***/ }),
-/* 395 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/213163a0d505713487737f4b815f116f.png";
-
-/***/ }),
-/* 396 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/657a67d3871c7aa1d4f67961d331152e.gif";
-
-/***/ }),
-/* 397 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/1a524d9f32ff68b39c508fd4686a9f74.jpg";
-
-/***/ }),
-/* 398 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/98250809c2f2aa90abee630ee6b118b0.jpg";
-
-/***/ }),
-/* 399 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/d26b4e184bd225dadd5dc671f2d6dcdc.jpg";
-
-/***/ }),
-/* 400 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/4fd5bb2e1b096c8eea0b5d8144006856.jpg";
-
-/***/ }),
-/* 401 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/56b7547af4363943b51c81e401210a40.png";
-
-/***/ }),
-/* 402 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/5bd3b74e2a30818e8e753a03890100ca.jpg";
-
-/***/ }),
+/* 376 */,
+/* 377 */,
+/* 378 */,
+/* 379 */,
+/* 380 */,
+/* 381 */,
+/* 382 */,
+/* 383 */,
+/* 384 */,
+/* 385 */,
+/* 386 */,
+/* 387 */,
+/* 388 */,
+/* 389 */,
+/* 390 */,
+/* 391 */,
+/* 392 */,
+/* 393 */,
+/* 394 */,
+/* 395 */,
+/* 396 */,
+/* 397 */,
+/* 398 */,
+/* 399 */,
+/* 400 */,
+/* 401 */,
+/* 402 */,
 /* 403 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11636,11 +11338,12 @@ var Game = function () {
             this.mz.objects.fightAdvice.fixedToCamera = true;
             this.mz.objects.fightAdvice.visible = false;
 
-            var processingGraphic = this.game.add.graphics();
+            //var processingGraphic = this.game.add.graphics();
             var ratio = window.devicePixelRatio || 1;
-            this.mz.circles.press = processingGraphic.clear().beginFill(0xf7c169, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
-            this.mz.circles.npc = processingGraphic.clear().beginFill(0x6eed83, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
-            this.mz.circles.cop = processingGraphic.clear().beginFill(0x2b3992, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
+
+            this.mz.circles.press = { tex: "dot", color: 0xf7c169 }; //processingGraphic.clear().beginFill(0xf7c169, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
+            this.mz.circles.npc = { tex: "dot", color: 0x6eed83 }; //processingGraphic.clear().beginFill(0x6eed83, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
+            this.mz.circles.cop = { tex: "dot", color: 0x2b3992 }; //processingGraphic.clear().beginFill(0x2b3992, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
             this.circlePool = new __WEBPACK_IMPORTED_MODULE_17__objects_CirclePool__["a" /* default */](this.game);
         }
     }, {
@@ -13057,7 +12760,8 @@ var Game = function () {
                 bottom: [{ x: cameraBounds.x, y: cameraBounds.y + cameraBounds.height }, { x: cameraBounds.x + cameraBounds.width, y: cameraBounds.y + cameraBounds.height }],
                 left: [{ x: cameraBounds.x, y: cameraBounds.y }, { x: cameraBounds.x, y: cameraBounds.y + cameraBounds.height }]
             };
-            // this.circleGraphic.clear();
+
+            this.circlePool.reset();
             for (var _i20 = 0; _i20 < circles.length; _i20++) {
                 var _circles$_i = circles[_i20],
                     _sprite = _circles$_i.sprite,
@@ -13106,13 +12810,13 @@ var Game = function () {
                         }
                     }
 
-                    this.circlePool.add(key, circle, interPoint.x, interPoint.y);
+                    if (interPoint) this.circlePool.pull(key, circle, interPoint.x, interPoint.y);
                     // this.circleGraphic.beginFill(color, 0.7).drawCircle(interPoint.x, interPoint.y, 20).endFill()
                     // Phaser.Line.intersectionWithRectangle(line, cameraBounds, intersectionPoint);
                     // console.log(intersectionPoint, sprite);
                 }
             }
-            this.circlePool.reset();
+            //this.circlePool.reset();
         }
 
         // updateTheme(){
@@ -20088,17 +19792,25 @@ var CirclePool = function () {
             }
             var item = this.pool[key].list[this.pool[key].offset];
             if (!item) {
-                item = this.game.add.sprite(x, y, texture);
+                item = this.game.add.sprite(x, y, "ALL_IMAGES", texture.tex);
+                item.tint = texture.color;
                 item.anchor.set(0.5);
                 this.pool[key].list.push(item);
             }
+
+            item.visible = true;
+            item.x = x;
+            item.y = y;
             this.pool[key].offset++;
             return item;
         }
     }, {
         key: "add",
         value: function add(key, texture, x, y) {
-            var sprite = this.pull(key, texture, x, y);
+
+            var sprite = this.game.add.sprite(x, y, "ALL_IMAGES", texture.tex);
+            sprite.tint = texture.color;
+
             sprite.x = x;
             sprite.y = y;
         }
@@ -20255,13 +19967,13 @@ var reset = function reset() {
 /* 532 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/6904d619c1ec6661282e0b22a9455e81.png";
+module.exports = __webpack_require__.p + "assets/b7b39f452b749dc7cc9b7b0e63ee5165.png";
 
 /***/ }),
 /* 533 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/75dd4fe599b012f14bd6fb668476c80f.json";
+module.exports = __webpack_require__.p + "assets/1981a7679c8596d429ee51c976cac0c2.json";
 
 /***/ })
 /******/ ]);

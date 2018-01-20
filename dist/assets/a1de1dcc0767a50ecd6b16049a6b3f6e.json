@@ -1,7 +1,7 @@
 {"frames": [
 
 {
-	"filename": "aban_in",
+	"filename": "aban_in.jpeg",
 	"frame": {"x":96,"y":288,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
@@ -33,7 +33,7 @@
 	"sourceSize": {"w":180,"h":20}
 },
 {
-	"filename": "brewerov",
+	"filename": "brewerov.jpeg",
 	"frame": {"x":0,"y":192,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
@@ -42,15 +42,15 @@
 },
 {
 	"filename": "dot",
-	"frame": {"x":0,"y":0,"w":20,"h":21},
+	"frame": {"x":0,"y":0,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":21},
-	"sourceSize": {"w":20,"h":21}
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":40},
+	"sourceSize": {"w":40,"h":40}
 },
 {
 	"filename": "dropped_poster",
-	"frame": {"x":20,"y":0,"w":44,"h":34},
+	"frame": {"x":40,"y":0,"w":44,"h":34},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":44,"h":34},
@@ -81,7 +81,7 @@
 	"sourceSize": {"w":48,"h":48}
 },
 {
-	"filename": "graniTweet",
+	"filename": "graniTweet.jpeg",
 	"frame": {"x":144,"y":192,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
@@ -121,7 +121,7 @@
 	"sourceSize": {"w":48,"h":48}
 },
 {
-	"filename": "kszhivago",
+	"filename": "kszhivago.jpeg",
 	"frame": {"x":0,"y":288,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
@@ -186,14 +186,14 @@
 },
 {
 	"filename": "plakat",
-	"frame": {"x":64,"y":0,"w":44,"h":13},
+	"frame": {"x":84,"y":0,"w":44,"h":13},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":44,"h":13},
 	"sourceSize": {"w":44,"h":13}
 },
 {
-	"filename": "plushev",
+	"filename": "plushev.jpeg",
 	"frame": {"x":144,"y":48,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
@@ -242,7 +242,7 @@
 },
 {
 	"filename": "rrubanov",
-	"frame": {"x":152,"y":0,"w":48,"h":48},
+	"frame": {"x":172,"y":0,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":48},
@@ -250,7 +250,7 @@
 },
 {
 	"filename": "small_progress",
-	"frame": {"x":108,"y":0,"w":44,"h":10},
+	"frame": {"x":128,"y":0,"w":44,"h":10},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":44,"h":10},
@@ -265,7 +265,7 @@
 	"sourceSize": {"w":48,"h":48}
 },
 {
-	"filename": "the_ins_ru",
+	"filename": "the_ins_ru.jpeg",
 	"frame": {"x":48,"y":144,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
@@ -335,6 +335,6 @@
 	"format": "RGBA8888",
 	"size": {"w":240,"h":512},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:86bd5a7d73e207cbfd4ca9cc6e140100:f7a812e14a51ac8ace818773130da0e8:611929000d012c8657a4ac784c74b589$"
+	"smartupdate": "$TexturePacker:SmartUpdate:bf241d1509f9b96f265d82a2da8b456e:7f970d7b7b79616df8f46cc58300e607:611929000d012c8657a4ac784c74b589$"
 }
 }

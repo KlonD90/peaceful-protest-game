@@ -14,15 +14,23 @@ export default class CirclePool{
         var item = this.pool[key].list[this.pool[key].offset];
         if (!item)
         {
-            item = this.game.add.sprite(x, y, texture);
+            item = this.game.add.sprite(x, y, "ALL_IMAGES",texture.tex);
+            item.tint = texture.color;
             item.anchor.set(0.5);
             this.pool[key].list.push(item);
         }
+        
+        item.visible = true;
+        item.x = x;
+        item.y = y;
         this.pool[key].offset++;
         return item;
     }
     add(key, texture, x, y){
-        var sprite = this.pull(key, texture, x, y);
+
+        let sprite = this.game.add.sprite(x, y, "ALL_IMAGES",texture.tex);
+        sprite.tint = texture.color;
+
         sprite.x = x;
         sprite.y = y;
     }

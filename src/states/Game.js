@@ -429,11 +429,12 @@ class Game {
         this.mz.objects.fightAdvice.fixedToCamera = true;
         this.mz.objects.fightAdvice.visible = false;
 
-        var processingGraphic = this.game.add.graphics();
+        //var processingGraphic = this.game.add.graphics();
         var ratio = window.devicePixelRatio || 1;
-        this.mz.circles.press = processingGraphic.clear().beginFill(0xf7c169, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
-        this.mz.circles.npc = processingGraphic.clear().beginFill(0x6eed83, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
-        this.mz.circles.cop = processingGraphic.clear().beginFill(0x2b3992, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
+
+        this.mz.circles.press = {tex:"dot", color:0xf7c169 };//processingGraphic.clear().beginFill(0xf7c169, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
+        this.mz.circles.npc = {tex:"dot", color:0x6eed83 }; //processingGraphic.clear().beginFill(0x6eed83, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
+        this.mz.circles.cop = {tex:"dot", color:0x2b3992 };//processingGraphic.clear().beginFill(0x2b3992, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
         this.circlePool = new CirclePool(this.game);
 
     }
@@ -1908,7 +1909,8 @@ class Game {
                 {x: cameraBounds.x, y: cameraBounds.y + cameraBounds.height}
             ]
         };
-        // this.circleGraphic.clear();
+
+        this.circlePool.reset();
         for (let i=0; i<circles.length; i++)
         {
             const {sprite, color, circle, key} = circles[i];
@@ -1940,13 +1942,14 @@ class Game {
                 }
 
                 // console.log('intersection point', interPoint);
-                this.circlePool.add(key, circle, interPoint.x, interPoint.y);
+                if(interPoint)
+                    this.circlePool.pull(key, circle, interPoint.x, interPoint.y);
                 // this.circleGraphic.beginFill(color, 0.7).drawCircle(interPoint.x, interPoint.y, 20).endFill()
                 // Phaser.Line.intersectionWithRectangle(line, cameraBounds, intersectionPoint);
                 // console.log(intersectionPoint, sprite);
             }
         }
-        this.circlePool.reset();
+        //this.circlePool.reset();
     }
 
     // updateTheme(){

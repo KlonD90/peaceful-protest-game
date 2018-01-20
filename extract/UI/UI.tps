@@ -209,7 +209,6 @@
             <key type="filename">graniTweet.jpeg</key>
             <key type="filename">gruppa_voina.jpg</key>
             <key type="filename">help.png</key>
-            <key type="filename">icon.psd</key>
             <key type="filename">kirilenko_a.jpg</key>
             <key type="filename">koshelyaeva.jpg</key>
             <key type="filename">kszhivago.jpeg</key>
@@ -252,6 +251,19 @@
                 <rect>45,5,90,10</rect>
                 <key>scale9Paddings</key>
                 <rect>45,5,90,10</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">dot.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>10,10,20,20</rect>
+                <key>scale9Paddings</key>
+                <rect>10,10,20,20</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -344,19 +356,6 @@
                 <rect>17,12,35,23</rect>
                 <key>scale9Paddings</key>
                 <rect>17,12,35,23</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">posterButton.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>18,18,35,35</rect>
-                <key>scale9Paddings</key>
-                <rect>18,18,35,35</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
