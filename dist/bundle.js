@@ -3443,6 +3443,7 @@ var Player = function (_Protester) {
         _this.viewSprite.animations.add('runPoster', [n + "-5", n + "-6"], fpsAnimation * _this.speed.running, true);
         _this.viewSprite.animations.add('stop', [n + "-0", n + "-0"], fpsAnimation, true);
         _this.viewSprite.animations.add('stopPoster', [n + "-3", n + "-3"], fpsAnimation, true);
+        _this.viewSprite.animations.add('fight', [n + "-3", n + "-4"], fpsAnimation, true);
 
         //this.changeAnimations("player_sprite",3);
         _this.fightBar = 0;
@@ -3473,10 +3474,11 @@ var Player = function (_Protester) {
             }
 
             if (this.mode === __WEBPACK_IMPORTED_MODULE_2__constants_js__["S" /* PLAYER_MODE_FIGHT */]) {
-                // this.updateAnimation();
+                this.updateAnimation();
+                // 
                 if (this.keys.space.justDown) {
                     this.fightBar += 1;
-                    this.viewSprite.frame = this.viewSprite.frame === 3 ? 4 : 3;
+                    //this.viewSprite.frame = this.viewSprite.frame === 3 ? 4 : 3;
                 }
                 this.updateFightBar();
                 return;
@@ -3582,6 +3584,9 @@ var Player = function (_Protester) {
             var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
             // console.log('player mode', mode);
+            if (this.mode == __WEBPACK_IMPORTED_MODULE_2__constants_js__["S" /* PLAYER_MODE_FIGHT */]) {
+                this.viewSprite.animations.stop();
+            }
             switch (mode) {
                 case __WEBPACK_IMPORTED_MODULE_2__constants_js__["V" /* PROTESTER_MODE_ARRESTED */]:
                     {
@@ -3595,6 +3600,9 @@ var Player = function (_Protester) {
                     }
                 case __WEBPACK_IMPORTED_MODULE_2__constants_js__["S" /* PLAYER_MODE_FIGHT */]:
                     {
+
+                        this.viewSprite.animations.play("fight");
+
                         var _target = props.target;
                         var arrested = _target.mz.getArrestedSprite();
 

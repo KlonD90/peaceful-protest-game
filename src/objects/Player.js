@@ -122,6 +122,8 @@ class Player extends Protester {
         this.viewSprite.animations.add('runPoster', [n + "-5", n + "-6"], fpsAnimation*this.speed.running, true);
         this.viewSprite.animations.add('stop', [n + "-0", n + "-0"], fpsAnimation, true);
         this.viewSprite.animations.add('stopPoster', [n + "-3", n + "-3"], fpsAnimation, true);
+        this.viewSprite.animations.add('fight', [n + "-3", n + "-4"], fpsAnimation, true);
+
 
 
         //this.changeAnimations("player_sprite",3);
@@ -152,11 +154,12 @@ class Player extends Protester {
 
         if (this.mode === PLAYER_MODE_FIGHT)
         {
-            // this.updateAnimation();
+            this.updateAnimation();
+            // 
             if (this.keys.space.justDown)
-            {
+            {   
                 this.fightBar+=1;
-                this.viewSprite.frame = this.viewSprite.frame === 3 ? 4 : 3;
+                //this.viewSprite.frame = this.viewSprite.frame === 3 ? 4 : 3;
             }
             this.updateFightBar();
             return;
@@ -283,6 +286,9 @@ class Player extends Protester {
 
     setMode(mode, props = {}) {
        // console.log('player mode', mode);
+        if(this.mode == PLAYER_MODE_FIGHT){
+            this.viewSprite.animations.stop();            
+        }
         switch (mode) {
             case PROTESTER_MODE_ARRESTED: {
                 this.sprite.body.immovable = true;
@@ -294,6 +300,9 @@ class Player extends Protester {
                 break;
             }
             case PLAYER_MODE_FIGHT: {
+
+                this.viewSprite.animations.play("fight");
+
                 const target = props.target;
                 const arrested = target.mz.getArrestedSprite();
 
