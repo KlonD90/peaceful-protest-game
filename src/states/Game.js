@@ -820,25 +820,6 @@ class Game {
             }
         }
 
-        // // vs cops
-        // for (let j = 0; j < this.mz.arrays.cops.length; j++) {
-        //     const copSprite = this.mz.arrays.cops[j];
-        //     if (
-        //         !copSprite.alive ||
-        //         copSprite.mz.target !== protesterSprite ||
-        //         !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) ||
-        //         protesterSprite.mz.mode === PLAYER_MODE_FIGHT ||
-        //         copSprite.mz.mode === COP_MODE_STUN ||
-        //         copSprite.mz.mode === COP_MODE_FIGHT ||
-        //         copSprite.mz.mode === COP_MODE_CONVOY
-        //     ) {
-        //         continue;
-        //     }
-        //     this.proceedToJail(protesterSprite, copSprite);
-        // }
-
-
-
         // player collisions
         if (
             this.mz.objects.player.mode !== PROTESTER_MODE_ARRESTED &&
@@ -1149,7 +1130,7 @@ class Game {
     }
 
     updateScore() {
-        this.mz.objects.interface.updateScore(`${this.mz.score} / ${this.mz.limitScore}`);
+       // this.mz.objects.interface.updateScore(`${this.mz.score} / ${this.mz.limitScore}`);
     }
 
     updateTimer(){

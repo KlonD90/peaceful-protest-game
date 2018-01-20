@@ -1,4 +1,4 @@
-import { lagrange } from './utils';
+//import { lagrange } from './utils';
 
 import {MARGIN_BOTTOM, AVATAR_SIZE, MARGIN_LEFT, AVATAR_TEXT_SPACING} from './const.js';
 
@@ -136,7 +136,7 @@ export default class BaseTweet {
     //enable cahing of bitmap
 
    // all.cacheAsBitmap = true;
-    console.log("TEXT GROUP:" + name + " CACHED!");
+    //console.log("TEXT GROUP:" + name + " CACHED!");
     this.groupAll = all;
     this.showedY = calcGroupPosition(textGameObject, tweet);
     return this;

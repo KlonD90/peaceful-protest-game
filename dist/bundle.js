@@ -933,7 +933,7 @@ module.exports = {
         },
         protesters: {
             count: {
-                start: 100,
+                start: 50, //100,
                 max: 100,
                 add: 14
             },
@@ -1091,11 +1091,12 @@ var Prefab = function () {
             this.viewSprite = this.game.add.sprite(x, y, spriteKey, 0);
         }
 
-        this.sprite = this.game.add.sprite(x, y);
+        this.sprite = this.game.add.sprite(x, y, "humans", "empty");
+
         this.sprite.mz = this;
         this.viewSprite.mz = this;
         this.sprite.name = spriteName;
-        this.sprite.anchor.set(0.5);
+        //this.sprite.anchor.set(0.5);
         this.sprite.addChild(this.viewSprite);
 
         //this.changeAnimations(spriteKey, 3);
@@ -1693,7 +1694,6 @@ var ProgressBar = function () {
                 this.cropRect.width = fillWidth;
                 this.fillSprite.updateCrop();
             } else {
-                if (this.lastWidth === 0) return;
 
                 this.lastWidth = 0;
                 this.graphics.visible = false;
@@ -10291,13 +10291,13 @@ module.exports = __webpack_require__.p + "assets/dd570435d42a0e42441e1fc12af0f4f
 /* 426 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/23d99d2701df0f3d76e640ecbb282400.png";
+module.exports = __webpack_require__.p + "assets/04e51a9c81f3c17041b4159c792bc719.png";
 
 /***/ }),
 /* 427 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/b36f0d0ff9fe4ff1b22c5c0284235664.json";
+module.exports = __webpack_require__.p + "assets/dbead97c97e4f04869efc8a67edf18d5.json";
 
 /***/ }),
 /* 428 */
@@ -11611,24 +11611,6 @@ var Game = function () {
                     }
                 }
 
-                // // vs cops
-                // for (let j = 0; j < this.mz.arrays.cops.length; j++) {
-                //     const copSprite = this.mz.arrays.cops[j];
-                //     if (
-                //         !copSprite.alive ||
-                //         copSprite.mz.target !== protesterSprite ||
-                //         !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) ||
-                //         protesterSprite.mz.mode === PLAYER_MODE_FIGHT ||
-                //         copSprite.mz.mode === COP_MODE_STUN ||
-                //         copSprite.mz.mode === COP_MODE_FIGHT ||
-                //         copSprite.mz.mode === COP_MODE_CONVOY
-                //     ) {
-                //         continue;
-                //     }
-                //     this.proceedToJail(protesterSprite, copSprite);
-                // }
-
-
                 // player collisions
             } catch (err) {
                 _didIteratorError2 = true;
@@ -11895,7 +11877,7 @@ var Game = function () {
     }, {
         key: 'updateScore',
         value: function updateScore() {
-            this.mz.objects.interface.updateScore(this.mz.score + ' / ' + this.mz.limitScore);
+            // this.mz.objects.interface.updateScore(`${this.mz.score} / ${this.mz.limitScore}`);
         }
     }, {
         key: 'updateTimer',
@@ -14200,7 +14182,7 @@ var GameInterface = function () {
         this.score.graphics.y = isWide ? 20 : 10;
         this.score.graphics.x = this.game.width / 2 - 90;
         this.group.add(this.score.graphics);
-        //this.score.update(0.01);
+        this.score.update(0.01);
 
         if (!isWide) this.score.graphics.x = this.game.width - this.score.fullWidth - 10;
 
@@ -17743,22 +17725,21 @@ var Tweets = function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(491);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__const_js__ = __webpack_require__(492);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__const_js__ = __webpack_require__(492);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-
+//import { lagrange } from './utils';
 
 
 
 var calcGroupPosition = function calcGroupPosition(textGameObject) {
   var y = 0;
-  if (textGameObject._height < __WEBPACK_IMPORTED_MODULE_1__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["c" /* MARGIN_BOTTOM */]) {
-    y = -(__WEBPACK_IMPORTED_MODULE_1__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["c" /* MARGIN_BOTTOM */]);
+  if (textGameObject._height < __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */]) {
+    y = -(__WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */]);
   } else {
-    y = -(textGameObject._height + __WEBPACK_IMPORTED_MODULE_1__const_js__["c" /* MARGIN_BOTTOM */]);
+    y = -(textGameObject._height + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */]);
   }
 
   return y - 20;
@@ -17769,7 +17750,7 @@ var getTextStyle = function getTextStyle(width) {
     font: '16px William Text',
     fill: 'white',
     wordWrap: true,
-    wordWrapWidth: width - (__WEBPACK_IMPORTED_MODULE_1__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["b" /* AVATAR_TEXT_SPACING */])
+    wordWrapWidth: width - (__WEBPACK_IMPORTED_MODULE_0__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["b" /* AVATAR_TEXT_SPACING */])
   };
 };
 
@@ -17815,7 +17796,7 @@ var BaseTweet = function () {
       var nameGameObject = void 0;
       var textGameObject = void 0;
       if (name) {
-        nameGameObject = this.game.add.text(__WEBPACK_IMPORTED_MODULE_1__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["b" /* AVATAR_TEXT_SPACING */], height, name, {
+        nameGameObject = this.game.add.text(__WEBPACK_IMPORTED_MODULE_0__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["b" /* AVATAR_TEXT_SPACING */], height, name, {
           font: '14px abc',
           // fill: '#fcfcfc',
           fill: '#ddecff'
@@ -17824,13 +17805,13 @@ var BaseTweet = function () {
         nameGameObject.resolution = window.devicePixelRatio || 1;
         nameGameObject.fixedToCamera = true;
 
-        textGameObject = this.game.add.text(__WEBPACK_IMPORTED_MODULE_1__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["b" /* AVATAR_TEXT_SPACING */], height + 20, text, getTextStyle(width));
+        textGameObject = this.game.add.text(__WEBPACK_IMPORTED_MODULE_0__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["b" /* AVATAR_TEXT_SPACING */], height + 20, text, getTextStyle(width));
         textGameObject.resolution = window.devicePixelRatio || 1;
         textGameObject.font = 'Arial';
         textGameObject.fixedToCamera = true;
       } else {
 
-        textGameObject = this.game.add.text(__WEBPACK_IMPORTED_MODULE_1__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["b" /* AVATAR_TEXT_SPACING */], height, text, getTextStyle(width));
+        textGameObject = this.game.add.text(__WEBPACK_IMPORTED_MODULE_0__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["b" /* AVATAR_TEXT_SPACING */], height, text, getTextStyle(width));
         textGameObject.resolution = window.devicePixelRatio || 1;
         textGameObject.font = 'Arial';
         textGameObject.fixedToCamera = true;
@@ -17843,16 +17824,16 @@ var BaseTweet = function () {
       var avatar = this.game.add.sprite(0, 0, "ALL_IMAGES", image);
 
       if (name) {
-        avatar.alignTo(nameGameObject, Phaser.LEFT_TOP, __WEBPACK_IMPORTED_MODULE_1__const_js__["b" /* AVATAR_TEXT_SPACING */]);
+        avatar.alignTo(nameGameObject, Phaser.LEFT_TOP, __WEBPACK_IMPORTED_MODULE_0__const_js__["b" /* AVATAR_TEXT_SPACING */]);
       } else {
-        avatar.alignTo(textGameObject, Phaser.LEFT_TOP, __WEBPACK_IMPORTED_MODULE_1__const_js__["b" /* AVATAR_TEXT_SPACING */]);
+        avatar.alignTo(textGameObject, Phaser.LEFT_TOP, __WEBPACK_IMPORTED_MODULE_0__const_js__["b" /* AVATAR_TEXT_SPACING */]);
       }
 
       avatar.fixedToCamera = true;
 
-      var mask = this.game.add.graphics(__WEBPACK_IMPORTED_MODULE_1__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_1__const_js__["a" /* AVATAR_SIZE */] / 2, height + __WEBPACK_IMPORTED_MODULE_1__const_js__["a" /* AVATAR_SIZE */] / 2);
+      var mask = this.game.add.graphics(__WEBPACK_IMPORTED_MODULE_0__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] / 2, height + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] / 2);
       mask.beginFill(0xffffff);
-      mask.drawCircle(0, 0, __WEBPACK_IMPORTED_MODULE_1__const_js__["a" /* AVATAR_SIZE */]);
+      mask.drawCircle(0, 0, __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */]);
       mask.fixedToCamera = true;
       avatar.mask = mask;
 
@@ -17882,7 +17863,7 @@ var BaseTweet = function () {
       //enable cahing of bitmap
 
       // all.cacheAsBitmap = true;
-      console.log("TEXT GROUP:" + name + " CACHED!");
+      //console.log("TEXT GROUP:" + name + " CACHED!");
       this.groupAll = all;
       this.showedY = calcGroupPosition(textGameObject, tweet);
       return this;
@@ -17898,7 +17879,7 @@ var BaseTweet = function () {
       var groupH = this.groupTweet.height;
 
 
-      var bitmapH = groupH + __WEBPACK_IMPORTED_MODULE_1__const_js__["c" /* MARGIN_BOTTOM */] * 2 + 40;
+      var bitmapH = groupH + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */] * 2 + 40;
       var bitmap = this.game.add.bitmapData(width, bitmapH);
       bitmap.fixedToCamera = true;
       var aplhaIterp = [{ x: 0, y: 0 }, { x: bitmapH * 30 / 100, y: 0.3 }, { x: bitmapH * 80 / 100, y: 0.5 }, { x: bitmapH, y: 0.7 }];
@@ -17908,7 +17889,7 @@ var BaseTweet = function () {
       }
 
       // var spriteBg = this.game.add.sprite(0, height-MARGIN_BOTTOM-20, bitmap);
-      var spriteBg = this.game.add.sprite(0, height - __WEBPACK_IMPORTED_MODULE_1__const_js__["c" /* MARGIN_BOTTOM */] - 13, bitmap);
+      var spriteBg = this.game.add.sprite(0, height - __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */] - 13, bitmap);
       spriteBg.fixedToCamera = true;
 
       return spriteBg;
@@ -17938,52 +17919,7 @@ var BaseTweet = function () {
 /* harmony default export */ __webpack_exports__["a"] = (BaseTweet);
 
 /***/ }),
-/* 491 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export lagrange */
-/* unused harmony export higlightHashTags */
-var lagrange = function lagrange(arr, x) {
-  var n = 0;
-  for (var i = 0; i < arr.length; i++) {
-    var curr = arr[i];
-    var currX = curr.x,
-        currY = curr.y;
-
-    var a = 1;
-    for (var j = 0; j < arr.length; j++) {
-      if (i === j) continue;
-      var _arr$j = arr[j],
-          xj = _arr$j.x,
-          yj = _arr$j.y;
-
-      a *= (x - xj) / (currX - xj);
-    }
-    a = a * currY;
-    n += a;
-  }
-  return n;
-};
-
-var higlightHashTags = function higlightHashTags(textGameObj, text, style) {
-  var originalColor = style.originalColor,
-      higlightedColor = style.higlightedColor;
-
-  var hashRegExp = /#[A-zА-я_]*/g;
-  var res = void 0;
-  while (res = hashRegExp.exec(text)) {
-    var _res = res,
-        index = _res.index,
-        group = _res[0];
-
-
-    textGameObj.addColor(higlightedColor, index);
-    textGameObj.addColor(originalColor, index + group.length);
-  }
-};
-
-/***/ }),
+/* 491 */,
 /* 492 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 

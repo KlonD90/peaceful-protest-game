@@ -60,8 +60,6 @@ export default class ProgressBar{
         }
         else
         {
-            if (this.lastWidth === 0)
-                return;
             
             this.lastWidth = 0;
             this.graphics.visible = false;

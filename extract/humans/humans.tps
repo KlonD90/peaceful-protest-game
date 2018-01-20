@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>4.5.0</string>
         <key>fileName</key>
-        <string>C:/Users/Константин/Documents/peaceful-protest-game/extract/humans.tps</string>
+        <string>C:/Users/Константин/Documents/peaceful-protest-game/extract/humans/humans.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -289,6 +289,19 @@
                 <rect>8,9,16,19</rect>
                 <key>scale9Paddings</key>
                 <rect>8,9,16,19</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">empty.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>3,3,5,5</rect>
+                <key>scale9Paddings</key>
+                <rect>3,3,5,5</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

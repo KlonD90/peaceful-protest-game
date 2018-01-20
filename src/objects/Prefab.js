@@ -19,11 +19,12 @@ class   Prefab {
             this.viewSprite = this.game.add.sprite(x, y, spriteKey, 0);
         }
 
-        this.sprite = this.game.add.sprite(x, y);
+        this.sprite = this.game.add.sprite(x,y,"humans","empty");
+        
         this.sprite.mz = this;
         this.viewSprite.mz = this;
         this.sprite.name = spriteName;
-        this.sprite.anchor.set(0.5);
+        //this.sprite.anchor.set(0.5);
         this.sprite.addChild(this.viewSprite);
         
         //this.changeAnimations(spriteKey, 3);

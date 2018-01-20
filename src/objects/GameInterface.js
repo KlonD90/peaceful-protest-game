@@ -26,7 +26,7 @@ class GameInterface {
         this.score.graphics.y = isWide ? 20 : 10;
         this.score.graphics.x = this.game.width / 2 - 90;
         this.group.add(this.score.graphics);
-        //this.score.update(0.01);
+        this.score.update(0.01);
 
         if (!isWide)
             this.score.graphics.x = this.game.width - this.score.fullWidth - 10;
