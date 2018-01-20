@@ -99,7 +99,7 @@ class Cop extends Prefab {
                     {
                         this.GameObject.mz.tweet.tweet(
                             'Если вы зажмете SHIFT, вы сможете убегать от полиции, однако смотрите не выдохнитесь',
-                            'tw_help',
+                            'help',
                             {visible: 5000, fadeIn: 500, fadeOut: 500}
                         );
                     }
@@ -107,7 +107,7 @@ class Cop extends Prefab {
                     {
                         this.GameObject.mz.tweet.tweet(
                             'если вы дважды быстро коснетесь экрана, вы сможете убегать от полиции, однако смотрите не выдохнитесь',
-                            'tw_help',
+                            'help',
                             {visible: 5000, fadeIn: 500, fadeOut: 500}
                         );
                     }
@@ -126,7 +126,7 @@ class Cop extends Prefab {
                             :
                             'Чтобы помешать задержанию демонстранта, подойдите к нему и быстро жмите по экрану много раз подряд'
                         ,
-                        'tw_help',
+                        'help',
                         {visible: 5000, fadeIn: 500, fadeOut: 500}
                     );
                 }

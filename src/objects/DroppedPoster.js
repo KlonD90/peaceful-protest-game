@@ -3,7 +3,8 @@ class DroppedPoster {
         this.game = game;
         this.aliveTime = alive * 1000;
 
-        this.sprite = this.game.add.sprite(x, y, 'dropped_poster', 0, group);
+        this.sprite = this.game.add.sprite(x, y, "ALL_IMAGES",'dropped_poster');
+        group.add(this.sprite);
         this.sprite.anchor.set(0.5);
         this.sprite.rotation = this.game.rnd.sign() * Math.PI / 3;
 

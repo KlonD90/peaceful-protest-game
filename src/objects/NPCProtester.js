@@ -141,7 +141,7 @@ class NPCProtester extends Protester {
                 this.GameObject.mz.advices.agitate = null;
                 this.GameObject.mz.advices.press = this.GameObject.mz.tweet.tweet(
                     'Подойдите к журналисту и поднимите плакат в поле его видимости. Когда журналист закончит трансляцию - придут новые митингующие.',
-                    'tw_help',
+                    'help',
                     {behavior: ManuallyBehavior}
                 );
             }
@@ -225,7 +225,7 @@ class NPCProtester extends Protester {
                     this.GameObject.mz.showedAdvice.nod = true;
                     this.GameObject.mz.advices.nod = this.GameObject.mz.tweet.tweet(
                         'Смотрите, чтобы вам не плеснули зеленкой в лицо',
-                        'tw_help',
+                        'help',
                         {visible: 5000, fadeIn: 500, fadeOut: 500}
                     );
                 }

@@ -392,7 +392,7 @@ class Game {
         HelpInfo.setGame(this.game);
         this.mz.advices.move = this.mz.tweet.tweet(
             Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице',
-            'tw_help',
+            'help',
             {behavior: ManuallyBehavior}
         );
         this.mz.advices.space = this.mz.tweet.tweet(
@@ -401,12 +401,12 @@ class Game {
                 'Нажмите ПРОБЕЛ, чтобы начать агитацию/перестать агитировать'
                 :
                 'Нажмите на значок справа внизу экрана, чтобы начать/закончить агитацию',
-            'tw_help',
+            'help',
             {behavior: ManuallyBehavior}
         );
         this.mz.advices.agitate = this.mz.tweet.tweet(
             'Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам',
-            'tw_help',
+            'help',
             {behavior: ManuallyBehavior}
         );
         // this.mz.advices.shift = this.mz.tweet.tweet(
@@ -639,7 +639,7 @@ class Game {
                     this.mz.showedAdvice.cops = true;
                     this.mz.tweet.tweet(
                         'Во время агитации остерегайтесь сотрудников полиции, опустите плакат до того, как они вас заметят',
-                        'tw_help',
+                        'help',
                         {visible: 5000, fadeIn: 500, fadeOut: 500}
                     );
                 }
@@ -1385,7 +1385,7 @@ class Game {
             this.mz.showedAdvice.omon = true;
             this.mz.advices.omon = this.mz.tweet.tweet(
                 'Будьте осторожны, ОМОН передвигается быстро и хватает всех без разбору.',
-                'tw_help',
+                'help',
                 {visible: 5000, fadeIn: 500, fadeOut: 500}
             );
         }

@@ -8,12 +8,11 @@ class Protester extends Prefab {
         super(prefabOptions);
 
 
-        this.posterSprite = this.viewSprite.addChild(this.game.make.sprite(-8, 13, 'plakat', 0));
+        this.posterSprite = this.viewSprite.addChild(this.game.make.sprite(-8, 13, "ALL_IMAGES",'plakat', 0));
         this.posterSprite.bringToTop();
         this.posterSprite.anchor.set(0.5, 1);
         this.posterSprite.visible = false;
-        this.posterSprite.frame = 1;
-
+       
         this.showPoster = false;
         this.dropPoster = 1;
 
@@ -55,8 +54,7 @@ class Protester extends Prefab {
     changeViewSprite(atlasKey, spriteKey, canWalk = 0)
     {
         super.changeViewSprite(atlasKey, spriteKey, canWalk);
-        this.posterSprite = this.viewSprite.addChild(this.game.make.sprite(-8, 13, 'plakat', 0));
-        this.posterSprite.frame = 1;
+        this.posterSprite = this.viewSprite.addChild(this.game.make.sprite(-8, 13,"ALL_IMAGES",'plakat', 0));
         this.posterSprite.bringToTop();
         this.posterSprite.anchor.set(0.5, 1);
         this.posterSprite.visible = false;

@@ -1546,11 +1546,10 @@ var Protester = function (_Prefab) {
 
         var _this = _possibleConstructorReturn(this, (Protester.__proto__ || Object.getPrototypeOf(Protester)).call(this, prefabOptions));
 
-        _this.posterSprite = _this.viewSprite.addChild(_this.game.make.sprite(-8, 13, 'plakat', 0));
+        _this.posterSprite = _this.viewSprite.addChild(_this.game.make.sprite(-8, 13, "ALL_IMAGES", 'plakat', 0));
         _this.posterSprite.bringToTop();
         _this.posterSprite.anchor.set(0.5, 1);
         _this.posterSprite.visible = false;
-        _this.posterSprite.frame = 1;
 
         _this.showPoster = false;
         _this.dropPoster = 1;
@@ -1606,8 +1605,7 @@ var Protester = function (_Prefab) {
             var canWalk = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
             _get(Protester.prototype.__proto__ || Object.getPrototypeOf(Protester.prototype), 'changeViewSprite', this).call(this, atlasKey, spriteKey, canWalk);
-            this.posterSprite = this.viewSprite.addChild(this.game.make.sprite(-8, 13, 'plakat', 0));
-            this.posterSprite.frame = 1;
+            this.posterSprite = this.viewSprite.addChild(this.game.make.sprite(-8, 13, "ALL_IMAGES", 'plakat', 0));
             this.posterSprite.bringToTop();
             this.posterSprite.anchor.set(0.5, 1);
             this.posterSprite.visible = false;
@@ -3724,7 +3722,7 @@ var Player = function (_Protester) {
                 }, 0) / angles.length;
                 this.direction = angle;
                 this.game.physics.arcade.velocityFromAngle(angle, this.speed.current, this.sprite.body.velocity);
-                console.log('direction', this.direction);
+                // console.log('direction', this.direction);
                 // this.sprite.frame = 2;
                 this.resetClickSpeed(true);
             } else if (this.keys.up.justUp || this.keys.down.justUp || this.keys.left.justUp || this.keys.right.justUp) {
@@ -3747,7 +3745,7 @@ var Player = function (_Protester) {
         value: function setMode(mode) {
             var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-            console.log('player mode', mode);
+            // console.log('player mode', mode);
             switch (mode) {
                 case __WEBPACK_IMPORTED_MODULE_2__constants_js__["V" /* PROTESTER_MODE_ARRESTED */]:
                     {
@@ -11616,9 +11614,9 @@ var Game = function () {
             this.game.camera.setBoundsToWorld();
             this.customCamera = new __WEBPACK_IMPORTED_MODULE_13__objects_Camera__["a" /* default */](this.game.camera, this.game);
             __WEBPACK_IMPORTED_MODULE_12__objects_HelpInfo_js__["a" /* default */].setGame(this.game);
-            this.mz.advices.move = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице', 'tw_help', { behavior: __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__["a" /* default */] });
-            this.mz.advices.space = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Нажмите ПРОБЕЛ, чтобы начать агитацию/перестать агитировать' : 'Нажмите на значок справа внизу экрана, чтобы начать/закончить агитацию', 'tw_help', { behavior: __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__["a" /* default */] });
-            this.mz.advices.agitate = this.mz.tweet.tweet('Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам', 'tw_help', { behavior: __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__["a" /* default */] });
+            this.mz.advices.move = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__["a" /* default */] });
+            this.mz.advices.space = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Нажмите ПРОБЕЛ, чтобы начать агитацию/перестать агитировать' : 'Нажмите на значок справа внизу экрана, чтобы начать/закончить агитацию', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__["a" /* default */] });
+            this.mz.advices.agitate = this.mz.tweet.tweet('Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__["a" /* default */] });
             // this.mz.advices.shift = this.mz.tweet.tweet(
             //     'Чтобы бегать нажмите shift',
             //     'tw_help',
@@ -11822,7 +11820,7 @@ var Game = function () {
                 if (copsRequired > this.mz.cops.alive) {
                     if (!this.mz.showedAdvice.cops) {
                         this.mz.showedAdvice.cops = true;
-                        this.mz.tweet.tweet('Во время агитации остерегайтесь сотрудников полиции, опустите плакат до того, как они вас заметят', 'tw_help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
+                        this.mz.tweet.tweet('Во время агитации остерегайтесь сотрудников полиции, опустите плакат до того, как они вас заметят', 'help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
                     }
                     this.reviveCops(copsRequired - this.mz.cops.alive);
                     this.mz.cops.alive = copsRequired;
@@ -12502,7 +12500,7 @@ var Game = function () {
         value: function launchSWAT() {
             if (!this.mz.showedAdvice.omon) {
                 this.mz.showedAdvice.omon = true;
-                this.mz.advices.omon = this.mz.tweet.tweet('Будьте осторожны, ОМОН передвигается быстро и хватает всех без разбору.', 'tw_help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
+                this.mz.advices.omon = this.mz.tweet.tweet('Будьте осторожны, ОМОН передвигается быстро и хватает всех без разбору.', 'help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
             }
 
             this.mz.timers.swat.stop(true);
@@ -13353,7 +13351,7 @@ var NPCProtester = function (_Protester) {
                 if (this.GameObject.mz.advices.agitate) {
                     this.GameObject.mz.advices.agitate.hide();
                     this.GameObject.mz.advices.agitate = null;
-                    this.GameObject.mz.advices.press = this.GameObject.mz.tweet.tweet('Подойдите к журналисту и поднимите плакат в поле его видимости. Когда журналист закончит трансляцию - придут новые митингующие.', 'tw_help', { behavior: __WEBPACK_IMPORTED_MODULE_4__Tweets_ManuallyBehavior__["a" /* default */] });
+                    this.GameObject.mz.advices.press = this.GameObject.mz.tweet.tweet('Подойдите к журналисту и поднимите плакат в поле его видимости. Когда журналист закончит трансляцию - придут новые митингующие.', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_4__Tweets_ManuallyBehavior__["a" /* default */] });
                 }
             }
 
@@ -13447,7 +13445,7 @@ var NPCProtester = function (_Protester) {
                     {
                         if (!this.GameObject.mz.showedAdvice.nod) {
                             this.GameObject.mz.showedAdvice.nod = true;
-                            this.GameObject.mz.advices.nod = this.GameObject.mz.tweet.tweet('Смотрите, чтобы вам не плеснули зеленкой в лицо', 'tw_help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
+                            this.GameObject.mz.advices.nod = this.GameObject.mz.tweet.tweet('Смотрите, чтобы вам не плеснули зеленкой в лицо', 'help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
                         }
                         this.setSpeed(this.speed.value);
                         if (this.mode === __WEBPACK_IMPORTED_MODULE_3__constants_js__["Z" /* PROTESTER_MODE_WANDER */]) {
@@ -13743,9 +13741,9 @@ var Cop = function (_Prefab) {
                         if (!this.GameObject.mz.showedAdvice.shift) {
                             this.GameObject.mz.showedAdvice.shift = true;
                             if (Phaser.Device.desktop) {
-                                this.GameObject.mz.tweet.tweet('Если вы зажмете SHIFT, вы сможете убегать от полиции, однако смотрите не выдохнитесь', 'tw_help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
+                                this.GameObject.mz.tweet.tweet('Если вы зажмете SHIFT, вы сможете убегать от полиции, однако смотрите не выдохнитесь', 'help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
                             } else {
-                                this.GameObject.mz.tweet.tweet('если вы дважды быстро коснетесь экрана, вы сможете убегать от полиции, однако смотрите не выдохнитесь', 'tw_help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
+                                this.GameObject.mz.tweet.tweet('если вы дважды быстро коснетесь экрана, вы сможете убегать от полиции, однако смотрите не выдохнитесь', 'help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
                             }
                         }
                         break;
@@ -13754,7 +13752,7 @@ var Cop = function (_Prefab) {
                     {
                         if (!this.GameObject.mz.showedAdvice.arrest) {
                             this.GameObject.mz.showedAdvice.arrest = true;
-                            this.GameObject.mz.tweet.tweet(Phaser.Device.desktop ? 'Чтобы помешать задержанию демонстранта, подойдите к нему и быстро жмите на пробел много раз подряд' : 'Чтобы помешать задержанию демонстранта, подойдите к нему и быстро жмите по экрану много раз подряд', 'tw_help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
+                            this.GameObject.mz.tweet.tweet(Phaser.Device.desktop ? 'Чтобы помешать задержанию демонстранта, подойдите к нему и быстро жмите на пробел много раз подряд' : 'Чтобы помешать задержанию демонстранта, подойдите к нему и быстро жмите по экрану много раз подряд', 'help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
                         }
                         var jailCoords = props.jailCoords;
 
@@ -14477,7 +14475,8 @@ var DroppedPoster = function () {
         this.game = game;
         this.aliveTime = alive * 1000;
 
-        this.sprite = this.game.add.sprite(x, y, 'dropped_poster', 0, group);
+        this.sprite = this.game.add.sprite(x, y, "ALL_IMAGES", 'dropped_poster');
+        group.add(this.sprite);
         this.sprite.anchor.set(0.5);
         this.sprite.rotation = this.game.rnd.sign() * Math.PI / 3;
 
@@ -14487,26 +14486,26 @@ var DroppedPoster = function () {
     }
 
     _createClass(DroppedPoster, [{
-        key: 'update',
+        key: "update",
         value: function update() {
             if (this.dyingTimer.running) {
                 this.sprite.alpha = Math.floor(this.dyingTimer.ms / 400) % 2;
             }
         }
     }, {
-        key: 'handleLivingTimer',
+        key: "handleLivingTimer",
         value: function handleLivingTimer() {
             this.dyingTimer.add(this.aliveTime / 4, this.kill, this);
             this.dyingTimer.start();
         }
     }, {
-        key: 'launchLivingTimer',
+        key: "launchLivingTimer",
         value: function launchLivingTimer() {
             this.livingTimer.add(3 * this.aliveTime / 4, this.handleLivingTimer, this);
             this.livingTimer.start();
         }
     }, {
-        key: 'revive',
+        key: "revive",
         value: function revive(coords) {
             this.sprite.x = coords.x;
             this.sprite.y = coords.y;
@@ -14516,7 +14515,7 @@ var DroppedPoster = function () {
             this.sprite.revive();
         }
     }, {
-        key: 'kill',
+        key: "kill",
         value: function kill() {
             this.livingTimer.stop(true);
             this.dyingTimer.stop(true);
@@ -17741,7 +17740,7 @@ var Tweets = function () {
         }).filter(function (id) {
           return _this.showedTweet.indexOf(id) < 0;
         });
-        console.log('n.kozh tweets_ids', tweetsIds);
+        // console.log('n.kozh tweets_ids', tweetsIds);
         if (tweetsIds.length == 0) {
           console.warn('Твиты такого типа уже все показаны');
           return null;
@@ -17753,11 +17752,11 @@ var Tweets = function () {
           return tw.id === tweet_id;
         });
       }
-      console.log('n.kozh rTweet called', tweet);
+      //console.log('n.kozh rTweet called', tweet);
       return this._tweet({
         text: tweet.text,
         name: tweet.name,
-        image: 'tw_' + tweet.nickname
+        image: tweet.nickname
       }, options);
     }
   }, {
@@ -17767,12 +17766,12 @@ var Tweets = function () {
 
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-      console.log('n.kozh _tweet called', tweet);
+      //console.log('n.kozh _tweet called', tweet);
       var tweetInstance = this.createTweet(tweet, options);
       tweetInstance.destroy.add(function () {
         _this2.removeFromQueue(tweetInstance);
       });
-      console.log('tw instance', tweetInstance);
+      //console.log('tw instance', tweetInstance);
       if (tweetInstance.behavior instanceof __WEBPACK_IMPORTED_MODULE_2__ManuallyBehavior_js__["a" /* default */]) {
         this.pushToQueue(tweetInstance, true);
       } else {
@@ -17785,7 +17784,7 @@ var Tweets = function () {
     key: 'tweet',
     value: function tweet(text, image, options) {
       window._Tweets = this;
-      console.log('n.kozh tweet called', text, image);
+      //console.log('n.kozh tweet called', text, image)
       return this._tweet({
         text: text, image: image
       }, options);
@@ -17832,7 +17831,7 @@ var Tweets = function () {
   }, {
     key: 'startQueue',
     value: function startQueue() {
-      console.log('n.kozh start Queue executing status', this.executing);
+      //console.log('n.kozh start Queue executing status', this.executing);
       if (this.executing) return;
 
       if (this.queue.length) {

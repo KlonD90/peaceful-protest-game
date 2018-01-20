@@ -255,7 +255,7 @@ class Player extends Protester {
                 this.speed.current,
                 this.sprite.body.velocity
             );
-            console.log('direction', this.direction);
+           // console.log('direction', this.direction);
             // this.sprite.frame = 2;
             this.resetClickSpeed(true);
         } else if (
@@ -282,7 +282,7 @@ class Player extends Protester {
     }
 
     setMode(mode, props = {}) {
-        console.log('player mode', mode);
+       // console.log('player mode', mode);
         switch (mode) {
             case PROTESTER_MODE_ARRESTED: {
                 this.sprite.body.immovable = true;
