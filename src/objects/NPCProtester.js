@@ -233,7 +233,7 @@ class NPCProtester extends Protester {
                 if (this.mode === PROTESTER_MODE_WANDER) {
                     this.stopWandering();
                 }
-                console.log(this.GameObject);
+             //   console.log(this.GameObject);
                 this.target = this.GameObject.mz.objects.player.sprite;
                 this.moveTo(
                     this.GameObject.mz.objects.player.sprite,

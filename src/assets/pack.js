@@ -355,7 +355,8 @@ const pack = {
             url: require('./klyaksa.png'),
             frameWidth: 1035,
             frameHeight: 1035
-        },
+        }
+        /*,
         {
             type: 'spritesheet',
             key: 'star_01',
@@ -375,7 +376,7 @@ const pack = {
             frameMax: 3,
             margin: 0,
             spacing: 0
-        },
+        }
         {
             type: 'spritesheet',
             key: 'star_03',
@@ -385,7 +386,7 @@ const pack = {
             frameMax: 3,
             margin: 0,
             spacing: 0
-        },
+        }*/,
         {
             type: 'spritesheet',
             key: 'repeatButton',
@@ -407,6 +408,7 @@ const pack = {
             frameWidth: 48,
             frameHeight: 48
         },
+        /*
         {
             type: 'spritesheet',
             key: 'omon',
@@ -420,7 +422,7 @@ const pack = {
             url: require('./nod.png'),
             frameWidth: 31,
             frameHeight: 37
-        },
+        },*/
         {
             type: 'spritesheet',
             key: 'podskazka_plakat',
@@ -537,7 +539,7 @@ const pack = {
             url: require('./journalist01.png'),
             frameWidth: 32,
             frameHeight: 49
-        },*/
+        },
         {
             type: 'spritesheet',
             key: 'player_sprite',
@@ -629,7 +631,7 @@ const pack = {
             spacing: 0
         },
 
-         /*
+        
        
         {
             type: 'spritesheet',
@@ -650,7 +652,7 @@ const pack = {
             frameMax: 3,
             margin: 0,
             spacing: 0
-        },*/
+        },
         {
             type: 'spritesheet',
             key: 'press_01',

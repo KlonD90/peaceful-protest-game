@@ -3013,33 +3013,37 @@ var pack = {
         url: __webpack_require__(411),
         frameWidth: 1035,
         frameHeight: 1035
-    }, {
-        type: 'spritesheet',
-        key: 'star_01',
-        url: __webpack_require__(412),
-        frameHeight: 37,
-        frameWidth: 31,
-        frameMax: 3,
-        margin: 0,
-        spacing: 0
-    }, {
-        type: 'spritesheet',
-        key: 'star_02',
-        url: __webpack_require__(413),
-        frameHeight: 37,
-        frameWidth: 31,
-        frameMax: 3,
-        margin: 0,
-        spacing: 0
-    }, {
-        type: 'spritesheet',
-        key: 'star_03',
-        url: __webpack_require__(414),
-        frameHeight: 37,
-        frameWidth: 31,
-        frameMax: 3,
-        margin: 0,
-        spacing: 0
+        /*,
+        {
+            type: 'spritesheet',
+            key: 'star_01',
+            url: require('./star_01.png'),
+            frameHeight: 37,
+            frameWidth: 31,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
+        },
+        {
+            type: 'spritesheet',
+            key: 'star_02',
+            url: require('./star_02.png'),
+            frameHeight: 37,
+            frameWidth: 31,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
+        }
+        {
+            type: 'spritesheet',
+            key: 'star_03',
+            url: require('./star_03.png'),
+            frameHeight: 37,
+            frameWidth: 31,
+            frameMax: 3,
+            margin: 0,
+            spacing: 0
+        }*/
     }, {
         type: 'spritesheet',
         key: 'repeatButton',
@@ -3058,19 +3062,23 @@ var pack = {
         url: __webpack_require__(416),
         frameWidth: 48,
         frameHeight: 48
-    }, {
+    },
+    /*
+    {
         type: 'spritesheet',
         key: 'omon',
-        url: __webpack_require__(417),
+        url: require('./omon.png'),
         frameWidth: 31,
         frameHeight: 37
-    }, {
+    },
+    {
         type: 'spritesheet',
         key: 'nod',
-        url: __webpack_require__(418),
+        url: require('./nod.png'),
         frameWidth: 31,
         frameHeight: 37
-    }, {
+    },*/
+    {
         type: 'spritesheet',
         key: 'podskazka_plakat',
         url: __webpack_require__(142),
@@ -3171,132 +3179,140 @@ var pack = {
         url: require('./journalist01.png'),
         frameWidth: 32,
         frameHeight: 49
-    },*/
+    },
     {
         type: 'spritesheet',
         key: 'player_sprite',
-        url: __webpack_require__(433),
+        url: require('./player_sprite.png'),
         frameWidth: 31,
         frameHeight: 37,
         frameMax: 7,
         margin: 0,
         spacing: 0
-    }, {
-        type: 'spritesheet',
-        key: 'npc_01',
-        url: __webpack_require__(434),
-        frameWidth: 31,
-        frameHeight: 37,
-        frameMax: 6,
-        margin: 0,
-        spacing: 0
-    }, {
-        type: 'spritesheet',
-        key: 'npc_02',
-        url: __webpack_require__(435),
-        frameWidth: 31,
-        frameHeight: 37,
-        frameMax: 6,
-        margin: 0,
-        spacing: 0
-    }, {
-        type: 'spritesheet',
-        key: 'npc_03',
-        url: __webpack_require__(436),
-        frameWidth: 31,
-        frameHeight: 37,
-        frameMax: 6,
-        margin: 0,
-        spacing: 0
-    }, {
-        type: 'spritesheet',
-        key: 'npc_04',
-        url: __webpack_require__(437),
-        frameWidth: 31,
-        frameHeight: 37,
-        frameMax: 6,
-        margin: 0,
-        spacing: 0
-    }, {
-        type: 'spritesheet',
-        key: 'npc_05',
-        url: __webpack_require__(438),
-        frameWidth: 31,
-        frameHeight: 37,
-        frameMax: 6,
-        margin: 0,
-        spacing: 0
-    }, {
-        type: 'spritesheet',
-        key: 'npc_06',
-        url: __webpack_require__(439),
-        frameWidth: 31,
-        frameHeight: 38,
-        frameMax: 6,
-        margin: 0,
-        spacing: 0
-    }, {
-        type: 'spritesheet',
-        key: 'npc_07',
-        url: __webpack_require__(440),
-        frameWidth: 31,
-        frameHeight: 38,
-        frameMax: 6,
-        margin: 0,
-        spacing: 0
-    }, {
-        type: 'spritesheet',
-        key: 'npc_08',
-        url: __webpack_require__(441),
-        frameWidth: 31,
-        frameHeight: 38,
-        frameMax: 6,
-        margin: 0,
-        spacing: 0
-    },
-
-    /*
-            {
-       type: 'spritesheet',
-       key: 'cop_sprite',
-       url: require('./cop.png'),
-       frameWidth: 31,
-       frameHeight: 37,
-       frameMax: 3,
-       margin: 0,
-       spacing: 0
     },
     {
-       type: 'spritesheet',
-       key: 'press_sprite',
-       url: require('./press.png'),
-       frameWidth: 31,
-       frameHeight: 37,
-       frameMax: 3,
-       margin: 0,
-       spacing: 0
-    },*/
+        type: 'spritesheet',
+        key: 'npc_01',
+        url: require('./npc_01.png'),
+        frameWidth: 31,
+        frameHeight: 37,
+        frameMax: 6,
+        margin: 0,
+        spacing: 0
+    },
+    {
+        type: 'spritesheet',
+        key: 'npc_02',
+        url: require('./npc_02.png'),
+        frameWidth: 31,
+        frameHeight: 37,
+        frameMax: 6,
+        margin: 0,
+        spacing: 0
+    },
+    {
+        type: 'spritesheet',
+        key: 'npc_03',
+        url: require('./npc_03.png'),
+        frameWidth: 31,
+        frameHeight: 37,
+        frameMax: 6,
+        margin: 0,
+        spacing: 0
+    },
+    {
+        type: 'spritesheet',
+        key: 'npc_04',
+        url: require('./npc_04.png'),
+        frameWidth: 31,
+        frameHeight: 37,
+        frameMax: 6,
+        margin: 0,
+        spacing: 0
+    },
+    {
+        type: 'spritesheet',
+        key: 'npc_05',
+        url: require('./npc_05.png'),
+        frameWidth: 31,
+        frameHeight: 37,
+        frameMax: 6,
+        margin: 0,
+        spacing: 0
+    },
+    {
+        type: 'spritesheet',
+        key: 'npc_06',
+        url: require('./npc_06.png'),
+        frameWidth: 31,
+        frameHeight: 38,
+        frameMax: 6,
+        margin: 0,
+        spacing: 0
+    },
+    {
+        type: 'spritesheet',
+        key: 'npc_07',
+        url: require('./npc_07.png'),
+        frameWidth: 31,
+        frameHeight: 38,
+        frameMax: 6,
+        margin: 0,
+        spacing: 0
+    },
+    {
+        type: 'spritesheet',
+        key: 'npc_08',
+        url: require('./npc_08.png'),
+        frameWidth: 31,
+        frameHeight: 38,
+        frameMax: 6,
+        margin: 0,
+        spacing: 0
+    },
+      
+    
+    {
+        type: 'spritesheet',
+        key: 'cop_sprite',
+        url: require('./cop.png'),
+        frameWidth: 31,
+        frameHeight: 37,
+        frameMax: 3,
+        margin: 0,
+        spacing: 0
+    },
+    {
+        type: 'spritesheet',
+        key: 'press_sprite',
+        url: require('./press.png'),
+        frameWidth: 31,
+        frameHeight: 37,
+        frameMax: 3,
+        margin: 0,
+        spacing: 0
+    },
     {
         type: 'spritesheet',
         key: 'press_01',
-        url: __webpack_require__(443),
-        frameWidth: 31,
-        frameHeight: 37,
-        frameMax: 3,
-        margin: 0,
-        spacing: 0
-    }, {
-        type: 'spritesheet',
-        key: 'press_02',
-        url: __webpack_require__(444),
+        url: require('./press_01.png'),
         frameWidth: 31,
         frameHeight: 37,
         frameMax: 3,
         margin: 0,
         spacing: 0
     },
-
-    /*,
+    {
+        type: 'spritesheet',
+        key: 'press_02',
+        url: require('./press_02.png'),
+        frameWidth: 31,
+        frameHeight: 37,
+        frameMax: 3,
+        margin: 0,
+        spacing: 0
+    },
+      /*,
     {
         type: 'spritesheet',
         key: 'protester1',
@@ -4459,12 +4475,13 @@ var Star = function (_Protester) {
 
     _classCallCheck(this, Star);
 
-    console.log(_extends({ config: config, GameObject: GameObject }, prefabOptions));
+    // console.log({ config, GameObject, ...prefabOptions })
     var fullConfig = _extends({}, defaults, config);
-    console.log(prefabOptions);
+    //  console.log(prefabOptions)
     var rand = Math.floor(Math.random() * 3);
 
     var _this = _possibleConstructorReturn(this, (Star.__proto__ || Object.getPrototypeOf(Star)).call(this, _extends({}, GameObject.getRandomCoordinates(), {
+      atlasKey: "humans",
       spriteKey: "star_0" + (rand + 1),
       spriteName: "star_0" + (rand + 1),
       speed: { value: fullConfig.speed }
@@ -4476,7 +4493,8 @@ var Star = function (_Protester) {
     _this.config = fullConfig;
 
     _this.restTimer = _this.game.time.create(false);
-    _this.viewSprite.animations.add('walk', [1, 2], 3, true);
+    //this.viewSprite.animations.add('walk', [1, 2], 3, true);
+
     _this.kill();
     return _this;
   }
@@ -10540,24 +10558,9 @@ module.exports = __webpack_require__.p + "assets/6415893186a9d405eb58026c9746e68
 module.exports = __webpack_require__.p + "assets/b6f612c9937d49d43dc479b8f14b27b4.png";
 
 /***/ }),
-/* 412 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/50e88d8a3080371ae234798df0a79cc9.png";
-
-/***/ }),
-/* 413 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/9e5eebe21ec0b77c64776b7cc4a39507.png";
-
-/***/ }),
-/* 414 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/4bb5cbb22ed0d6bb9892ec55944700c3.png";
-
-/***/ }),
+/* 412 */,
+/* 413 */,
+/* 414 */,
 /* 415 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10570,18 +10573,8 @@ module.exports = __webpack_require__.p + "assets/414510c3df8e81d30baba58bc049457
 module.exports = __webpack_require__.p + "assets/9cd6d0cc464716c355134fb57aaeb01b.png";
 
 /***/ }),
-/* 417 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/1950c97b0192fce4af36d67c38e2d5f6.png";
-
-/***/ }),
-/* 418 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/34c51888abab54ecc8a44c32769eb741.png";
-
-/***/ }),
+/* 417 */,
+/* 418 */,
 /* 419 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10666,73 +10659,18 @@ module.exports = __webpack_require__.p + "assets/23d99d2701df0f3d76e640ecbb28240
 module.exports = __webpack_require__.p + "assets/b36f0d0ff9fe4ff1b22c5c0284235664.json";
 
 /***/ }),
-/* 433 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/0b81f5e3f8d5dac0a8103fa2dc5ddb33.png";
-
-/***/ }),
-/* 434 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/7eef319feb21679c5c90cad5178368f3.png";
-
-/***/ }),
-/* 435 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/cee1073c6fb412542291b18cbd84b174.png";
-
-/***/ }),
-/* 436 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/92dc1011f155c19716c5318428dcdd09.png";
-
-/***/ }),
-/* 437 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/6b4188e7bd27be938b61b899b72403b7.png";
-
-/***/ }),
-/* 438 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/015419a65e6b3a228550e908707373d2.png";
-
-/***/ }),
-/* 439 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/c8394f57c645a4b81d49e598cee44b2e.png";
-
-/***/ }),
-/* 440 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/7b27c7d7b80723e8dc23f42ddbdad447.png";
-
-/***/ }),
-/* 441 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/f9c60513a53883a219f2204857d3a076.png";
-
-/***/ }),
+/* 433 */,
+/* 434 */,
+/* 435 */,
+/* 436 */,
+/* 437 */,
+/* 438 */,
+/* 439 */,
+/* 440 */,
+/* 441 */,
 /* 442 */,
-/* 443 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/2488040efd9414dd9663066e6132de07.png";
-
-/***/ }),
-/* 444 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/2c9af119b8bb1a47ab3407c60c6c8b4c.png";
-
-/***/ }),
+/* 443 */,
+/* 444 */,
 /* 445 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12377,7 +12315,8 @@ var Game = function () {
                         angle: this.mz.level.cops.fov.angle
                     },
                     speed: this.mz.level.cops.speed,
-                    spriteKey: 'humans',
+                    atlasKey: 'humans',
+                    spriteKey: "cop",
                     spriteName: 'cop' + _i7
                 });
 
@@ -13541,7 +13480,7 @@ var NPCProtester = function (_Protester) {
                         if (this.mode === __WEBPACK_IMPORTED_MODULE_3__constants_js__["Z" /* PROTESTER_MODE_WANDER */]) {
                             this.stopWandering();
                         }
-                        console.log(this.GameObject);
+                        //   console.log(this.GameObject);
                         this.target = this.GameObject.mz.objects.player.sprite;
                         this.moveTo(this.GameObject.mz.objects.player.sprite, {
                             callback: function callback() {
@@ -13737,7 +13676,9 @@ var Cop = function (_Prefab) {
 
         _classCallCheck(this, Cop);
 
-        var _this = _possibleConstructorReturn(this, (Cop.__proto__ || Object.getPrototypeOf(Cop)).call(this, _extends({ x: x, y: y, atlasKey: "humans", spriteKey: 'cop' }, prefabOptions)));
+        var _this = _possibleConstructorReturn(this, (Cop.__proto__ || Object.getPrototypeOf(Cop)).call(this, _extends({ x: x, y: y }, prefabOptions)));
+        //console.log(prefabOptions);
+
 
         _this.FOV = new __WEBPACK_IMPORTED_MODULE_1__FOV_js__["a" /* default */]({
             game: _this.game,
@@ -13950,7 +13891,7 @@ var Cop = function (_Prefab) {
                 };
             }
             var coords = _get(Cop.prototype.__proto__ || Object.getPrototypeOf(Cop.prototype), 'getNextCoords', this).call(this, bounds);
-            console.log(coords);
+            // console.log(coords);
             return coords;
         }
     }, {
@@ -14298,7 +14239,7 @@ var SWATSquad = function () {
 
         this.sprites = [];
         for (var i = 0; i < count; i++) {
-            var swatSprite = this.game.add.sprite(-100, -100, 'omon', 0);
+            var swatSprite = this.game.add.sprite(-100, -100, 'humans', 'omon-0');
             swatSprite.anchor.set(0.5);
             swatSprite.visible = false;
             swatSprite.mz = this;
@@ -14308,7 +14249,7 @@ var SWATSquad = function () {
             this.sprites.push(swatSprite);
             group.add(swatSprite);
             var fpsAnimation = 5;
-            swatSprite.animations.add('walk', [1, 2], fpsAnimation, true);
+            swatSprite.animations.add('walk', ['omon-1', 'omon-2'], fpsAnimation, true);
             swatSprite.animations.play('walk');
         }
     }

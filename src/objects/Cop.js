@@ -14,7 +14,8 @@ import {
 
 class Cop extends Prefab {
     constructor({ alive, fov, x = 0, y = 0, ...prefabOptions }) {
-        super({ x, y, atlasKey:"humans", spriteKey: 'cop', ...prefabOptions });
+        //console.log(prefabOptions);
+        super({ x, y , ...prefabOptions });
 
         this.FOV = new FOV({
             game: this.game,
@@ -229,7 +230,7 @@ class Cop extends Prefab {
             };
         }
         const coords = super.getNextCoords(bounds);
-        console.log(coords);
+       // console.log(coords);
         return coords;
     }
 

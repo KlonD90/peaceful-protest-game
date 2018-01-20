@@ -1180,7 +1180,8 @@ class Game {
                   angle: this.mz.level.cops.fov.angle
               },
               speed: this.mz.level.cops.speed,
-              spriteKey:'humans',
+              atlasKey:'humans',
+              spriteKey:"cop",
               spriteName: `cop${i}`
             })
 

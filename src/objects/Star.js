@@ -33,12 +33,13 @@ export class Star extends Protester {
   }
 
   constructor({ config, GameObject, ...prefabOptions }) {
-    console.log({ config, GameObject, ...prefabOptions })
+   // console.log({ config, GameObject, ...prefabOptions })
     const fullConfig = { ...defaults, ...config }
-    console.log(prefabOptions)
+  //  console.log(prefabOptions)
     const rand = Math.floor(Math.random()*3);
     super({
       ...GameObject.getRandomCoordinates(),
+      atlasKey:"humans",
       spriteKey: `star_0${(rand+1)}`,
       spriteName: `star_0${(rand+1)}`,
       speed: { value: fullConfig.speed },
@@ -53,7 +54,8 @@ export class Star extends Protester {
 
 
     this.restTimer = this.game.time.create(false);
-    this.viewSprite.animations.add('walk', [1, 2], 3, true);
+    //this.viewSprite.animations.add('walk', [1, 2], 3, true);
+
     this.kill()
   }
 
