@@ -1855,7 +1855,7 @@ class Game {
 
     playPoints(sprite, points)
     {
-        var spritePoint = this.game.add.sprite(sprite.x, sprite.y-10, 'points_'+points);
+        var spritePoint = this.game.add.sprite(sprite.x, sprite.y-10, 'ALL_IMAGES', 'points_'+points);
         spritePoint.scale.setTo(0.5);
         spritePoint.anchor.set(0.5);
         var tween = game.add.tween(spritePoint);

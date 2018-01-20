@@ -12661,7 +12661,7 @@ var Game = function () {
     }, {
         key: 'playPoints',
         value: function playPoints(sprite, points) {
-            var spritePoint = this.game.add.sprite(sprite.x, sprite.y - 10, 'points_' + points);
+            var spritePoint = this.game.add.sprite(sprite.x, sprite.y - 10, 'ALL_IMAGES', 'points_' + points);
             spritePoint.scale.setTo(0.5);
             spritePoint.anchor.set(0.5);
             var tween = game.add.tween(spritePoint);
@@ -19888,13 +19888,13 @@ var reset = function reset() {
 /* 532 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/197450aef02516b2ae88d146ef2e96cf.png";
+module.exports = __webpack_require__.p + "assets/72231af2e2a74389efaa0d890faed132.png";
 
 /***/ }),
 /* 533 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/7cebf8b160512c3ef069362b9ccb1696.json";
+module.exports = __webpack_require__.p + "assets/00158ee6ec2944aad19fc78292a59a98.json";
 
 /***/ })
 /******/ ]);
