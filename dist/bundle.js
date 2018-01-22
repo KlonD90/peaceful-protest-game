@@ -15268,22 +15268,32 @@ var Updater = function () {
           x1 = _target[0],
           y1 = _target[1];
 
-      personalMatrix.forEach(function (point) {
-        var _point = _slicedToArray(point, 2),
-            x2 = _point[0],
-            y2 = _point[1];
+      for (var i = 0; i < personalMatrix.length; i++) {
+        //personalMatrix.forEach(point => {
+        var _personalMatrix$i = _slicedToArray(personalMatrix[i], 2),
+            x2 = _personalMatrix$i[0],
+            y2 = _personalMatrix$i[1]; //point;
+
 
         mset(matrix, [Math.max(Math.min(x1 + x2, maxX), 0), Math.max(Math.min(y1 + y2, maxY), 0)], value);
-      });
+        //}//)
+      }
     }
   }, {
     key: "_cloneMatrix",
     value: function _cloneMatrix() {
-      return this.matrix.map(function (line) {
-        return line.map(function (item) {
-          return item;
-        });
-      });
+      var matrix = [];
+
+      for (var y = 0; y < this.matrix.length; y++) {
+        var line = this.matrix[y];
+        matrix[y] = [];
+        for (var x = 0; x < line.length; x++) {
+          matrix[y][x] = line[x];
+        }
+      }
+
+      return matrix;
+      //return this.matrix.map(line => line.map(item => item))
     }
   }, {
     key: "_printMatrix",
