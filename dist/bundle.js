@@ -929,7 +929,7 @@ module.exports = {
         },
         protesters: {
             count: {
-                start: 100, //100,
+                start: 1, //100,
                 max: 100,
                 add: 14
             },
