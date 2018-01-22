@@ -42,8 +42,15 @@ class Updater {
     if (obstacleTimer < now)
     {
       obstacleTimer = now + obstaclesTimeout;
-      this.collider.entities.filter(x => x.obstacle)
-          .forEach((x) => this.collider.updatePersonalMatrix(x.sprite))
+      //
+      //this.collider.entities.filter(x => x.obstacle)
+      //    .forEach((x) => this.collider.updatePersonalMatrix(x.sprite))
+      for (var i = 0; i < this.collider.entities.length; i++) {
+        var x = this.collider.entities[i];
+        if(x.obstacle) {
+          this.collider.updatePersonalMatrix(x.sprite);
+        }
+      }
     }
 
     if(FORCE_DISABLE_PATHFINDING_ON_MOBILE){
@@ -56,7 +63,13 @@ class Updater {
   update (): void {
     const { collider, converter } = this
     const now = (new Date()).getTime();
-    collider.entities.forEach((entity) => {
+
+    //collider.entities.forEach((entity) => 
+
+    (function(){
+      for (var i = 0; i < collider.entities.length; i++) {
+      var entity = collider.entities[i];
+
       const { move, sprite, object, personalMatrix, lastDecisionTime, lastCoords, decision, lastTarget } = entity;
 
       if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
@@ -109,11 +122,12 @@ class Updater {
         collider.invokeRawMoving(object, nextTarget)
       } else {
         if (follow) return void sprite.body.stop();
-        if (callback) callback()
-        sprite.phasing = false
-        move.shift()
+        if (callback)
+          callback();
+        sprite.phasing = false;
+        move.shift();
       }
-    })
+    }})();
   }
 
   _findPath(

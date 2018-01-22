@@ -933,7 +933,7 @@ module.exports = {
         },
         protesters: {
             count: {
-                start: 1, //100,
+                start: 100, //100,
                 max: 100,
                 add: 14
             },
@@ -15003,8 +15003,6 @@ var isPathinfindingDisabled = false;
 
 var Updater = function () {
   function Updater(collider) {
-    var _this = this;
-
     _classCallCheck(this, Updater);
 
     this.collider = collider;
@@ -15014,11 +15012,15 @@ var Updater = function () {
     this.immovableMatrix = this._getMatrix('immovable', now);
     if (obstacleTimer < now) {
       obstacleTimer = now + obstaclesTimeout;
-      this.collider.entities.filter(function (x) {
-        return x.obstacle;
-      }).forEach(function (x) {
-        return _this.collider.updatePersonalMatrix(x.sprite);
-      });
+      //
+      //this.collider.entities.filter(x => x.obstacle)
+      //    .forEach((x) => this.collider.updatePersonalMatrix(x.sprite))
+      for (var i = 0; i < this.collider.entities.length; i++) {
+        var x = this.collider.entities[i];
+        if (x.obstacle) {
+          this.collider.updatePersonalMatrix(x.sprite);
+        }
+      }
     }
 
     if (FORCE_DISABLE_PATHFINDING_ON_MOBILE) {
@@ -15030,74 +15032,79 @@ var Updater = function () {
   _createClass(Updater, [{
     key: "update",
     value: function update() {
-      var _this2 = this;
-
       var collider = this.collider,
           converter = this.converter;
 
       var now = new Date().getTime();
-      collider.entities.forEach(function (entity) {
-        var move = entity.move,
-            sprite = entity.sprite,
-            object = entity.object,
-            personalMatrix = entity.personalMatrix,
-            lastDecisionTime = entity.lastDecisionTime,
-            lastCoords = entity.lastCoords,
-            decision = entity.decision,
-            lastTarget = entity.lastTarget;
+
+      //collider.entities.forEach((entity) => 
+
+      (function () {
+        for (var i = 0; i < collider.entities.length; i++) {
+          var entity = collider.entities[i];
+
+          var move = entity.move,
+              sprite = entity.sprite,
+              object = entity.object,
+              personalMatrix = entity.personalMatrix,
+              lastDecisionTime = entity.lastDecisionTime,
+              lastCoords = entity.lastCoords,
+              decision = entity.decision,
+              lastTarget = entity.lastTarget;
 
 
-        if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
-        var _move$ = move[0],
-            target = _move$.target,
-            phasing = _move$.phasing,
-            follow = _move$.follow,
-            callback = _move$.callback,
-            superphasing = _move$.superphasing;
+          if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
+          var _move$ = move[0],
+              target = _move$.target,
+              phasing = _move$.phasing,
+              follow = _move$.follow,
+              callback = _move$.callback,
+              superphasing = _move$.superphasing;
 
-        var moveFrom = converter.rCoordsToMCoords(sprite.body.center);
-        var moveTo = converter.rCoordsToMCoords(target);
+          var moveFrom = converter.rCoordsToMCoords(sprite.body.center);
+          var moveTo = converter.rCoordsToMCoords(target);
 
-        if (moveFrom[0] === lastCoords[0] && moveFrom[1] === lastCoords[1]) {
-          entity.times++;
-        } else {
-          entity.times = 0;
-          entity.lastCoords = moveFrom;
-        }
-
-        //      phasing = true;
-
-        if (phasing || isPathinfindingDisabled) {
-
-          sprite.phasing = true;
-          var path = [moveFrom, moveTo];
-          var pathClear = !equals(moveFrom, moveTo);
-        } else {
-          if (decision && lastDecisionTime < now && lastTarget === target) {
-            var path = decision;
+          if (moveFrom[0] === lastCoords[0] && moveFrom[1] === lastCoords[1]) {
+            entity.times++;
           } else {
-            entity.lastDecisionTime = now + decisionTimeout;
-            entity.lastTarget = target;
-            var finder = new __WEBPACK_IMPORTED_MODULE_0_pathfinding___default.a.AStarFinder({ allowDiagonal: true, dontCrossCorners: true });
-            if (superphasing) {
-              var path = _this2._findImmovablePath({ finder: finder, from: moveFrom, to: moveTo });
-            } else {
-              var path = _this2._findPath({ finder: finder, from: moveFrom, to: moveTo, personalMatrix: personalMatrix });
-            }
+            entity.times = 0;
+            entity.lastCoords = moveFrom;
           }
-          var pathClear = path[2] || mget(_this2.matrix, path[1]) === false;
-        }
 
-        if (pathClear) {
-          var nextTarget = converter.mCoordsToRCoords(path[1]);
-          collider.invokeRawMoving(object, nextTarget);
-        } else {
-          if (follow) return void sprite.body.stop();
-          if (callback) callback();
-          sprite.phasing = false;
-          move.shift();
+          //      phasing = true;
+
+          if (phasing || isPathinfindingDisabled) {
+
+            sprite.phasing = true;
+            var path = [moveFrom, moveTo];
+            var pathClear = !equals(moveFrom, moveTo);
+          } else {
+            if (decision && lastDecisionTime < now && lastTarget === target) {
+              var path = decision;
+            } else {
+              entity.lastDecisionTime = now + decisionTimeout;
+              entity.lastTarget = target;
+              var finder = new __WEBPACK_IMPORTED_MODULE_0_pathfinding___default.a.AStarFinder({ allowDiagonal: true, dontCrossCorners: true });
+              if (superphasing) {
+                var path = this._findImmovablePath({ finder: finder, from: moveFrom, to: moveTo });
+              } else {
+                var path = this._findPath({ finder: finder, from: moveFrom, to: moveTo, personalMatrix: personalMatrix });
+              }
+            }
+            var pathClear = path[2] || mget(this.matrix, path[1]) === false;
+          }
+
+          if (pathClear) {
+            var nextTarget = converter.mCoordsToRCoords(path[1]);
+            collider.invokeRawMoving(object, nextTarget);
+          } else {
+            if (follow) return void sprite.body.stop();
+            if (callback) callback();
+            sprite.phasing = false;
+            move.shift();
+          }
         }
-      });
+      })();
     }
   }, {
     key: "_findPath",
