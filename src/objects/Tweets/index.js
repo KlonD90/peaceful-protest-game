@@ -38,7 +38,7 @@ class Tweets {
     if (tweets.length > 0) {
       // debugger;
       const tweetsIds = tweets.map(tw => tw.id).filter(id => this.showedTweet.indexOf(id) < 0);
-      console.log('n.kozh tweets_ids', tweetsIds);
+     // console.log('n.kozh tweets_ids', tweetsIds);
       if (tweetsIds.length == 0) {
         console.warn('Твиты такого типа уже все показаны');
         return null
@@ -48,21 +48,21 @@ class Tweets {
       this.showedTweet.push(tweet_id);
       tweet = tweets.find(tw => tw.id === tweet_id);
     }
-    console.log('n.kozh rTweet called', tweet);
+   //console.log('n.kozh rTweet called', tweet);
     return this._tweet({
       text: tweet.text,
       name: tweet.name,
-      image: 'tw_'+tweet.nickname
+      image: tweet.nickname
     }, options);
   }
 
   _tweet(tweet, options={}) {
-    console.log('n.kozh _tweet called', tweet);
+    //console.log('n.kozh _tweet called', tweet);
     const tweetInstance = this.createTweet(tweet, options);
     tweetInstance.destroy.add(() => {
       this.removeFromQueue(tweetInstance);
     });
-    console.log('tw instance', tweetInstance);
+    //console.log('tw instance', tweetInstance);
     if (tweetInstance.behavior instanceof ManuallyBehaviour) {
       this.pushToQueue(tweetInstance, true);
     } else {
@@ -74,7 +74,7 @@ class Tweets {
 
   tweet(text, image, options) {
     window._Tweets = this;
-    console.log('n.kozh tweet called', text, image)
+    //console.log('n.kozh tweet called', text, image)
     return this._tweet({
       text, image,
     }, options);
@@ -119,7 +119,7 @@ class Tweets {
   }
 
   startQueue() {
-    console.log('n.kozh start Queue executing status', this.executing);
+    //console.log('n.kozh start Queue executing status', this.executing);
     if (this.executing) return;
     
     if (this.queue.length) {

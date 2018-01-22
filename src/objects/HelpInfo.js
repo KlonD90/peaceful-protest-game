@@ -15,7 +15,7 @@ class HelpInfo {
         const centerX = (width/2);
 
         const sprite = this.sprites[helpName] = this.game.add.sprite(
-            centerX, height-10, helpName
+            centerX, height-10,  helpName
         );
         sprite.fixedToCamera = true
         return sprite;

@@ -13,7 +13,9 @@ import ProgressBar from "./ProgressBar";
 
 class Journalist extends Prefab {
     constructor({ fov, shootingDuration, cooldownDuration, onFinishShooting, ...prefabOptions }) {
-        super({ spriteKey: Math.random() >= 0.5 ? 'press_01' : 'press_02', ...prefabOptions });
+ 
+        let spriteKey = Math.random() >= 0.5 ? 'press_01' : 'press_02';
+        super({ spriteKey: spriteKey , ...prefabOptions });
 
         this.FOV = new FOV({
             game: this.game,
@@ -45,7 +47,8 @@ class Journalist extends Prefab {
 
         this.target = null;
         this.following = null;
-        this.viewSprite.animations.add('walk', [1, 2], 3, true);
+        //this.viewSprite.animations.add('walk', [1, 2], 3, true);
+        this.changeAnimations(spriteKey, 3);
     }
 
     update() {

@@ -1,4 +1,4 @@
-import { lagrange } from './utils';
+//import { lagrange } from './utils';
 
 import {MARGIN_BOTTOM, AVATAR_SIZE, MARGIN_LEFT, AVATAR_TEXT_SPACING} from './const.js';
 
@@ -35,9 +35,12 @@ export default class BaseTweet {
   set(key, val) {
     this[key] = val;
   }
+  
   setBehavior(Strgy) {
+
     this.behavior = new Strgy();
     this.behavior.set('tweet', this);
+  
   }
 
   build() {
@@ -70,7 +73,9 @@ export default class BaseTweet {
       textGameObject.resolution = window.devicePixelRatio || 1;
       textGameObject.font = 'Arial';
       textGameObject.fixedToCamera = true;
+
     } else {
+      
       textGameObject = this.game.add.text(
         (MARGIN_LEFT + AVATAR_SIZE + AVATAR_TEXT_SPACING), 
         height, 
@@ -87,14 +92,14 @@ export default class BaseTweet {
     }
     
 
-    const avatar = this.game.add.sprite(
-      0, 0, image
-    );
+    const avatar = this.game.add.sprite( 0, 0, "ALL_IMAGES", image);
+    
     if (name) {
       avatar.alignTo(nameGameObject, Phaser.LEFT_TOP, AVATAR_TEXT_SPACING)
     } else {
       avatar.alignTo(textGameObject, Phaser.LEFT_TOP, AVATAR_TEXT_SPACING)
     }
+
     avatar.fixedToCamera = true;
     
     const mask = this.game.add.graphics(MARGIN_LEFT+AVATAR_SIZE/2, height+AVATAR_SIZE/2);
@@ -105,7 +110,12 @@ export default class BaseTweet {
 
     tweet.add(mask);
     tweet.add(avatar);
-    if (name) tweet.add(nameGameObject);
+    if (name) {
+      //nameGameObject.cacheAsBitmap = true;
+      tweet.add(nameGameObject);
+    }
+
+    //textGameObject.cacheAsBitmap = true;
     tweet.add(textGameObject);
     this.groupTweet = tweet;
     
@@ -122,10 +132,12 @@ export default class BaseTweet {
     all.alpha = 0;
     all.add(bg);
     all.add(tweet);
+    
+    //enable cahing of bitmap
+
+   // all.cacheAsBitmap = true;
+    //console.log("TEXT GROUP:" + name + " CACHED!");
     this.groupAll = all;
-
-
-
     this.showedY = calcGroupPosition(textGameObject, tweet);
     return this;
   }

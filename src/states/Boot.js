@@ -24,10 +24,11 @@ class Boot {
 
         this.state.start('Loading', true, false, {
             assets: [
+
+               ///['atlasArray', require('../assets/humans.png'), require('../assets/humans.json')],
                 ['pack', 'initial', null, pack],
                 ['pack', 'help' + (Phaser.Device.desktop ? 'Desktop' : 'Touch'), null, pack],
                 ['pack', 'helpTips', null, pack],
-                ['pack', 'tweets', null, pack],
                 ['pack', 'levelCommon', null, pack],
                 ['pack', 'level1', null, pack]
             ],

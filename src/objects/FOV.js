@@ -7,13 +7,15 @@ const DEFAULT_COLORS = {
 
 class FOV {
     constructor({ game, radius, angle, colors = DEFAULT_COLORS }) {
+        
         this.game = game;
         this.radius = radius;
         this.radiusSq = this.radius ** 2;
         this.halfViewAngle = this.game.math.degToRad(angle / 2);
         this.colors = colors;
 
-        this.graphics = this.game.add.graphics(0, 0);
+        this.graphics = this.game.add.sprite(0, 0, "ALL_IMAGES", "FOV");
+        this.graphics.anchor.set(0);
         this.center = null;
         this.isActive = true;
     }
@@ -22,33 +24,20 @@ class FOV {
         this.center = { x, y };
         this.angle = angle;
 
-        this.graphics.clear();
+       // this.graphics.clear();
 
         if (!this.isActive) {
             return;
         }
 
-        const startAngle = this.angle - this.halfViewAngle;
-        const endAngle = this.angle + this.halfViewAngle;
-        const arcStart = [
-            x + Math.cos(startAngle) * this.radius,
-            y + Math.sin(startAngle) * this.radius
-        ];
+        this.graphics.tint = this.colors[mode || FOV_MODE_NORMAL];
+        this.graphics.alpha = mode === FOV_MODE_NORMAL ? 0.2 : 0.5;
+        this.graphics.x = x;
+        this.graphics.y = y;
 
-        this.graphics.beginFill(this.colors[mode || FOV_MODE_NORMAL], mode === FOV_MODE_NORMAL ? 0.2 : 0.5);
-        this.graphics.moveTo(x, y);
-        this.graphics.lineTo(...arcStart);
-        this.graphics.arc(
-            x,
-            y,
-            this.radius,
-            startAngle,
-            endAngle,
-            false,
-            10
-        );
-        this.graphics.lineTo(x, y);
-        this.graphics.endFill();
+        this.graphics.angle = this.game.math.radToDeg(angle) - 45;// - this.halfViewAngle;
+        
+        
     }
 
     containsPoint({ x, y }) {

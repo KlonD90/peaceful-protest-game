@@ -14,7 +14,8 @@ import {
 
 class Cop extends Prefab {
     constructor({ alive, fov, x = 0, y = 0, ...prefabOptions }) {
-        super({ x, y, spriteKey: 'cop_sprite', ...prefabOptions });
+        //console.log(prefabOptions);
+        super({ x, y , ...prefabOptions });
 
         this.FOV = new FOV({
             game: this.game,
@@ -34,8 +35,8 @@ class Cop extends Prefab {
         this.stunTimer = this.game.time.create(false);
 
         const fpsAnimation = 3;
-        this.viewSprite.animations.add('walk', [1, 2], fpsAnimation, true);
-
+        this.viewSprite.animations.add('walk', ["cop-1", "cop-2"], fpsAnimation, true);
+        this.viewSprite.animations.add('stop', ["cop-0", "cop-0"], fpsAnimation, true);
 
 
         if (!alive) {
@@ -98,7 +99,7 @@ class Cop extends Prefab {
                     {
                         this.GameObject.mz.tweet.tweet(
                             'Если вы зажмете SHIFT, вы сможете убегать от полиции, однако смотрите не выдохнитесь',
-                            'tw_help',
+                            'help',
                             {visible: 5000, fadeIn: 500, fadeOut: 500}
                         );
                     }
@@ -106,7 +107,7 @@ class Cop extends Prefab {
                     {
                         this.GameObject.mz.tweet.tweet(
                             'если вы дважды быстро коснетесь экрана, вы сможете убегать от полиции, однако смотрите не выдохнитесь',
-                            'tw_help',
+                            'help',
                             {visible: 5000, fadeIn: 500, fadeOut: 500}
                         );
                     }
@@ -125,7 +126,7 @@ class Cop extends Prefab {
                             :
                             'Чтобы помешать задержанию демонстранта, подойдите к нему и быстро жмите по экрану много раз подряд'
                         ,
-                        'tw_help',
+                        'help',
                         {visible: 5000, fadeIn: 500, fadeOut: 500}
                     );
                 }
@@ -229,7 +230,7 @@ class Cop extends Prefab {
             };
         }
         const coords = super.getNextCoords(bounds);
-        console.log(coords);
+       // console.log(coords);
         return coords;
     }
 

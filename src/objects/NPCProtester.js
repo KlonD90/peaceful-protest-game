@@ -58,6 +58,7 @@ class NPCProtester extends Protester {
         this.sprite.body.setSize(37, 37);
 
 
+/*
         const fpsAnimation = 3;
         this.viewSprite.animations.add('walk', [1, 2], fpsAnimation, true);
         this.viewSprite.animations.add('walkPoster', [4, 5], fpsAnimation, true);
@@ -65,9 +66,9 @@ class NPCProtester extends Protester {
 
         if (this.isNOD)
         {
-            this.changeViewSprite('nod', 3);
+            this.changeViewSprite('humans/nod', 3);
         }
-
+*/
         // initially dead
         this.kill();
     }
@@ -140,13 +141,13 @@ class NPCProtester extends Protester {
                 this.GameObject.mz.advices.agitate = null;
                 this.GameObject.mz.advices.press = this.GameObject.mz.tweet.tweet(
                     'Подойдите к журналисту и поднимите плакат в поле его видимости. Когда журналист закончит трансляцию - придут новые митингующие.',
-                    'tw_help',
+                    'help',
                     {behavior: ManuallyBehavior}
                 );
             }
         }
 
-        this.sprite.tint = 0xffffff;
+        //this.sprite.tint = 0xffffff;
         // if (this.mood >= 0.75) {
         //     const tintSaturation = (this.mood - 0.75) / (1 - 0.75) * 0.25;
         //     this.sprite.tint = Phaser.Color.RGBArrayToHex([
@@ -224,7 +225,7 @@ class NPCProtester extends Protester {
                     this.GameObject.mz.showedAdvice.nod = true;
                     this.GameObject.mz.advices.nod = this.GameObject.mz.tweet.tweet(
                         'Смотрите, чтобы вам не плеснули зеленкой в лицо',
-                        'tw_help',
+                        'help',
                         {visible: 5000, fadeIn: 500, fadeOut: 500}
                     );
                 }
@@ -232,7 +233,7 @@ class NPCProtester extends Protester {
                 if (this.mode === PROTESTER_MODE_WANDER) {
                     this.stopWandering();
                 }
-                console.log(this.GameObject);
+             //   console.log(this.GameObject);
                 this.target = this.GameObject.mz.objects.player.sprite;
                 this.moveTo(
                     this.GameObject.mz.objects.player.sprite,
@@ -323,17 +324,25 @@ class NPCProtester extends Protester {
         this.isFollower = Math.random() < 0.05;
         this.isNOD = !this.isFollower && Math.random() < 0.03;
         this.isAgitator = !this.isFollower && !this.isNOD && Math.random() < 0.01;
+
         if (this.isNOD)
         {
-            this.changeViewSprite('nod', 3);
+            this.changeViewSprite('ALL_IMAGES','nod', 3);
         }
         else
         {
-            this.changeViewSprite('npc_0'+(Math.floor(Math.random()*8)+1), 3);
+            this.changeViewSprite('ALL_IMAGES','npc_0'+(Math.floor(Math.random()*8)+1), 3);
         }
+
         this.nodDone = false;
         this.slot = null;
         this.shownPoster = false;
+    }
+
+    changeViewSprite(atlasKey, key, canWalk) {    
+        super.changeViewSprite(atlasKey,  key, canWalk);
+
+        //this.changeAnimations(key, canWalk);
     }
 
     kill() {

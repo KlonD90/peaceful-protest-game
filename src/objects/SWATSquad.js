@@ -27,7 +27,7 @@ class SWATSquad {
 
         this.sprites = [];
         for (let i = 0; i < count; i++) {
-            const swatSprite = this.game.add.sprite(-100, -100, 'omon', 0);
+            const swatSprite = this.game.add.sprite(-100, -100, 'ALL_IMAGES','omon-0',);
             swatSprite.anchor.set(0.5);
             swatSprite.visible = false;
             swatSprite.mz = this
@@ -37,7 +37,7 @@ class SWATSquad {
             this.sprites.push(swatSprite);
             group.add(swatSprite);
             const fpsAnimation = 5;
-            swatSprite.animations.add('walk', [1, 2], fpsAnimation, true);
+            swatSprite.animations.add('walk', ['omon-1', 'omon-2'], fpsAnimation, true);
             swatSprite.animations.play('walk');
         }
     }

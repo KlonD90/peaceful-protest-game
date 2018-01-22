@@ -17,6 +17,7 @@ import modalShow from '../modal/';
 import levels from '../levels';
 import CirclePool from '../objects/CirclePool';
 
+//import Debuger from '../debug.js';
 
 
 import levelObjects, {reset as levelObjectReset} from "../levelObjects.js"
@@ -51,6 +52,7 @@ import {
     PROTESTER_MODE_WANDER
 } from "../constants";
 import ManuallyBehavior from "../objects/Tweets/ManuallyBehavior";
+
 
 class Game {
     init(level) {
@@ -167,6 +169,7 @@ class Game {
     }
 
     create() {
+       // this.debuger = new Debuger(this.game);
         this.collider = new Collider({ game: this.game, gameObject: this, scale: 20 })
         this.mz.tweet = new Tweet(this.game);
         this.mz.pressJailed = false;
@@ -322,7 +325,8 @@ class Game {
                 shootingDuration: this.mz.level.press.duration,
                 cooldownDuration: this.mz.level.press.duration * pressRequired * 2,
                 onFinishShooting: this.onFinishShooting,
-                spriteName: `journalist${i}`
+                atlasKey:'ALL_IMAGES', 
+                spriteName: `journalist${i}`, 
             });
             this.mz.arrays.press.push(journalist.sprite);
             this.mz.groups.d.add(journalist.sprite);
@@ -388,7 +392,7 @@ class Game {
         HelpInfo.setGame(this.game);
         this.mz.advices.move = this.mz.tweet.tweet(
             Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице',
-            'tw_help',
+            'help',
             {behavior: ManuallyBehavior}
         );
         this.mz.advices.space = this.mz.tweet.tweet(
@@ -397,12 +401,12 @@ class Game {
                 'Нажмите ПРОБЕЛ, чтобы начать агитацию/перестать агитировать'
                 :
                 'Нажмите на значок справа внизу экрана, чтобы начать/закончить агитацию',
-            'tw_help',
+            'help',
             {behavior: ManuallyBehavior}
         );
         this.mz.advices.agitate = this.mz.tweet.tweet(
             'Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам',
-            'tw_help',
+            'help',
             {behavior: ManuallyBehavior}
         );
         // this.mz.advices.shift = this.mz.tweet.tweet(
@@ -425,16 +429,20 @@ class Game {
         this.mz.objects.fightAdvice.fixedToCamera = true;
         this.mz.objects.fightAdvice.visible = false;
 
-        var processingGraphic = this.game.add.graphics();
+        //var processingGraphic = this.game.add.graphics();
         var ratio = window.devicePixelRatio || 1;
-        this.mz.circles.press = processingGraphic.clear().beginFill(0xf7c169, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
-        this.mz.circles.npc = processingGraphic.clear().beginFill(0x6eed83, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
-        this.mz.circles.cop = processingGraphic.clear().beginFill(0x2b3992, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
+
+        this.mz.circles.press = {tex:"dot", color:0xf7c169 };//processingGraphic.clear().beginFill(0xf7c169, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
+        this.mz.circles.npc = {tex:"dot", color:0x6eed83 }; //processingGraphic.clear().beginFill(0x6eed83, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
+        this.mz.circles.cop = {tex:"dot", color:0x2b3992 };//processingGraphic.clear().beginFill(0x2b3992, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
         this.circlePool = new CirclePool(this.game);
+
     }
 
     update() {
+        //this.debuger.update(); // update debuger, for reset counter
         const now = Date.now();
+
         this.updateGarbage()
         // this.mz.pressJailed = false;
         // update background
@@ -632,7 +640,7 @@ class Game {
                     this.mz.showedAdvice.cops = true;
                     this.mz.tweet.tweet(
                         'Во время агитации остерегайтесь сотрудников полиции, опустите плакат до того, как они вас заметят',
-                        'tw_help',
+                        'help',
                         {visible: 5000, fadeIn: 500, fadeOut: 500}
                     );
                 }
@@ -661,6 +669,7 @@ class Game {
                 :
                 this.getRandomCoordinates();
             console.log('press first', isFirst, coords);
+
             const journalist = this.createPrefab(Journalist, {
                 ...coords,
                 fov: {
@@ -672,8 +681,10 @@ class Game {
                 shootingDuration: this.mz.level.press.duration,
                 cooldownDuration: this.mz.level.press.duration * pressRequired * 2,
                 onFinishShooting: this.onFinishShooting,
+                atlasKey: "ALL_IMAGES",
                 spriteName: `journalist${i}`
             });
+
             this.mz.arrays.press.push(journalist.sprite);
             this.mz.groups.d.add(journalist.sprite);
             journalist.setMode(JOURNALIST_MODE_WANDER);
@@ -754,7 +765,7 @@ class Game {
                         newTarget = protester.sprite;
                         distanceToTargetSq = distanceToProtesterSq;
                     }
-                    console.log('new target', newTarget);
+                    //console.log('new target', newTarget);
                 }
                 if (cop.target && cop.target.mz.mode !== PROTESTER_MODE_ARRESTED && cop.FOV.containsPoint(cop.target.body.center))
                 {
@@ -808,25 +819,6 @@ class Game {
                 this.arrest(protesterSprite, swatSprite);
             }
         }
-
-        // // vs cops
-        // for (let j = 0; j < this.mz.arrays.cops.length; j++) {
-        //     const copSprite = this.mz.arrays.cops[j];
-        //     if (
-        //         !copSprite.alive ||
-        //         copSprite.mz.target !== protesterSprite ||
-        //         !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) ||
-        //         protesterSprite.mz.mode === PLAYER_MODE_FIGHT ||
-        //         copSprite.mz.mode === COP_MODE_STUN ||
-        //         copSprite.mz.mode === COP_MODE_FIGHT ||
-        //         copSprite.mz.mode === COP_MODE_CONVOY
-        //     ) {
-        //         continue;
-        //     }
-        //     this.proceedToJail(protesterSprite, copSprite);
-        // }
-
-
 
         // player collisions
         if (
@@ -969,13 +961,15 @@ class Game {
                                 break;
                             }
                             default:
-                                console.log(xSide, ySide);
+                                //console.log(xSide, ySide);
                         }
                     }
                 }
 
             }
         );
+
+
         if (this.mz.objects.star)
         {
             this.game.physics.arcade.collide(
@@ -1009,9 +1003,11 @@ class Game {
                 droppedPoster.update();
             }
         });
+
         this.mz.postersToRevive.forEach(this.createPoster, this);
         this.mz.postersToRevive = [];
 
+        //TODO - remove this
         this.mz.groups.d.sort('y', Phaser.Group.SORT_ASCENDING);
 
         if (!this.mz.gameEnded) {
@@ -1025,32 +1021,6 @@ class Game {
 
         this.mz.objects.star && this.mz.objects.star.update()
 
-
-        // const zoomLevels = [[30, 1, 2000, 800]];
-        // let desiredZoomLevel = -1;
-        // for (let l =0; l< zoomLevels.length; l++)
-        // {
-        //     const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[l];
-        //     if (this.mz.protesters.alive > countProtester)
-        //     {
-        //         desiredZoomLevel = l;
-        //     }
-        // }
-        //
-        // if (this.mz.zoomLevel < desiredZoomLevel)
-        // {
-        //     const [countProtester, zoom, worldWidth, worldHeight] = zoomLevels[desiredZoomLevel];
-        //     // this.game.camera.scale.x = zoom;
-        //     // this.game.camera.scale.y = zoom;
-        //     this.game.world.resize(worldWidth, worldHeight);
-        //     // this.mz.zoomLevel = desiredZoomLevel;
-        //     // this.mz.timers.resize.removeAll();
-        //     // this.mz.timers.resize.stop();
-        //     // const zoomSteps = Math.round((this.mz.level.worldWidth + 10 * desiredZoomLevel *3 - this.game.world.width)/10);
-        //     // for (let i=1; i<zoomSteps+1; i++)
-        //     //     this.mz.timers.resize.add(i*300, this.cameraZoom, this);
-        //     // this.mz.timers.resize.start();
-        // }
 
         if (this.mz.screenAttacked)
         {
@@ -1160,7 +1130,7 @@ class Game {
     }
 
     updateScore() {
-        this.mz.objects.interface.updateScore(`${this.mz.score} / ${this.mz.limitScore}`);
+       // this.mz.objects.interface.updateScore(`${this.mz.score} / ${this.mz.limitScore}`);
     }
 
     updateTimer(){
@@ -1192,6 +1162,8 @@ class Game {
                   angle: this.mz.level.cops.fov.angle
               },
               speed: this.mz.level.cops.speed,
+              atlasKey:'ALL_IMAGES',
+              spriteKey:"cop",
               spriteName: `cop${i}`
             })
 
@@ -1245,7 +1217,8 @@ class Game {
                 ...coords,
                 group: this.mz.groups.d,
                 speed: this.mz.level.protesters.speed,
-                spriteKey: `protester_sprite`,
+                atlasKey: "ALL_IMAGES",
+                spriteKey: 'npc_0' +(Math.floor(Math.random()*8)+1),
                 spriteName: `protester${i}`,
                 mood: this.mz.level.protesters.mood,
                 moodUp: this.mz.level.protesters.moodUp,
@@ -1394,7 +1367,7 @@ class Game {
             this.mz.showedAdvice.omon = true;
             this.mz.advices.omon = this.mz.tweet.tweet(
                 'Будьте осторожны, ОМОН передвигается быстро и хватает всех без разбору.',
-                'tw_help',
+                'help',
                 {visible: 5000, fadeIn: 500, fadeOut: 500}
             );
         }
@@ -1448,20 +1421,6 @@ class Game {
     endGame(mode) {
         this.mz.gameEnded = true;
 
-
-
-        // this.mz.objects.endMenu = new EndMenu({
-        //     game: this.game,
-        //     mode,
-        //     score: this.mz.objects.interface.score.group,
-        //     stats: {
-        //         time: this.mz.timePassed,
-        //         alive: this.mz.protesters.alive,
-        //         arrested: this.mz.protesters.arrested,
-        //         revived: this.mz.protesters.revived,
-        //         left: this.mz.protesters.left
-        //     }
-        // });
 
         this.game.camera.unfollow();
         this.mz.objects.interface.kill();
@@ -1587,14 +1546,10 @@ class Game {
         const spriteWidth = 1035;
         if (this.mz.screenAttacked)
         {
-            // this.mz.objects.screenAttack;
             this.mz.timers.screen.stop();
             this.mz.timers.screen.removeAll();
             this.mz.timers.screen.add(awaitStop, this.screenAttackStop, this);
-            // for (let i=0; i<alphaStops; i++)
-            // {
-            //     this.mz.timers.screen.add(alphaStep * (i +1), this.screenAttackAlpha, this);
-            // }
+
             this.mz.timers.screen.start();
         }
         else
@@ -1612,34 +1567,9 @@ class Game {
                 .lineTo(this.game.world.width, 0)
                 .lineTo(0, 0)
                 .endFill();
-            // this.mz.objects.screenAttack.fixedToCamera = true;
-            // this.mz.objects.screenAttack.reset(0, 0);
-            // this.mz.objects.screenAttack.beginFill(0x00ff00, 1);
-            // this.mz.objects.screenAttack.lineTo(this.game.camera.width, 0)
-            //     .lineTo(this.game.camera.width, this.game.camera.height)
-            //     .lineTo(0, this.game.camera.height)
-            //     .lineTo(0, 0)
-            //     .endFill();
-            // this.mz.objects.screenAttack.scale.setTo(2.5);
-//	A mask is a Graphics object
-//             this.mz.objects.mask = this.game.make.graphics(
-//                 0,
-//                 0
-//             );
-//             this.mz.objects.mask.beginFill(0xffffff);
-//             this.mz.objects.mask.drawCircle(100, 100, 100);
-//             this.mz.objects.mask.x = this.mz.objects.player.sprite.x ;
-//             this.mz.objects.mask.y = this.mz.objects.player.sprite.y ;
-//             for (let group in this.mz.groups ){
-//                 this.mz.groups[group].mask = this.mz.objects.mask;
-//             }
-//             console.log('x', this.game.camera.width/2, this.mz.objects.screenAttack.width/2);
-//             console.log(this.mz.objects.screenAttack);
+
             this.mz.timers.screen.add(awaitStop, this.screenAttackStop, this);
-            // for (let i=0xx; i<alphaStops; i++)
-            // {
-            //     this.mz.timers.screen.add(alphaStep * (i +1), this.screenAttackAlpha, this);
-            // }
+
             this.mz.timers.screen.start();
         }
     }
@@ -1647,12 +1577,6 @@ class Game {
     screenAttackStop(){
         this.mz.objects.screenAttack.destroy();
         this.mz.objects.screenAttack = null;
-
-        // for (let group in this.mz.groups ){
-        //     this.mz.groups[group].mask = null;
-        // }
-        // this.mz.objects.mask.destroy();
-        // this.mz.objects.mask = null;
         this.mz.screenAttacked = false;
     }
 
@@ -1912,7 +1836,7 @@ class Game {
 
     playPoints(sprite, points)
     {
-        var spritePoint = this.game.add.sprite(sprite.x, sprite.y-10, 'points_'+points);
+        var spritePoint = this.game.add.sprite(sprite.x, sprite.y-10, 'ALL_IMAGES', 'points_'+points);
         spritePoint.scale.setTo(0.5);
         spritePoint.anchor.set(0.5);
         var tween = game.add.tween(spritePoint);
@@ -1966,7 +1890,8 @@ class Game {
                 {x: cameraBounds.x, y: cameraBounds.y + cameraBounds.height}
             ]
         };
-        // this.circleGraphic.clear();
+
+        this.circlePool.reset();
         for (let i=0; i<circles.length; i++)
         {
             const {sprite, color, circle, key} = circles[i];
@@ -1997,26 +1922,13 @@ class Game {
                     }
                 }
 
-                // console.log('intersection point', interPoint);
-                this.circlePool.add(key, circle, interPoint.x, interPoint.y);
-                // this.circleGraphic.beginFill(color, 0.7).drawCircle(interPoint.x, interPoint.y, 20).endFill()
-                // Phaser.Line.intersectionWithRectangle(line, cameraBounds, intersectionPoint);
-                // console.log(intersectionPoint, sprite);
+                if(interPoint)
+                    this.circlePool.pull(key, circle, interPoint.x, interPoint.y);
             }
         }
-        this.circlePool.reset();
+        //this.circlePool.reset();
     }
 
-    // updateTheme(){
-    //     if (this.mz.musicStage !== 'prefinal' && this.mz.score > 250)
-    //     {
-    //         this.mz.musicStage = 'prefinal';
-    //         // this.mz.objects.audio.meeting.fadeOut(10000);
-    //         // this.mz.objects.audio.theme.fadeOut(10000);
-    //         this.GameObject.mz.objects.audio.song.loopFull(0.01);
-    //         this.game.add.tween(this.mz.objects.audio.song).to({volume:0.15}, 5000).start();
-    //     }
-    // }
 }
 
 export default Game;

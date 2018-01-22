@@ -14,8 +14,17 @@ const pack = {
             frameWidth: 669,
             frameHeight: 312
         },
+
     ],
     initial: [
+        {
+            type: 'atlasJSONArray',
+            key: 'ALL_IMAGES',
+            textureURL: require('./IMAGES.png'),
+            atlasURL: require('./IMAGES.json'),
+            atlasData: null
+        },
+
         {
             type: 'spritesheet',
             key: 'langButtons',
@@ -39,13 +48,14 @@ const pack = {
             frameWidth: 100,
             frameHeight: 100
         },
+        /*
         {
             type: 'spritesheet',
             key: 'helpPoster',
             url: require('./posterButton.png'),
             frameWidth: 70,
             frameHeight: 70
-        }
+        }*/
     ],
     helpDesktop: [
         {
@@ -100,198 +110,8 @@ const pack = {
             frameHeight: 74,
         },
     ],
-    tweets: [
-      {
-        type: 'image',
-        key: 'tw_styazshkin',
-        url: require('./tweets/styazshkin.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_granitweet',
-        url: require('./tweets/graniTweet.jpeg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_vigimadi',
-        url: require('./tweets/vigimadi.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_ovdinfo',
-        url: require('./tweets/ovdinfo.png'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_koshelyaeva',
-        url: require('./tweets/koshelyaeva.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_brewerov',
-        url: require('./tweets/brewerov.jpeg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_asilikedem',
-        url: require('./tweets/asilikedem.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_fb_pal',
-        url: require('./tweets/fb_pal.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_ya_yanson',
-        url: require('./tweets/ya_yanson.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_galiamina',
-        url: require('./tweets/galiamina.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_ogonwatch',
-        url: require('./tweets/ogonwatch.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_the_ins_ru',
-        url: require('./tweets/the_ins_ru.jpeg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_kirilenko_a',
-        url: require('./tweets/kirilenko_a.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_tvrain',
-        url: require('./tweets/tvrain.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_gruppa_voina',
-        url: require('./tweets/gruppa_voina.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_kszhivago',
-        url: require('./tweets/kszhivago.jpeg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_plushev',
-        url: require('./tweets/plushev.jpeg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_aban_in',
-        url: require('./tweets/aban_in.jpeg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_rrubanov',
-        url: require('./tweets/rrubanov.png'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_navalny',
-        url: require('./tweets/navalny.png'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_noliquid',
-        url: require('./tweets/noliquid.gif'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_varlamov',
-        url: require('./tweets/varlamov.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_mediazzzona',
-        url: require('./tweets/mediazzzona.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_zhuravleva',
-        url: require('./tweets/zhuravleva.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_asluhn',
-        url: require('./tweets/asluhn.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_help',
-        url: require('./tweets/help.png'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-      {
-        type: 'image',
-        key: 'tw_evgenyfeldman',
-        url: require('./tweets/evgenyfeldman.jpg'),
-        frameWidth: 400,
-        frameHeight: 400
-      },
-    ],
     levelCommon: [
+
         {
             type: 'spritesheet',
             key: 'defend',
@@ -306,6 +126,7 @@ const pack = {
             frameWidth: 100,
             frameHeight: 100
         },
+        /*
         {
             type: 'spritesheet',
             key: 'help',
@@ -340,7 +161,7 @@ const pack = {
             url: require('./points_10.png'),
             frameWidth: 104,
             frameHeight: 47
-        },
+        },*/
         {
             type: 'spritesheet',
             key: 'paddy_wagon',
@@ -354,7 +175,8 @@ const pack = {
             url: require('./klyaksa.png'),
             frameWidth: 1035,
             frameHeight: 1035
-        },
+        }
+        /*,
         {
             type: 'spritesheet',
             key: 'star_01',
@@ -374,7 +196,7 @@ const pack = {
             frameMax: 3,
             margin: 0,
             spacing: 0
-        },
+        }
         {
             type: 'spritesheet',
             key: 'star_03',
@@ -406,6 +228,7 @@ const pack = {
             frameWidth: 48,
             frameHeight: 48
         },
+        
         {
             type: 'spritesheet',
             key: 'omon',
@@ -433,7 +256,7 @@ const pack = {
             url: require('./plakat.png'),
             frameWidth: 44,
             frameHeight: 12
-        },
+        }*/,
         {
             type: 'audio',
             key: 'theme',
@@ -488,9 +311,20 @@ const pack = {
             type: 'audio',
             key: 'pick',
             urls: require('./audio/pick.mp3')
-        }
+        },
+        /*
+        {
+            type: 'atlasJSONArray',
+            key: 'humans',
+            textureURL: require('./humans.png'),
+            atlasURL: require('./humans.json'),
+            atlasData: null
+        }*/
     ],
     level1: [
+        
+        /*
+        
         {
             type: 'spritesheet',
             key: 'border',
@@ -518,8 +352,8 @@ const pack = {
             url: require('./shield.png'),
             frameWidth: 316,
             frameHeight: 140
-        },
-        {
+        }
+        ,{
             type: 'spritesheet',
             key: 'journalist',
             url: require('./journalist01.png'),
@@ -616,6 +450,9 @@ const pack = {
             margin: 0,
             spacing: 0
         },
+
+        
+       
         {
             type: 'spritesheet',
             key: 'cop_sprite',
@@ -656,6 +493,8 @@ const pack = {
             margin: 0,
             spacing: 0
         },
+
+        /*,
         {
             type: 'spritesheet',
             key: 'protester1',
@@ -676,7 +515,7 @@ const pack = {
             url: require('./protester03.png'),
             frameWidth: 30,
             frameHeight: 47
-        },
+        },*/
         {
             type: 'spritesheet',
             key: 'injury',
@@ -684,6 +523,7 @@ const pack = {
             frameWidth: 30,
             frameHeight: 31
         },
+        /*
         {
             type: 'spritesheet',
             key: 'poster',
@@ -704,7 +544,7 @@ const pack = {
             url: require('./dropped_poster.png'),
             frameWidth: 44,
             frameHeight: 34
-        },
+        },*/
         {
             type: 'image',
             key: 'ground',
@@ -736,6 +576,7 @@ const pack = {
             overwrite: false
         }
     ],
+    /*
     level2: [
         {
             type: 'spritesheet',
@@ -820,7 +661,6 @@ const pack = {
             url: require('./ground02.png'),
             overwrite: false
         }
-    ]
+    ]*/
 };
-
 export default JSON.stringify(pack);

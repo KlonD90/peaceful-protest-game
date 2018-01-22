@@ -16,15 +16,25 @@ class Loading {
         bgTile.fixedToCamera = true;
 
         this.mz.config.assets.forEach(([assetType, ...assetParams]) => {
+
+            console.log("Loading assets");
+            
             switch (assetType) {
                 case 'pack':
+                  //  console.log("Loading pack:" + assetParams.key);
                     this.load.pack(...assetParams);
                     break;
                 case 'spritesheet':
+                  //  console.log("Loading spritesheet:" + assetParams.key);
                     this.load.spritesheet(...assetParams);
                     break;
                 case 'image':
+                  //  console.log("Loading image:" + assetParams.key);
                     this.load.image(...assetParams);
+                    break;
+                case 'atlasArray':
+                  //  console.log("Loading atlas:" + assetParams.key);
+                    this.load.atlasJSONArray(...assetParams);
                     break;
             }
         });

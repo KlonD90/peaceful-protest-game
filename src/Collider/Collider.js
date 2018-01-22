@@ -12,6 +12,8 @@ export class Collider {
   gameObject: any
   scale: number
   entities: Entity[]
+  invokes: number
+  updater: any
 
   constructor ({ game, gameObject, scale }: Props) {
     Object.assign(this, {
@@ -20,11 +22,16 @@ export class Collider {
       scale,
       entities: [],
     })
+
+    this.updater = new Updater(this)
+
   }
 
   update() {
-    const updater = new Updater(this)
-    updater.update()
+    this.updater.update()
+
+    //console.log("Colider invokes:" + this.invokes++);
+
   }
 
   addEntity (

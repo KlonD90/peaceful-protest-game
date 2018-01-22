@@ -6,7 +6,7 @@ export default class Slot {
         this.taken = null;
         this.callback = null;
         this.point = {x: target.x, y: target.y};
-        console.log('constructor slot', this);
+       // console.log('constructor slot', this);
         this.update()
     }
 

@@ -24,6 +24,7 @@ class Player extends Protester {
         ...protesterOptions,
     }) {
         super({
+            atlasKey:'ALL_IMAGES',
             spriteKey: 'player_sprite',
             spriteName: 'player',
             ...protesterOptions,
@@ -109,19 +110,30 @@ class Player extends Protester {
             shift: this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT)
         };
 
+        
         this.sprite.smoothed = true;
         // this.sprite.body.setCircle(20);
+
+        var n = "player_sprite";
         const fpsAnimation = 3;
-        this.viewSprite.animations.add('walk', [1, 2], fpsAnimation, true);
-        this.viewSprite.animations.add('run', [1, 2], fpsAnimation*this.speed.running, true);
-        this.viewSprite.animations.add('walkPoster', [5, 6], fpsAnimation, true);
-        this.viewSprite.animations.add('runPoster', [5, 6], fpsAnimation*this.speed.running, true);
+        this.viewSprite.animations.add('walk', [n + "-1", n + "-2"], fpsAnimation, true);
+        this.viewSprite.animations.add('run', [n + "-1", n + "-2"], fpsAnimation*this.speed.running, true);
+        this.viewSprite.animations.add('walkPoster', [n + "-5", n + "-6"], fpsAnimation, true);
+        this.viewSprite.animations.add('runPoster', [n + "-5", n + "-6"], fpsAnimation*this.speed.running, true);
+        this.viewSprite.animations.add('stop', [n + "-0", n + "-0"], fpsAnimation, true);
+        this.viewSprite.animations.add('stopPoster', [n + "-3", n + "-3"], fpsAnimation, true);
+        this.viewSprite.animations.add('fight', [n + "-3", n + "-4"], fpsAnimation, true);
+
+
+
+        //this.changeAnimations("player_sprite",3);
         this.fightBar = 0;
 
         this.canRun = true;
 
 
-        Player.instance = this
+        Player.instance = this;
+        window.Player = this;
     }
 
 
@@ -142,11 +154,12 @@ class Player extends Protester {
 
         if (this.mode === PLAYER_MODE_FIGHT)
         {
-            // this.updateAnimation();
+            this.updateAnimation();
+            // 
             if (this.keys.space.justDown)
-            {
+            {   
                 this.fightBar+=1;
-                this.viewSprite.frame = this.viewSprite.frame === 3 ? 4 : 3;
+                //this.viewSprite.frame = this.viewSprite.frame === 3 ? 4 : 3;
             }
             this.updateFightBar();
             return;
@@ -245,7 +258,7 @@ class Player extends Protester {
                 this.speed.current,
                 this.sprite.body.velocity
             );
-            console.log('direction', this.direction);
+           // console.log('direction', this.direction);
             // this.sprite.frame = 2;
             this.resetClickSpeed(true);
         } else if (
@@ -272,7 +285,10 @@ class Player extends Protester {
     }
 
     setMode(mode, props = {}) {
-        console.log('player mode', mode);
+       // console.log('player mode', mode);
+        if(this.mode == PLAYER_MODE_FIGHT){
+            this.viewSprite.animations.stop();            
+        }
         switch (mode) {
             case PROTESTER_MODE_ARRESTED: {
                 this.sprite.body.immovable = true;
@@ -284,6 +300,9 @@ class Player extends Protester {
                 break;
             }
             case PLAYER_MODE_FIGHT: {
+
+                this.viewSprite.animations.play("fight");
+
                 const target = props.target;
                 const arrested = target.mz.getArrestedSprite();
 

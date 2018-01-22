@@ -8,7 +8,9 @@
   },
   "scripts": {
     "start": "http-server -c-1",
-    "build": "webpack && cp node_modules/phaser-ce/build/custom/phaser-arcade-physics.min.js dist/phaser.js",
+    "build": "webpack",
+    "copy": "webpack && cp node_modules/phaser-ce/build/custom/phaser-arcade-physics.min.js dist/phaser.js",
+   
     "watch": "webpack --watch",
     "wds": "webpack-dev-server"
   },
@@ -36,6 +38,7 @@
     "flow": "^0.2.3",
     "http-server": "^0.10.0",
     "raw-loader": "^0.5.1",
+    "source-map-loader": "^0.2.3",
     "webpack": "^3.1.0"
   }
 }
