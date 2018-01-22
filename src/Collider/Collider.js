@@ -23,11 +23,13 @@ export class Collider {
       entities: [],
     })
 
-    this.updater = new Updater(this)
+    this.updater = new Updater(this);
 
   }
 
   update() {
+    //плохо, но иначе не работает
+    this.updater = new Updater(this);    
     this.updater.update()
 
     //console.log("Colider invokes:" + this.invokes++);

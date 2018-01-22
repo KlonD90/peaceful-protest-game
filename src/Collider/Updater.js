@@ -25,7 +25,7 @@ const savedMatrix = {
 };
 
 let obstacleTimer = 0;
-let isPathinfindingDisabled = true;
+let isPathinfindingDisabled = false;
 
 class Updater {
   collider: Collider
@@ -74,9 +74,9 @@ class Updater {
         entity.lastCoords = moveFrom;
       }
 
-      phasing = true;
+//      phasing = true;
 
-      if (phasing || FORCE_DISABLE_PATHFINDING) {
+      if (phasing || isPathinfindingDisabled) {
      
         sprite.phasing = true
         var path = [moveFrom, moveTo]
@@ -148,9 +148,9 @@ class Updater {
       if (save.time < time) {
           savedMatrix[type].matrix = type === 'move' ? this._buildMatrix() : this._buildImmovableMatrix();
           savedMatrix[type].time = time + matrixTimeout;
-          console.log("[GET New matrix]");
+         // console.log("[GET New matrix]");
       } else {
-        console.log("[GET Cached matrix]");
+        //console.log("[GET Cached matrix]");
       }
       return savedMatrix[type].matrix;
   }
