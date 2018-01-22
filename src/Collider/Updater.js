@@ -64,15 +64,25 @@ class Updater {
     const { collider, converter } = this
     const now = (new Date()).getTime();
 
-    //collider.entities.forEach((entity) => 
+    //collider.entities.forEach((entity) => {
 
-    (function(){
-      for (var i = 0; i < collider.entities.length; i++) {
+    //(function(){
+    for (var i = 0; i < collider.entities.length; i++) {
       var entity = collider.entities[i];
 
       const { move, sprite, object, personalMatrix, lastDecisionTime, lastCoords, decision, lastTarget } = entity;
 
-      if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
+      //if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
+      
+      if (move.length === 0) {
+        
+        if(sprite.mz)
+          sprite.mz.stop();
+
+        continue;
+      }
+
+
       let { target, phasing, follow, callback, superphasing } = move[0]
       const moveFrom = converter.rCoordsToMCoords(sprite.body.center)
       const moveTo = converter.rCoordsToMCoords(target)
@@ -89,13 +99,17 @@ class Updater {
 
 //      phasing = true;
 
-      if (phasing || isPathinfindingDisabled) {
+      if (phasing || isPathinfindingDisabled)
+      {
      
         sprite.phasing = true
         var path = [moveFrom, moveTo]
         var pathClear = !equals(moveFrom, moveTo)
      
-      } else {
+      }
+      else
+      {
+      
         if (decision && lastDecisionTime < now && lastTarget === target)
         {
           var path = decision;
@@ -118,16 +132,25 @@ class Updater {
       }
 
       if (pathClear) {
+        
         const nextTarget = converter.mCoordsToRCoords(path[1])
         collider.invokeRawMoving(object, nextTarget)
+
       } else {
-        if (follow) return void sprite.body.stop();
+        
+        //if (follow)  return void sprite.body.stop();
+        if (follow) {
+          sprite.body.stop();
+          continue;
+        }
+
         if (callback)
           callback();
+        
         sprite.phasing = false;
         move.shift();
       }
-    }})();
+    }//);//})();
   }
 
   _findPath(
