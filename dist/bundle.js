@@ -1106,7 +1106,7 @@ var Prefab = function () {
 
         this.game.physics.arcade.enable(this.sprite);
         // this.game.physics.arcade.enable(this.viewSprite);
-        this.game.physics.arcade.enable(this.viewSprite);
+
         this.sprite.body.reset(this.sprite.x, this.sprite.y);
         this.viewSprite.anchor.set(0.5);
         this.viewSprite.reset(0, 0);
