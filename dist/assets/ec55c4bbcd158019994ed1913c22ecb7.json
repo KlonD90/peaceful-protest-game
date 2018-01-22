@@ -1,7 +1,7 @@
 {"frames": [
 
 {
-	"filename": "aban_in",
+	"filename": "aban_in.jpeg",
 	"frame": {"x":102,"y":321,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
@@ -41,7 +41,7 @@
 	"sourceSize": {"w":204,"h":22}
 },
 {
-	"filename": "brewerov",
+	"filename": "brewerov.jpeg",
 	"frame": {"x":252,"y":321,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
@@ -145,7 +145,7 @@
 	"sourceSize": {"w":48,"h":48}
 },
 {
-	"filename": "granitweet",
+	"filename": "granitweet.jpeg",
 	"frame": {"x":2,"y":321,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
@@ -185,7 +185,7 @@
 	"sourceSize": {"w":48,"h":48}
 },
 {
-	"filename": "kszhivago",
+	"filename": "kszhivago.jpeg",
 	"frame": {"x":102,"y":371,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
@@ -745,7 +745,7 @@
 	"sourceSize": {"w":31,"h":37}
 },
 {
-	"filename": "plushev",
+	"filename": "plushev.jpeg",
 	"frame": {"x":402,"y":271,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
@@ -937,7 +937,7 @@
 	"sourceSize": {"w":48,"h":48}
 },
 {
-	"filename": "the_ins_ru",
+	"filename": "the_ins_ru.jpeg",
 	"frame": {"x":2,"y":271,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
@@ -1007,6 +1007,6 @@
 	"format": "RGBA8888",
 	"size": {"w":552,"h":552},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:3f9dfd9985d9bc95733c0c40eb7946ff:f204ce17538c32a6d11c1ea75465e2e2:611929000d012c8657a4ac784c74b589$"
+	"smartupdate": "$TexturePacker:SmartUpdate:e7d47737b44e6545adcb4e03e682e384:01d31ccc5fb5929a13a5ba838a33e6d7:611929000d012c8657a4ac784c74b589$"
 }
 }

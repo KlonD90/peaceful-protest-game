@@ -933,7 +933,7 @@ module.exports = {
         },
         protesters: {
             count: {
-                start: 100, //100,
+                start: 1, //100,
                 max: 100,
                 add: 14
             },
@@ -1374,76 +1374,86 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 //let CACHED_TEXTURE = null;
 
 var ProgressBar = function () {
-    function ProgressBar(_ref) {
-        var radius = _ref.radius,
-            width = _ref.width,
-            color = _ref.color,
-            lineWidth = _ref.lineWidth,
-            game = _ref.game,
-            sprite_type = _ref.sprite_type;
+        function ProgressBar(_ref) {
+                var radius = _ref.radius,
+                    width = _ref.width,
+                    color = _ref.color,
+                    lineWidth = _ref.lineWidth,
+                    game = _ref.game,
+                    sprite_type = _ref.sprite_type,
+                    _ref$fill_sprite_type = _ref.fill_sprite_type,
+                    fill_sprite_type = _ref$fill_sprite_type === undefined ? null : _ref$fill_sprite_type;
 
-        _classCallCheck(this, ProgressBar);
-
-        this.lastWidth = 0;
-        this.game = game;
-        this.graphics = this.game.add.group();
-
-        this.fullWidth = width; // + radius * 2;
-        this.graphics.y = -30;
-        this.graphics.x = -this.fullWidth / 2;
-
-        //this.radius = radius;
-        //this.width = width;
-        this.color = color;
-        //this.lineWidth = lineWidth;
-
-        var s = sprite_type ? sprite_type : "small_progress";
-
-        var bg = game.add.sprite(0, 0, "ALL_IMAGES", s);
-
-        this.graphics.addChild(bg);
-
-        this.fillSprite = game.add.sprite(0, 0, "ALL_IMAGES", s);
-        this.fillSprite.tint = this.color;
-
-        this.graphics.addChild(this.fillSprite);
-
-        this.cropRect = new Phaser.Rectangle(0, 0, width / 2, radius * 2); //width);
-        this.fillSprite.crop(this.cropRect);
-
-        this.graphics.visible = false;
-    }
-
-    _createClass(ProgressBar, [{
-        key: "update",
-        value: function update(percent) {
-
-            percent = this.game.math.clamp(percent, 0, 1);
-
-            if (this.fillSprite.tint !== this.color) this.fillSprite.tint = this.color;
-
-            if (percent !== 0) {
-
-                var fillWidth = Math.round(percent * this.fullWidth);
-                if (this.lastWidth === fillWidth) {
-                    return;
-                }
-
-                this.graphics.visible = true;
-
-                this.lastWidth = fillWidth;
-
-                this.cropRect.width = fillWidth;
-                this.fillSprite.updateCrop();
-            } else {
+                _classCallCheck(this, ProgressBar);
 
                 this.lastWidth = 0;
-                this.graphics.visible = false;
-            }
-        }
-    }]);
+                this.game = game;
+                this.graphics = this.game.add.group();
 
-    return ProgressBar;
+                this.fullWidth = width; // + radius * 2;
+                //this.width = width;
+                //this.height = radius * 2
+
+                //this.radius = radius;
+                //this.width = width;
+                this.color = color;
+                //this.lineWidth = lineWidth;
+
+                var s = sprite_type ? sprite_type : "small_progress";
+
+                var bg = game.add.sprite(0, 0, "ALL_IMAGES", s);
+
+                this.graphics.addChild(bg);
+
+                var fillS = fill_sprite_type ? fill_sprite_type : s;
+
+                this.fillSprite = game.add.sprite(0, 0, "ALL_IMAGES", fillS);
+
+                if (this.color) this.fillSprite.tint = this.color;
+
+                this.graphics.addChild(this.fillSprite);
+
+                this.fullWidth = this.fillSprite.width; // + radius * 2;
+
+                this.graphics.y = -30;
+                this.graphics.x = -this.fillSprite.width / 2;
+
+                this.cropRect = new Phaser.Rectangle(0, 0, 0, this.fillSprite.height); //width);
+                this.fillSprite.crop(this.cropRect);
+
+                this.graphics.visible = false;
+        }
+
+        _createClass(ProgressBar, [{
+                key: "update",
+                value: function update(percent) {
+
+                        percent = this.game.math.clamp(percent, 0, 1);
+
+                        if (this.color && this.fillSprite.tint !== this.color) this.fillSprite.tint = this.color;
+
+                        if (percent !== 0) {
+
+                                var fillWidth = Math.round(percent * this.fullWidth);
+                                if (this.lastWidth === fillWidth) {
+                                        return;
+                                }
+
+                                this.graphics.visible = true;
+
+                                this.lastWidth = fillWidth;
+
+                                this.cropRect.width = fillWidth;
+                                this.fillSprite.updateCrop();
+                        } else {
+
+                                this.lastWidth = 0;
+                                this.graphics.visible = false;
+                        }
+                }
+        }]);
+
+        return ProgressBar;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (ProgressBar);
@@ -10106,13 +10116,13 @@ module.exports = __webpack_require__.p + "assets/7890ea6754fb124fa101877cec2457d
 /* 364 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/db6f743778d16a9654eae41d35e18b46.png";
+module.exports = __webpack_require__.p + "assets/d098fd1c96279cb64f456bfe7bc34d83.png";
 
 /***/ }),
 /* 365 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/d87497ecd3790cbfe6cee994758a190a.json";
+module.exports = __webpack_require__.p + "assets/1d52c9cc8420b3dbddddafb857e4d09a.json";
 
 /***/ }),
 /* 366 */
@@ -14135,16 +14145,17 @@ var GameInterface = function () {
         this.score = new __WEBPACK_IMPORTED_MODULE_0__objects_ProgressBar_js__["a" /* default */]({
             radius: 10,
             width: 180,
-            color: 0xf0526f,
+            color: null,
             lineWidth: 10,
             game: this.game,
-            sprite_type: "big_progress"
+            sprite_type: "big_progress",
+            fill_sprite_type: "big_progress_fill"
         });
         this.score.graphics.visible = true;
         this.score.graphics.y = isWide ? 20 : 10;
         this.score.graphics.x = this.game.width / 2 - 90;
         this.group.add(this.score.graphics);
-        this.score.update(0.01);
+        //this.score.update(0.01);
 
         if (!isWide) this.score.graphics.x = this.game.width - this.score.fullWidth - 10;
 
@@ -17793,15 +17804,21 @@ var BaseTweet = function () {
       }
 
       avatar.fixedToCamera = true;
+      // const mask = this.game.add.sprite(avatar.x, avatar.y, "ALL_IMAGES","tweet_mask");
 
-      var mask = this.game.add.graphics(__WEBPACK_IMPORTED_MODULE_0__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] / 2, height + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] / 2);
-      mask.beginFill(0xffffff);
-      mask.drawCircle(0, 0, __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */]);
-      mask.fixedToCamera = true;
-      avatar.mask = mask;
+      // mask Not working in current version
+      //const mask = this.game.add.graphics(MARGIN_LEFT+AVATAR_SIZE/2, height+AVATAR_SIZE/2);
+      //const mask = this.game.add.graphics(avatar.x + AVATAR_SIZE/2, avatar.y + AVATAR_SIZE/2);
+      //mask.beginFill(0xffffff);
+      //mask.drawCircle(0, 0, AVATAR_SIZE);
+      //mask.endFill();
 
-      tweet.add(mask);
+      //mask.fixedToCamera = true;
+
+      //avatar.mask = mask;
+      //tweet.add(mask);
       tweet.add(avatar);
+
       if (name) {
         //nameGameObject.cacheAsBitmap = true;
         tweet.add(nameGameObject);
@@ -17812,6 +17829,7 @@ var BaseTweet = function () {
       this.groupTweet = tweet;
 
       avatar.bringToTop();
+
       textGameObject.bringToTop();
       if (name) nameGameObject.bringToTop();
 
