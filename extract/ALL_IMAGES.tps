@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>4</int>
         <key>texturePackerVersion</key>
-        <string>4.5.0</string>
+        <string>4.6.1</string>
         <key>fileName</key>
-        <string>C:/Users/Константин/Documents/peaceful-protest-game/extract/ALL_IMAGES.tps</string>
+        <string>/Users/nikolaymendyaev/Projects/peaceful-protest-game/extract/ALL_IMAGES.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -212,29 +212,29 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">UI/aban_in.jpeg</key>
+            <key type="filename">UI/aban_in.jpg</key>
             <key type="filename">UI/asilikedem.jpg</key>
             <key type="filename">UI/asluhn.jpg</key>
-            <key type="filename">UI/brewerov.jpeg</key>
+            <key type="filename">UI/brewerov.jpg</key>
             <key type="filename">UI/evgenyfeldman.jpg</key>
             <key type="filename">UI/fb_pal.jpg</key>
             <key type="filename">UI/galiamina.jpg</key>
-            <key type="filename">UI/graniTweet.jpeg</key>
+            <key type="filename">UI/granitweet.jpg</key>
             <key type="filename">UI/gruppa_voina.jpg</key>
             <key type="filename">UI/help.png</key>
             <key type="filename">UI/kirilenko_a.jpg</key>
             <key type="filename">UI/koshelyaeva.jpg</key>
-            <key type="filename">UI/kszhivago.jpeg</key>
+            <key type="filename">UI/kszhivago.jpg</key>
             <key type="filename">UI/mediazzzona.jpg</key>
             <key type="filename">UI/navalny.png</key>
             <key type="filename">UI/noliquid.gif</key>
             <key type="filename">UI/ogonwatch.jpg</key>
             <key type="filename">UI/ovdinfo.png</key>
-            <key type="filename">UI/plushev.jpeg</key>
+            <key type="filename">UI/plushev.jpg</key>
             <key type="filename">UI/restart.png</key>
             <key type="filename">UI/rrubanov.png</key>
             <key type="filename">UI/styazshkin.jpg</key>
-            <key type="filename">UI/the_ins_ru.jpeg</key>
+            <key type="filename">UI/the_ins_ru.jpg</key>
             <key type="filename">UI/tvrain.jpg</key>
             <key type="filename">UI/varlamov.jpg</key>
             <key type="filename">UI/vigimadi.jpg</key>
