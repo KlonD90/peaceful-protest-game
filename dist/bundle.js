@@ -4333,6 +4333,7 @@ var Star = function (_Protester) {
     //this.viewSprite.animations.add('walk', [1, 2], 3, true);
     _this.kill();
     _this.changeAnimations("star_0" + (rand + 1), 3);
+
     return _this;
   }
 
@@ -11650,7 +11651,10 @@ var Game = function () {
             //     this.mz.arrays.protesters,
             //     this.mz.arrays.cops
             // );
-            this.game.physics.arcade.collide(this.mz.objects.swat.sprites, this.mz.objects.swat.sprites);
+            // this.game.physics.arcade.collide(
+            //     this.mz.objects.swat.sprites,
+            //     this.mz.objects.swat.sprites
+            // );
             this.game.physics.arcade.collide(this.mz.levelObjects.paddyWagon, this.mz.objects.player.sprite);
             this.game.physics.arcade.collide(this.mz.levelObjects.paddyWagon, this.mz.arrays.protesters, function (wagon, protester) {
                 var moveEntity = _this2.collider.getEntityBySprite(protester);
@@ -12114,18 +12118,39 @@ var Game = function () {
 
             var targets = [];
 
-            if (this.mz.objects.star && this.mz.objects.star.sprite.alive) {
-                var _mz$objects$star$spri = this.mz.objects.star.sprite.body.center,
-                    x = _mz$objects$star$spri.x,
-                    y = _mz$objects$star$spri.y;
+            var rnd = Math.random() * 5 + 2;
 
-                targets.push({ x: x, y: y });
+            var st = direction === 'ltor' ? 100 : this.game.world.width - 100;
+            var distance = (direction === 'ltor' ? 1 : -1) * (this.game.world.width / rnd);
+            var foundStar = !(this.mz.objects.star && this.mz.objects.star.sprite.alive);
+            var _mz$objects$star$spri = this.mz.objects.star.sprite.body.center,
+                starX = _mz$objects$star$spri.x,
+                starY = _mz$objects$star$spri.y;
+
+            for (var _i13 = 0; _i13 < rnd; _i13++) {
+                var t = this.getRandomCoordinates({ x: st + distance * _i13 });
+                if (!foundStar) {
+                    if (direction === 'ltor') {
+                        if (t.x > starX) {
+                            targets.push({ x: starX, y: starY });
+                            foundStar = true;
+                        }
+                    } else {
+                        if (t.x < starX) {
+                            targets.push({ x: starX, y: starY });
+                            foundStar = true;
+                        }
+                    }
+                }
+                targets.push(t);
             }
 
-            targets.push({
-                x: direction === 'ltor' ? this.game.world.width + 100 : -100,
-                y: this.getRandomCoordinateY()
-            });
+            // targets.push({
+            //   x: direction === 'ltor' ? this.game.world.width + 100 : -100,
+            //   y: this.getRandomCoordinateY(),
+            // })
+
+            console.log('target omon', targets);
 
             this.mz.objects.swat.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["_3" /* SWAT_MODE_HUNT */], { start: start, targets: targets });
         }
@@ -12267,15 +12292,19 @@ var Game = function () {
     }, {
         key: 'getRandomCoordinates',
         value: function getRandomCoordinates() {
+            var _ref3 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { x: null, y: null },
+                x = _ref3.x,
+                y = _ref3.y;
+
             var coords = {
-                x: this.getRandomCoordinateX(),
-                y: this.getRandomCoordinateY()
+                x: x ? x : this.getRandomCoordinateX(),
+                y: y ? y : this.getRandomCoordinateY()
             };
 
             while (this.checkContainWagon(coords)) {
                 coords = {
-                    x: this.getRandomCoordinateX(),
-                    y: this.getRandomCoordinateY()
+                    x: x ? x : this.getRandomCoordinateX(),
+                    y: y ? y : this.getRandomCoordinateY()
                 };
             }
             return coords;
@@ -12330,8 +12359,8 @@ var Game = function () {
     }, {
         key: 'createLevelObject',
         value: function createLevelObject(sprite) {
-            var _ref3 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-                personalMatrix = _ref3.personalMatrix;
+            var _ref4 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+                personalMatrix = _ref4.personalMatrix;
 
             this.collider.addEntity({ sprite: sprite, object: { sprite: sprite }, personalMatrix: personalMatrix });
             return game;
@@ -12339,8 +12368,8 @@ var Game = function () {
     }, {
         key: 'createPrefab',
         value: function createPrefab(constructor, options) {
-            var _ref4 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
-                personalMatrix = _ref4.personalMatrix;
+            var _ref5 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+                personalMatrix = _ref5.personalMatrix;
 
             var moveTo = this.collider.moveToFactory();
             var defaults = { game: this.game, GameObject: this, moveTo: moveTo };
@@ -12365,8 +12394,8 @@ var Game = function () {
         value: function fightLose() {
             var _this5 = this;
 
-            var _loop = function _loop(_i13) {
-                var copSprite = _this5.mz.arrays.cops[_i13];
+            var _loop = function _loop(_i14) {
+                var copSprite = _this5.mz.arrays.cops[_i14];
                 var cop = copSprite.mz;
                 if (cop.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */]) {
                     var closestCarCoords = null;
@@ -12387,8 +12416,8 @@ var Game = function () {
                 }
             };
 
-            for (var _i13 = 0; _i13 < this.mz.cops.alive; _i13++) {
-                _loop(_i13);
+            for (var _i14 = 0; _i14 < this.mz.cops.alive; _i14++) {
+                _loop(_i14);
             }
         }
     }, {
@@ -12401,9 +12430,9 @@ var Game = function () {
             var takens = __WEBPACK_IMPORTED_MODULE_0__objects_Player_js__["a" /* default */].instance.slots.getTakens();
             if (takens.length) {
                 this.mz.score += takens.length;
-                for (var _i14 = 0; _i14 < takens.length; _i14++) {
-                    if (takens[_i14].sprite) {
-                        this.playPoints(takens[_i14].sprite, 1);
+                for (var _i15 = 0; _i15 < takens.length; _i15++) {
+                    if (takens[_i15].sprite) {
+                        this.playPoints(takens[_i15].sprite, 1);
                     }
                 }
             }
@@ -12412,8 +12441,8 @@ var Game = function () {
     }, {
         key: 'fightWin',
         value: function fightWin() {
-            for (var _i15 = 0; _i15 < this.mz.cops.alive; _i15++) {
-                var _copSprite = this.mz.arrays.cops[_i15];
+            for (var _i16 = 0; _i16 < this.mz.cops.alive; _i16++) {
+                var _copSprite = this.mz.arrays.cops[_i16];
                 var cop = _copSprite.mz;
                 if (cop.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */]) {
                     this.unarrest(_copSprite);
@@ -12443,14 +12472,14 @@ var Game = function () {
     }, {
         key: 'handleEnteringWagons',
         value: function handleEnteringWagons() {
-            for (var _i16 = 0; _i16 < this.mz.arrays.enterWagons.length; _i16++) {
-                var w = this.mz.arrays.enterWagons[_i16];
+            for (var _i17 = 0; _i17 < this.mz.arrays.enterWagons.length; _i17++) {
+                var w = this.mz.arrays.enterWagons[_i17];
                 if (w) {
                     var diff = Math.sqrt(Math.pow(w.wagon.x - w.x, 2) + Math.pow(w.wagon.y - w.y, 2));
                     if (diff < 10) {
                         this.handleGotPlaceWagon(w.wagon);
-                        this.mz.arrays.enterWagons.splice(_i16, 1);
-                        _i16--;
+                        this.mz.arrays.enterWagons.splice(_i17, 1);
+                        _i17--;
                     }
                 }
             }
@@ -12460,19 +12489,19 @@ var Game = function () {
         value: function handleLeaveWagon(wagon, x, y) {
             var _this6 = this;
 
-            for (var _i17 = 0; _i17 < this.mz.arrays.wagons.length; _i17++) {
-                var w = this.mz.arrays.wagons[_i17];
+            for (var _i18 = 0; _i18 < this.mz.arrays.wagons.length; _i18++) {
+                var w = this.mz.arrays.wagons[_i18];
                 if (w === wagon) {
-                    this.mz.arrays.wagons.splice(_i17, 1);
+                    this.mz.arrays.wagons.splice(_i18, 1);
                     this.game.physics.arcade.moveToXY(wagon, x, y, 60);
                     this.mz.arrays.leftWagons.push(wagon);
                     break;
                 }
             }
-            for (var _i18 = 0; _i18 < this.mz.levelObjects.paddyWagon.length; _i18++) {
-                var _w = this.mz.levelObjects.paddyWagon[_i18];
+            for (var _i19 = 0; _i19 < this.mz.levelObjects.paddyWagon.length; _i19++) {
+                var _w = this.mz.levelObjects.paddyWagon[_i19];
                 if (_w === wagon) {
-                    this.mz.levelObjects.paddyWagon.splice(_i18, 1);
+                    this.mz.levelObjects.paddyWagon.splice(_i19, 1);
                     break;
                 }
             }
@@ -12524,10 +12553,10 @@ var Game = function () {
     }, {
         key: 'handleLeavingWagons',
         value: function handleLeavingWagons() {
-            for (var _i19 = 0; _i19 < this.mz.arrays.leftWagons.length; _i19++) {
-                var w = this.mz.arrays.leftWagons[_i19];
+            for (var _i20 = 0; _i20 < this.mz.arrays.leftWagons.length; _i20++) {
+                var w = this.mz.arrays.leftWagons[_i20];
                 if (w && (w.y + w.height < 0 || w.x + w.width < 0 || w.y - w.height > this.game.world.height || w.x - w.width > this.game.world.width)) {
-                    this.mz.arrays.leftWagons.splice(_i19, 1);
+                    this.mz.arrays.leftWagons.splice(_i20, 1);
                     this.collider.removeEntityBySprite(w);
                     w.destroy();
                     break;
@@ -12657,8 +12686,8 @@ var Game = function () {
             };
 
             this.circlePool.reset();
-            for (var _i20 = 0; _i20 < circles.length; _i20++) {
-                var _circles$_i = circles[_i20],
+            for (var _i21 = 0; _i21 < circles.length; _i21++) {
+                var _circles$_i = circles[_i21],
                     _sprite = _circles$_i.sprite,
                     color = _circles$_i.color,
                     circle = _circles$_i.circle,
@@ -13764,7 +13793,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 
-var SQUAD_DENSITY = 35;
+var SQUAD_DENSITY = 50;
 var SQUAD_DISCIPLINE = 0.4;
 var TURN_FREQUENCY = 30;
 
@@ -13796,6 +13825,7 @@ var SWATSquad = function () {
             swatSprite.anchor.set(0.5);
             swatSprite.visible = false;
             swatSprite.mz = this;
+            swatSprite.moveTargets = [];
 
             this.game.physics.arcade.enable(swatSprite);
 
@@ -13811,39 +13841,39 @@ var SWATSquad = function () {
         key: 'update',
         value: function update() {
             if (this.mode === __WEBPACK_IMPORTED_MODULE_0__constants_js__["_3" /* SWAT_MODE_HUNT */]) {
-                var lastSprite = this.sprites[this.sprites.length - 1];
-                var firstSprite = this.sprites[0];
 
-                if (this.game.math.fuzzyEqual(this.game.math.distanceSq(firstSprite.x, firstSprite.y, this.moveTargets[0].x, this.moveTargets[0].y), 0, 50)) {
-                    this.moveTargets[0].callback && this.moveTargets[0].callback();
-                    this.moveTargets.shift();
-                    this.moveTargets.length === 0 ? this.setMode(__WEBPACK_IMPORTED_MODULE_0__constants_js__["_2" /* SWAT_MODE_HIDE */]) : this.update();
-                } else {
-                    var _moveTargets = _toArray(this.moveTargets),
-                        moveTarget = _moveTargets[0],
-                        rest = _moveTargets.slice(1);
-                    // change direction once in a while
+                for (var i = 0; i < this.sprites.length; i++) {
+                    var sprite = this.sprites[i];
+                    if (sprite.moveTargets.length) {
+                        if (this.game.math.fuzzyEqual(this.game.math.distanceSq(sprite.x, sprite.y, sprite.moveTargets[0].x, sprite.moveTargets[0].y), 0, 5)) {
+                            sprite.moveTargets[0].callback && sprite.moveTargets[0].callback();
+                            sprite.moveTargets.shift();
+                            if (sprite.moveTargets.length === 0) {
+                                sprite.visible = false;
+                                this.checkHide();
+                            }
+                        } else {
+                            var _sprite$moveTargets = _toArray(sprite.moveTargets),
+                                moveTarget = _sprite$moveTargets[0],
+                                rest = _sprite$moveTargets.slice(1);
 
-
-                    if (this.updateIndex % TURN_FREQUENCY === 0) {
-                        var angle = this.game.math.angleBetweenPoints(firstSprite, moveTarget) + (this.updateIndex === 0 ? 1 : -1) * this.game.rnd.realInRange(0, SQUAD_DISCIPLINE);
-                        this.game.physics.arcade.velocityFromRotation(angle, this.speed.current, firstSprite.body.velocity);
-                        firstSprite.rotation = angle - Math.PI / 2;
-                    }
-
-                    for (var i = 1; i < this.sprites.length; i++) {
-                        var swatSprite = this.sprites[i];
-                        var angleToTarget = this.game.math.angleBetweenPoints(swatSprite, this.sprites[i - 1]);
-                        this.game.physics.arcade.velocityFromRotation(angleToTarget, this.speed.current, swatSprite.body.velocity);
-                        swatSprite.rotation = angleToTarget - Math.PI / 2;
-                    }
-
-                    if (this.updateIndex === 2 * TURN_FREQUENCY - 1) {
-                        this.updateIndex = 0;
-                    } else {
-                        this.updateIndex++;
+                            var angle = this.game.math.angleBetweenPoints(sprite, moveTarget);
+                            this.game.physics.arcade.velocityFromRotation(angle, this.speed.current, sprite.body.velocity);
+                            sprite.rotation = angle - Math.PI / 2;
+                        }
                     }
                 }
+            }
+        }
+    }, {
+        key: 'checkHide',
+        value: function checkHide() {
+            var l = 0;
+            for (var i = 0; i < this.sprites.length; i++) {
+                l += this.sprites[i].moveTargets.length;
+            }
+            if (l === 0) {
+                this.setMode(__WEBPACK_IMPORTED_MODULE_0__constants_js__["_2" /* SWAT_MODE_HIDE */]);
             }
         }
     }, {
@@ -13863,8 +13893,7 @@ var SWATSquad = function () {
                                 this.sprites[i].visible = false;
                                 this.sprites[i].body.stop();
                             }
-                            this.updateIndex = 0;
-                            this.moveTargets = [];
+                            this.resetMoveTargets();
                         }
                         break;
                     }
@@ -13876,12 +13905,35 @@ var SWATSquad = function () {
                             var x = start.x,
                                 y = start.y;
 
-
-                            this.moveTargets = targets;
-
                             var _targets = _toArray(targets),
                                 moveTarget = _targets[0],
                                 rest = _targets.slice(1);
+
+                            this.resetMoveTargets();
+                            var _iteratorNormalCompletion = true;
+                            var _didIteratorError = false;
+                            var _iteratorError = undefined;
+
+                            try {
+                                for (var _iterator = targets[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                    var t = _step.value;
+
+                                    this.pushMoveTarget(t);
+                                }
+                            } catch (err) {
+                                _didIteratorError = true;
+                                _iteratorError = err;
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion && _iterator.return) {
+                                        _iterator.return();
+                                    }
+                                } finally {
+                                    if (_didIteratorError) {
+                                        throw _iteratorError;
+                                    }
+                                }
+                            }
 
                             var directionSign = moveTarget.x > x ? -1 : 1;
                             for (var _i = 0; _i < this.sprites.length; _i++) {
@@ -13898,6 +13950,27 @@ var SWATSquad = function () {
             this.mode = mode;
         }
     }, {
+        key: 'pushMoveTarget',
+        value: function pushMoveTarget(target) {
+            for (var i = 0; i < this.sprites.length; i++) {
+                this.sprites[i].moveTargets.push(target);
+            }
+        }
+    }, {
+        key: 'unshiftMoveTarget',
+        value: function unshiftMoveTarget(target) {
+            for (var i = 0; i < this.sprites.length; i++) {
+                this.sprites[i].moveTargets.unshift(target);
+            }
+        }
+    }, {
+        key: 'resetMoveTargets',
+        value: function resetMoveTargets() {
+            for (var i = 0; i < this.sprites.length; i++) {
+                this.sprites[i].moveTargets = [];
+            }
+        }
+    }, {
         key: 'onArrest',
         value: function onArrest(protester) {
             if (Math.random() < 0.3) {
@@ -13906,18 +13979,10 @@ var SWATSquad = function () {
             if (protester instanceof __WEBPACK_IMPORTED_MODULE_1__Star_js__["a" /* default */]) {
                 console.log("Arrested star");
                 this.gameObject.mz.tweet.rTweet({ type: 'star_' + protester.name + '_arrest' }, { visible: 5000, fadeIn: 500, fadeOut: 500 });
-                // const paddyWagon = this.gameObject.mz.arrays.wagons[0];
+                var paddyWagon = this.gameObject.mz.arrays.wagons[0];
                 this.gameObject.mz.tweet.rTweet({ type: 'star_' + protester.name + '_bus' }, { visible: 5000, fadeIn: 500, fadeOut: 500 });
-                // this.gameObject.handleLeaveWagon(paddyWagon, -300, 0);
-                for (var i = 0; i < this.sprites.length; i++) {
-                    for (var j = 0; j < this.sprites[i].children.length; j++) {
-                        this.sprites[i].getChildAt(j).mz.kill();
-                    }
-                    this.sprites[i].removeChildren();
-                    this.sprites[i].visible = false;
-                    this.sprites[i].body.stop();
-                }
-                this.moveTargets = [{ x: 0, y: 200 }];
+                this.resetMoveTargets();
+                this.pushMoveTarget({ x: paddyWagon.body.x + paddyWagon.body.width, y: paddyWagon.body.y + paddyWagon.body.height });
                 // this.moveTargets.unshift({x: paddyWagon.body.x + paddyWagon.body.width, y: paddyWagon.body.y + paddyWagon.body.height, callback })
             }
         }
@@ -19723,7 +19788,7 @@ var PaddyWagon = {
         startY: 75,
         angle: 90,
         score: 20,
-        moveX: 150,
+        moveX: 170,
         moveY: 75,
         entagleX: 60,
         entagleY: 20

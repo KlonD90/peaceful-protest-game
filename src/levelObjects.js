@@ -22,7 +22,7 @@ export const PaddyWagon: LevelObject = {
             startY: 75,
             angle: 90,
             score: 20,
-            moveX: 150,
+            moveX: 170,
             moveY: 75,
             entagleX: 60,
             entagleY: 20

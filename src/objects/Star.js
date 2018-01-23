@@ -57,6 +57,7 @@ export class Star extends Protester {
     //this.viewSprite.animations.add('walk', [1, 2], 3, true);
     this.kill();
     this.changeAnimations(`star_0${(rand+1)}`, 3);
+
   }
 
   setState(state, props = {}) {
