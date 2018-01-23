@@ -45,7 +45,7 @@ export default {
         },
         protesters: {
             count: {
-                start:1,//100,
+                start:99,//100,
                 max: 100,
                 add: 14
             },
@@ -53,7 +53,7 @@ export default {
                 value: 60
             },
             mood: 0.3,
-            moodUp: 0.002,
+            moodUp: 0.02,
             moodDown: 0.0001,
             poster: {
                 drop: 0.3,
@@ -78,10 +78,10 @@ export default {
                 value: 200
             },
             frequency: 5000,
-            scoreThreshold: 300
+            scoreThreshold: 40
         },
         star: {
-            score: 200
+            score: 20
         }
     },
     // level2: {

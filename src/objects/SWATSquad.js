@@ -6,7 +6,7 @@ import {
 
 import Star from "./Star.js"
 
-const SQUAD_DENSITY = 35;
+const SQUAD_DENSITY = 50;
 const SQUAD_DISCIPLINE = 0.4;
 const TURN_FREQUENCY = 30;
 
@@ -31,6 +31,7 @@ class SWATSquad {
             swatSprite.anchor.set(0.5);
             swatSprite.visible = false;
             swatSprite.mz = this
+            swatSprite.moveTargets = [];
 
             this.game.physics.arcade.enable(swatSprite);
 
@@ -44,42 +45,46 @@ class SWATSquad {
 
     update() {
         if (this.mode === SWAT_MODE_HUNT) {
-            const lastSprite = this.sprites[this.sprites.length - 1];
-            const firstSprite = this.sprites[0];
 
-            if (
-                this.game.math.fuzzyEqual(
-                    this.game.math.distanceSq(firstSprite.x, firstSprite.y, this.moveTargets[0].x, this.moveTargets[0].y),
-                    0,
-                    50
-                )
-            ) {
-                this.moveTargets[0].callback && this.moveTargets[0].callback()
-                this.moveTargets.shift()
-                this.moveTargets.length === 0 ? this.setMode(SWAT_MODE_HIDE) : this.update()
-            } else {
-                const [moveTarget, ...rest] = this.moveTargets
-                // change direction once in a while
-                if (this.updateIndex % TURN_FREQUENCY === 0) {
-                    const angle = this.game.math.angleBetweenPoints(firstSprite, moveTarget) +
-                        (this.updateIndex === 0 ? 1 : -1) * this.game.rnd.realInRange(0, SQUAD_DISCIPLINE);
-                    this.game.physics.arcade.velocityFromRotation(angle, this.speed.current, firstSprite.body.velocity);
-                    firstSprite.rotation = angle-(Math.PI/2);
+            for (let i =0; i<this.sprites.length; i++)
+            {
+                const sprite = this.sprites[i];
+                if (sprite.moveTargets.length)
+                {
+                    if (
+                        this.game.math.fuzzyEqual(
+                            this.game.math.distanceSq(sprite.x, sprite.y, sprite.moveTargets[0].x, sprite.moveTargets[0].y),
+                            0,
+                            5
+                        )
+                    ) {
+                        sprite.moveTargets[0].callback && sprite.moveTargets[0].callback()
+                        sprite.moveTargets.shift()
+                        if (sprite.moveTargets.length === 0){
+                            sprite.visible = false;
+                            this.checkHide();
+                        }
+                    } else {
+                        const [moveTarget, ...rest] = sprite.moveTargets;
+                        const angle = this.game.math.angleBetweenPoints(sprite, moveTarget);
+                        this.game.physics.arcade.velocityFromRotation(angle, this.speed.current, sprite.body.velocity);
+                        sprite.rotation = angle-(Math.PI/2);
+                    }
                 }
 
-                for (let i = 1; i < this.sprites.length; i++) {
-                    const swatSprite = this.sprites[i];
-                    const angleToTarget = this.game.math.angleBetweenPoints(swatSprite, this.sprites[i - 1]);
-                    this.game.physics.arcade.velocityFromRotation(angleToTarget, this.speed.current, swatSprite.body.velocity);
-                    swatSprite.rotation = angleToTarget-(Math.PI/2);
-                }
-
-                if (this.updateIndex === 2 * TURN_FREQUENCY - 1) {
-                    this.updateIndex = 0;
-                } else {
-                    this.updateIndex++;
-                }
             }
+        }
+    }
+
+    checkHide(){
+        let l = 0;
+        for (let i =0; i<this.sprites.length; i++)
+        {
+            l += this.sprites[i].moveTargets.length;
+        }
+        if (l === 0)
+        {
+            this.setMode(SWAT_MODE_HIDE);
         }
     }
 
@@ -95,8 +100,7 @@ class SWATSquad {
                         this.sprites[i].visible = false;
                         this.sprites[i].body.stop();
                     }
-                    this.updateIndex = 0;
-                    this.moveTargets = [];
+                    this.resetMoveTargets();
                 }
                 break;
             }
@@ -105,8 +109,14 @@ class SWATSquad {
                     const { start, targets } = props;
                     const { x, y } = start
 
-                    this.moveTargets = targets;
+
                     const [moveTarget, ...rest] = targets
+
+                    this.resetMoveTargets();
+                    for (let t of targets)
+                    {
+                        this.pushMoveTarget(t);
+                    }
 
                     const directionSign = moveTarget.x > x ? -1 : 1;
                     for (let i = 0; i < this.sprites.length; i++) {
@@ -123,26 +133,35 @@ class SWATSquad {
         this.mode = mode;
     }
 
-    onArrest (protester) {
-        if (Math.random() < 0.3)
-        {
-            this.gameObject.mz.tweet.rTweet({type: 'omon'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
+    pushMoveTarget(target){
+        for (let i = 0; i < this.sprites.length; i++) {
+            this.sprites[i].moveTargets.push(target);
         }
+    }
+    unshiftMoveTarget(target){
+        for (let i = 0; i < this.sprites.length; i++) {
+            this.sprites[i].moveTargets.unshift(target);
+        }
+    }
+
+    resetMoveTargets(){
+        for (let i = 0; i < this.sprites.length; i++) {
+            this.sprites[i].moveTargets = [];
+        }
+    }
+
+    onArrest (protester) {
+    if (Math.random() < 0.3)
+    {
+        this.gameObject.mz.tweet.rTweet({type: 'omon'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
+    }
       if (protester instanceof Star) {
         console.log("Arrested star")
         this.gameObject.mz.tweet.rTweet({type: 'star_'+protester.name+'_arrest'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
-        // const paddyWagon = this.gameObject.mz.arrays.wagons[0];
+        const paddyWagon = this.gameObject.mz.arrays.wagons[0];
         this.gameObject.mz.tweet.rTweet({type: 'star_'+protester.name+'_bus'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
-        // this.gameObject.handleLeaveWagon(paddyWagon, -300, 0);
-        for (let i = 0; i < this.sprites.length; i++) {
-            for (let j = 0; j < this.sprites[i].children.length; j++) {
-                this.sprites[i].getChildAt(j).mz.kill();
-            }
-            this.sprites[i].removeChildren();
-            this.sprites[i].visible = false;
-            this.sprites[i].body.stop();
-        }
-        this.moveTargets = [{x: 0, y: 200}];
+        this.resetMoveTargets();
+        this.pushMoveTarget({x: paddyWagon.body.x + paddyWagon.body.width, y: paddyWagon.body.y + paddyWagon.body.height});
         // this.moveTargets.unshift({x: paddyWagon.body.x + paddyWagon.body.width, y: paddyWagon.body.y + paddyWagon.body.height, callback })
       }
     }

@@ -889,10 +889,10 @@ class Game {
         //     this.mz.arrays.protesters,
         //     this.mz.arrays.cops
         // );
-        this.game.physics.arcade.collide(
-            this.mz.objects.swat.sprites,
-            this.mz.objects.swat.sprites
-        );
+        // this.game.physics.arcade.collide(
+        //     this.mz.objects.swat.sprites,
+        //     this.mz.objects.swat.sprites
+        // );
         this.game.physics.arcade.collide(
           this.mz.levelObjects.paddyWagon,
           this.mz.objects.player.sprite
@@ -1381,19 +1381,50 @@ class Game {
         const start = {
           x: direction === 'ltor' ? - 100 : this.game.world.width + 100,
           y: this.getRandomCoordinateY(),
+        };
+
+        let targets = [];
+
+        const rnd = Math.random()*5+2;
+
+        const st = (direction === 'ltor' ? 100 : this.game.world.width - 100);
+        const distance = (direction === 'ltor' ? 1 : -1) * (this.game.world.width / rnd);
+        let foundStar = !(this.mz.objects.star && this.mz.objects.star.sprite.alive);
+        const { x: starX, y: starY } = this.mz.objects.star.sprite.body.center;
+        for (let i=0; i<rnd; i++)
+        {
+            const t= this.getRandomCoordinates({x: st + distance * i});
+            if (!foundStar) {
+                if (direction === 'ltor')
+                {
+                    if (t.x > starX)
+                    {
+                        targets.push({ x: starX, y: starY });
+                        foundStar = true;
+                    }
+                }
+                else
+                {
+                    if (t.x < starX)
+                    {
+                        targets.push({ x: starX, y: starY });
+                        foundStar = true;
+                    }
+                }
+            }
+            targets.push(t);
         }
 
-        let targets = []
 
-        if (this.mz.objects.star && this.mz.objects.star.sprite.alive) {
-          const { x, y } = this.mz.objects.star.sprite.body.center
-          targets.push({ x, y })
-        }
 
-        targets.push({
-          x: direction === 'ltor' ? this.game.world.width + 100 : -100,
-          y: this.getRandomCoordinateY(),
-        })
+
+
+        // targets.push({
+        //   x: direction === 'ltor' ? this.game.world.width + 100 : -100,
+        //   y: this.getRandomCoordinateY(),
+        // })
+
+        console.log('target omon', targets);
 
 
         this.mz.objects.swat.setMode(SWAT_MODE_HUNT, { start, targets })
@@ -1507,16 +1538,16 @@ class Game {
         return false;
     }
 
-    getRandomCoordinates() {
+    getRandomCoordinates({x, y} = {x: null, y: null}) {
         let coords = {
-            x: this.getRandomCoordinateX(),
-            y: this.getRandomCoordinateY()
+            x: x ? x : this.getRandomCoordinateX(),
+            y: y ? y : this.getRandomCoordinateY()
         };
 
         while (this.checkContainWagon(coords)) {
             coords = {
-                x: this.getRandomCoordinateX(),
-                y: this.getRandomCoordinateY()
+                x: x ? x : this.getRandomCoordinateX(),
+                y: y ? y : this.getRandomCoordinateY()
             };
         }
         return coords;
