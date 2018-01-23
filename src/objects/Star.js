@@ -54,7 +54,6 @@ export class Star extends Protester {
 
 
     this.restTimer = this.game.time.create(false);
-    //this.viewSprite.animations.add('walk', [1, 2], 3, true);
 
     this.kill()
   }
