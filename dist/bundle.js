@@ -929,7 +929,7 @@ module.exports = {
         },
         protesters: {
             count: {
-                start: 99, //100,
+                start: 1, //100,
                 max: 100,
                 add: 14
             },
@@ -1370,86 +1370,86 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 //let CACHED_TEXTURE = null;
 
 var ProgressBar = function () {
-        function ProgressBar(_ref) {
-                var radius = _ref.radius,
-                    width = _ref.width,
-                    color = _ref.color,
-                    lineWidth = _ref.lineWidth,
-                    game = _ref.game,
-                    sprite_type = _ref.sprite_type,
-                    _ref$fill_sprite_type = _ref.fill_sprite_type,
-                    fill_sprite_type = _ref$fill_sprite_type === undefined ? null : _ref$fill_sprite_type;
+    function ProgressBar(_ref) {
+        var radius = _ref.radius,
+            width = _ref.width,
+            color = _ref.color,
+            lineWidth = _ref.lineWidth,
+            game = _ref.game,
+            sprite_type = _ref.sprite_type,
+            _ref$fill_sprite_type = _ref.fill_sprite_type,
+            fill_sprite_type = _ref$fill_sprite_type === undefined ? null : _ref$fill_sprite_type;
 
-                _classCallCheck(this, ProgressBar);
+        _classCallCheck(this, ProgressBar);
+
+        this.lastWidth = 0;
+        this.game = game;
+        this.graphics = this.game.add.group();
+
+        this.fullWidth = width; // + radius * 2;
+        //this.width = width;
+        //this.height = radius * 2
+
+        //this.radius = radius;
+        //this.width = width;
+        this.color = color;
+        //this.lineWidth = lineWidth;
+
+        var s = sprite_type ? sprite_type : "small_progress";
+
+        var bg = game.add.sprite(0, 0, "ALL_IMAGES", s);
+
+        this.graphics.addChild(bg);
+
+        var fillS = fill_sprite_type ? fill_sprite_type : s;
+
+        this.fillSprite = game.add.sprite(0, 0, "ALL_IMAGES", fillS);
+
+        if (this.color) this.fillSprite.tint = this.color;
+
+        this.graphics.addChild(this.fillSprite);
+
+        this.fullWidth = this.fillSprite.width; // + radius * 2;
+
+        this.graphics.y = -30;
+        this.graphics.x = -this.fillSprite.width / 2;
+
+        this.cropRect = new Phaser.Rectangle(0, 0, 0, this.fillSprite.height); //width);
+        this.fillSprite.crop(this.cropRect);
+
+        this.graphics.visible = false;
+    }
+
+    _createClass(ProgressBar, [{
+        key: "update",
+        value: function update(percent) {
+
+            percent = this.game.math.clamp(percent, 0, 1);
+
+            if (this.color && this.fillSprite.tint !== this.color) this.fillSprite.tint = this.color;
+
+            if (percent !== 0) {
+
+                var fillWidth = Math.round(percent * this.fullWidth);
+                if (this.lastWidth === fillWidth) {
+                    return;
+                }
+
+                this.graphics.visible = true;
+
+                this.lastWidth = fillWidth;
+
+                this.cropRect.width = fillWidth;
+                this.fillSprite.updateCrop();
+            } else {
 
                 this.lastWidth = 0;
-                this.game = game;
-                this.graphics = this.game.add.group();
-
-                this.fullWidth = width; // + radius * 2;
-                //this.width = width;
-                //this.height = radius * 2
-
-                //this.radius = radius;
-                //this.width = width;
-                this.color = color;
-                //this.lineWidth = lineWidth;
-
-                var s = sprite_type ? sprite_type : "small_progress";
-
-                var bg = game.add.sprite(0, 0, "ALL_IMAGES", s);
-
-                this.graphics.addChild(bg);
-
-                var fillS = fill_sprite_type ? fill_sprite_type : s;
-
-                this.fillSprite = game.add.sprite(0, 0, "ALL_IMAGES", fillS);
-
-                if (this.color) this.fillSprite.tint = this.color;
-
-                this.graphics.addChild(this.fillSprite);
-
-                this.fullWidth = this.fillSprite.width; // + radius * 2;
-
-                this.graphics.y = -30;
-                this.graphics.x = -this.fillSprite.width / 2;
-
-                this.cropRect = new Phaser.Rectangle(0, 0, 0, this.fillSprite.height); //width);
-                this.fillSprite.crop(this.cropRect);
-
                 this.graphics.visible = false;
+            }
         }
+    }]);
 
-        _createClass(ProgressBar, [{
-                key: "update",
-                value: function update(percent) {
-
-                        percent = this.game.math.clamp(percent, 0, 1);
-
-                        if (this.color && this.fillSprite.tint !== this.color) this.fillSprite.tint = this.color;
-
-                        if (percent !== 0) {
-
-                                var fillWidth = Math.round(percent * this.fullWidth);
-                                if (this.lastWidth === fillWidth) {
-                                        return;
-                                }
-
-                                this.graphics.visible = true;
-
-                                this.lastWidth = fillWidth;
-
-                                this.cropRect.width = fillWidth;
-                                this.fillSprite.updateCrop();
-                        } else {
-
-                                this.lastWidth = 0;
-                                this.graphics.visible = false;
-                        }
-                }
-        }]);
-
-        return ProgressBar;
+    return ProgressBar;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (ProgressBar);
@@ -10066,6 +10066,8 @@ module.exports = __webpack_require__.p + "assets/d098fd1c96279cb64f456bfe7bc34d8
 /***/ }),
 /* 333 */
 /***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "assets/5330b285c4ea222de5f817c619186458.json";
 
 /***/ }),
 /* 334 */
