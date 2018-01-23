@@ -929,7 +929,7 @@ module.exports = {
         },
         protesters: {
             count: {
-                start: 1, //100,
+                start: 99, //100,
                 max: 100,
                 add: 14
             },
@@ -4309,7 +4309,6 @@ var Star = function (_Protester) {
     _this.config = fullConfig;
 
     _this.restTimer = _this.game.time.create(false);
-    //this.viewSprite.animations.add('walk', [1, 2], 3, true);
 
     _this.kill();
     return _this;
@@ -11586,7 +11585,10 @@ var Game = function () {
             //     this.mz.arrays.protesters,
             //     this.mz.arrays.cops
             // );
-            this.game.physics.arcade.collide(this.mz.objects.swat.sprites, this.mz.objects.swat.sprites);
+            // this.game.physics.arcade.collide(
+            //     this.mz.objects.swat.sprites,
+            //     this.mz.objects.swat.sprites
+            // );
             this.game.physics.arcade.collide(this.mz.levelObjects.paddyWagon, this.mz.objects.player.sprite);
             this.game.physics.arcade.collide(this.mz.levelObjects.paddyWagon, this.mz.arrays.protesters, function (wagon, protester) {
                 var moveEntity = _this2.collider.getEntityBySprite(protester);
@@ -12050,24 +12052,39 @@ var Game = function () {
 
             var targets = [];
 
-            if (this.mz.objects.star && this.mz.objects.star.sprite.alive) {
-                var _mz$objects$star$spri = this.mz.objects.star.sprite.body.center,
-                    x = _mz$objects$star$spri.x,
-                    y = _mz$objects$star$spri.y;
+            var rnd = Math.random() * 5 + 2;
 
-                targets.push({ x: x, y: y });
-            }
-
-            var rnd = Math.random() * 5;
+            var st = direction === 'ltor' ? 100 : this.game.world.width - 100;
+            var distance = (direction === 'ltor' ? 1 : -1) * (this.game.world.width / rnd);
+            var foundStar = !(this.mz.objects.star && this.mz.objects.star.sprite.alive);
+            var _mz$objects$star$spri = this.mz.objects.star.sprite.body.center,
+                starX = _mz$objects$star$spri.x,
+                starY = _mz$objects$star$spri.y;
 
             for (var _i13 = 0; _i13 < rnd; _i13++) {
-                targets.push(this.getRandomCoordinates());
+                var t = this.getRandomCoordinates({ x: st + distance * _i13 });
+                if (!foundStar) {
+                    if (direction === 'ltor') {
+                        if (t.x > starX) {
+                            targets.push({ x: starX, y: starY });
+                            foundStar = true;
+                        }
+                    } else {
+                        if (t.x < starX) {
+                            targets.push({ x: starX, y: starY });
+                            foundStar = true;
+                        }
+                    }
+                }
+                targets.push(t);
             }
 
-            targets.push({
-                x: direction === 'ltor' ? this.game.world.width + 100 : -100,
-                y: this.getRandomCoordinateY()
-            });
+            // targets.push({
+            //   x: direction === 'ltor' ? this.game.world.width + 100 : -100,
+            //   y: this.getRandomCoordinateY(),
+            // })
+
+            console.log('target omon', targets);
 
             this.mz.objects.swat.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["_3" /* SWAT_MODE_HUNT */], { start: start, targets: targets });
         }
@@ -12209,15 +12226,19 @@ var Game = function () {
     }, {
         key: 'getRandomCoordinates',
         value: function getRandomCoordinates() {
+            var _ref3 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { x: null, y: null },
+                x = _ref3.x,
+                y = _ref3.y;
+
             var coords = {
-                x: this.getRandomCoordinateX(),
-                y: this.getRandomCoordinateY()
+                x: x ? x : this.getRandomCoordinateX(),
+                y: y ? y : this.getRandomCoordinateY()
             };
 
             while (this.checkContainWagon(coords)) {
                 coords = {
-                    x: this.getRandomCoordinateX(),
-                    y: this.getRandomCoordinateY()
+                    x: x ? x : this.getRandomCoordinateX(),
+                    y: y ? y : this.getRandomCoordinateY()
                 };
             }
             return coords;
@@ -12272,8 +12293,8 @@ var Game = function () {
     }, {
         key: 'createLevelObject',
         value: function createLevelObject(sprite) {
-            var _ref3 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-                personalMatrix = _ref3.personalMatrix;
+            var _ref4 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+                personalMatrix = _ref4.personalMatrix;
 
             this.collider.addEntity({ sprite: sprite, object: { sprite: sprite }, personalMatrix: personalMatrix });
             return game;
@@ -12281,8 +12302,8 @@ var Game = function () {
     }, {
         key: 'createPrefab',
         value: function createPrefab(constructor, options) {
-            var _ref4 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
-                personalMatrix = _ref4.personalMatrix;
+            var _ref5 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+                personalMatrix = _ref5.personalMatrix;
 
             var moveTo = this.collider.moveToFactory();
             var defaults = { game: this.game, GameObject: this, moveTo: moveTo };
@@ -13706,7 +13727,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 
-var SQUAD_DENSITY = 35;
+var SQUAD_DENSITY = 50;
 var SQUAD_DISCIPLINE = 0.4;
 var TURN_FREQUENCY = 30;
 
@@ -13757,21 +13778,23 @@ var SWATSquad = function () {
 
                 for (var i = 0; i < this.sprites.length; i++) {
                     var sprite = this.sprites[i];
-                    if (this.game.math.fuzzyEqual(this.game.math.distanceSq(sprite.x, sprite.y, sprite.moveTargets[0].x, sprite.moveTargets[0].y), 0, 50)) {
-                        sprite.moveTargets[0].callback && sprite.moveTargets[0].callback();
-                        sprite.moveTargets.shift();
-                        if (sprite.moveTargets.length === 0) {
-                            sprite.visible = false;
-                            this.checkHide();
-                        }
-                    } else {
-                        var _sprite$moveTargets = _toArray(sprite.moveTargets),
-                            moveTarget = _sprite$moveTargets[0],
-                            rest = _sprite$moveTargets.slice(1);
+                    if (sprite.moveTargets.length) {
+                        if (this.game.math.fuzzyEqual(this.game.math.distanceSq(sprite.x, sprite.y, sprite.moveTargets[0].x, sprite.moveTargets[0].y), 0, 5)) {
+                            sprite.moveTargets[0].callback && sprite.moveTargets[0].callback();
+                            sprite.moveTargets.shift();
+                            if (sprite.moveTargets.length === 0) {
+                                sprite.visible = false;
+                                this.checkHide();
+                            }
+                        } else {
+                            var _sprite$moveTargets = _toArray(sprite.moveTargets),
+                                moveTarget = _sprite$moveTargets[0],
+                                rest = _sprite$moveTargets.slice(1);
 
-                        var angle = this.game.math.angleBetweenPoints(sprite, moveTarget);
-                        this.game.physics.arcade.velocityFromRotation(angle, this.speed.current, sprite.body.velocity);
-                        sprite.rotation = angle - Math.PI / 2;
+                            var angle = this.game.math.angleBetweenPoints(sprite, moveTarget);
+                            this.game.physics.arcade.velocityFromRotation(angle, this.speed.current, sprite.body.velocity);
+                            sprite.rotation = angle - Math.PI / 2;
+                        }
                     }
                 }
             }

@@ -53,7 +53,7 @@ export default {
                 value: 60
             },
             mood: 0.3,
-            moodUp: 0.02,
+            moodUp: 0.002,
             moodDown: 0.0001,
             poster: {
                 drop: 0.3,
@@ -78,10 +78,10 @@ export default {
                 value: 200
             },
             frequency: 5000,
-            scoreThreshold: 40
+            scoreThreshold: 300
         },
         star: {
-            score: 20
+            score: 200
         }
     },
     // level2: {
