@@ -933,7 +933,7 @@ module.exports = {
         },
         protesters: {
             count: {
-                start: 100, //100,
+                start: 1, //100,
                 max: 100,
                 add: 14
             },
@@ -969,7 +969,7 @@ module.exports = {
             scoreThreshold: 300
         },
         star: {
-            score: 200
+            score: 0
         }
     }
     // level2: {
@@ -4331,8 +4331,8 @@ var Star = function (_Protester) {
 
     _this.restTimer = _this.game.time.create(false);
     //this.viewSprite.animations.add('walk', [1, 2], 3, true);
-
     _this.kill();
+    _this.changeAnimations("star_0" + (rand + 1), 3);
     return _this;
   }
 

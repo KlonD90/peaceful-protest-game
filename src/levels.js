@@ -45,7 +45,7 @@ export default {
         },
         protesters: {
             count: {
-                start:100,//100,
+                start:1,//100,
                 max: 100,
                 add: 14
             },
@@ -81,7 +81,7 @@ export default {
             scoreThreshold: 300
         },
         star: {
-            score: 200
+            score: 0
         }
     },
     // level2: {
