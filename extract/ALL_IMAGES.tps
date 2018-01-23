@@ -212,6 +212,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">UI/big_progress.png</key>
             <key type="filename">UI/aban_in.jpg</key>
             <key type="filename">UI/asilikedem.jpg</key>
             <key type="filename">UI/asluhn.jpg</key>
@@ -248,22 +249,22 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>12,12,24,24</rect>
+                <rect>45,5,90,10</rect>
                 <key>scale9Paddings</key>
-                <rect>12,12,24,24</rect>
+                <rect>45,5,90,10</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">UI/big_progress.png</key>
+            <key type="filename">UI/big_progress_fill.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>45,5,90,10</rect>
+                <rect>51,6,102,11</rect>
                 <key>scale9Paddings</key>
-                <rect>45,5,90,10</rect>
+                <rect>51,6,102,11</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -290,6 +291,48 @@
                 <rect>11,9,22,17</rect>
                 <key>scale9Paddings</key>
                 <rect>11,9,22,17</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">UI/help.png</key>
+            <key type="filename">UI/restart.png</key>
+            <key type="filename">UI/volume_off.png</key>
+            <key type="filename">UI/volume_on.png</key>
+            <key type="filename">tw_circle/aban_in.png</key>
+            <key type="filename">tw_circle/asilikedem.png</key>
+            <key type="filename">tw_circle/asluhn.png</key>
+            <key type="filename">tw_circle/brewerov.png</key>
+            <key type="filename">tw_circle/evgenyfeldman.png</key>
+            <key type="filename">tw_circle/fb_pal.png</key>
+            <key type="filename">tw_circle/galiamina.png</key>
+            <key type="filename">tw_circle/granitweet.png</key>
+            <key type="filename">tw_circle/gruppa_voina.png</key>
+            <key type="filename">tw_circle/kirilenko_a.png</key>
+            <key type="filename">tw_circle/koshelyaeva.png</key>
+            <key type="filename">tw_circle/kszhivago.png</key>
+            <key type="filename">tw_circle/mediazzzona.png</key>
+            <key type="filename">tw_circle/navalny.png</key>
+            <key type="filename">tw_circle/noliquid.png</key>
+            <key type="filename">tw_circle/ogonwatch.png</key>
+            <key type="filename">tw_circle/ovdinfo.png</key>
+            <key type="filename">tw_circle/plushev.png</key>
+            <key type="filename">tw_circle/rrubanov.png</key>
+            <key type="filename">tw_circle/styazshkin.png</key>
+            <key type="filename">tw_circle/the_ins_ru.png</key>
+            <key type="filename">tw_circle/tvrain.png</key>
+            <key type="filename">tw_circle/varlamov.png</key>
+            <key type="filename">tw_circle/vigimadi.png</key>
+            <key type="filename">tw_circle/ya_yanson.png</key>
+            <key type="filename">tw_circle/zhuravleva.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>12,12,24,24</rect>
+                <key>scale9Paddings</key>
+                <rect>12,12,24,24</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -496,6 +539,7 @@
         <array>
             <filename>UI</filename>
             <filename>humans</filename>
+            <filename>tw_circle</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

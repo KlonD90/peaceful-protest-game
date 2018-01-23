@@ -101,15 +101,21 @@ export default class BaseTweet {
     }
 
     avatar.fixedToCamera = true;
+   // const mask = this.game.add.sprite(avatar.x, avatar.y, "ALL_IMAGES","tweet_mask");
     
-    const mask = this.game.add.graphics(MARGIN_LEFT+AVATAR_SIZE/2, height+AVATAR_SIZE/2);
-    mask.beginFill(0xffffff);
-    mask.drawCircle(0, 0, AVATAR_SIZE);
-    mask.fixedToCamera = true;
-    avatar.mask = mask;
+    // mask Not working in current version
+    //const mask = this.game.add.graphics(MARGIN_LEFT+AVATAR_SIZE/2, height+AVATAR_SIZE/2);
+    //const mask = this.game.add.graphics(avatar.x + AVATAR_SIZE/2, avatar.y + AVATAR_SIZE/2);
+    //mask.beginFill(0xffffff);
+    //mask.drawCircle(0, 0, AVATAR_SIZE);
+    //mask.endFill();
 
-    tweet.add(mask);
+    //mask.fixedToCamera = true;
+  
+    //avatar.mask = mask;
+    //tweet.add(mask);
     tweet.add(avatar);
+
     if (name) {
       //nameGameObject.cacheAsBitmap = true;
       tweet.add(nameGameObject);
@@ -122,6 +128,7 @@ export default class BaseTweet {
 
 
     avatar.bringToTop();
+    
     textGameObject.bringToTop();
     if (name) nameGameObject.bringToTop();
 

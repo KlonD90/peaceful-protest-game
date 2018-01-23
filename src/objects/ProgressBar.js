@@ -2,15 +2,15 @@
 //let CACHED_TEXTURE = null;
 
 export default class ProgressBar{
-    constructor({radius, width, color, lineWidth, game, sprite_type}){
+    constructor({radius, width, color, lineWidth, game, sprite_type, fill_sprite_type = null}){
       
         this.lastWidth = 0;
         this.game = game;
         this.graphics = this.game.add.group();
 
         this.fullWidth = width;// + radius * 2;
-        this.graphics.y = -30;
-        this.graphics.x = -this.fullWidth/2;
+        //this.width = width;
+        //this.height = radius * 2
         
         //this.radius = radius;
         //this.width = width;
@@ -22,14 +22,23 @@ export default class ProgressBar{
         let bg = game.add.sprite(0,0,"ALL_IMAGES",s);
 
         this.graphics.addChild(bg);
+        
+        let fillS = fill_sprite_type ? fill_sprite_type : s;
 
-        this.fillSprite = game.add.sprite(0,0,"ALL_IMAGES", s);
-        this.fillSprite.tint = this.color;
+        this.fillSprite = game.add.sprite(0,0,"ALL_IMAGES", fillS);
+
+        if(this.color)
+            this.fillSprite.tint = this.color; 
         
         this.graphics.addChild(this.fillSprite);
 
+        this.fullWidth = this.fillSprite.width;// + radius * 2;
+      
+        this.graphics.y = -30;
+        this.graphics.x = -this.fillSprite.width/2;
+       
 
-        this.cropRect = new Phaser.Rectangle(0, 0, width / 2, radius * 2);//width);
+        this.cropRect = new Phaser.Rectangle(0, 0, 0, this.fillSprite.height);//width);
         this.fillSprite.crop(this.cropRect);
 
         this.graphics.visible = false;
@@ -39,7 +48,7 @@ export default class ProgressBar{
         
         percent = this.game.math.clamp(percent, 0, 1);
         
-        if(this.fillSprite.tint !== this.color)
+        if(this.color && this.fillSprite.tint !== this.color)
              this.fillSprite.tint = this.color;
 
         if (percent !== 0) {

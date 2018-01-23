@@ -16,17 +16,18 @@ class GameInterface {
         this.score = new ProgressBar({
             radius:10,
              width:180,
-             color:0xf0526f,
+             color:null,
              lineWidth:10,
              game:this.game,
-             sprite_type:"big_progress"
+             sprite_type:"big_progress",
+             fill_sprite_type:"big_progress_fill"
          }
         );
         this.score.graphics.visible = true;
         this.score.graphics.y = isWide ? 20 : 10;
         this.score.graphics.x = this.game.width / 2 - 90;
         this.group.add(this.score.graphics);
-        this.score.update(0.01);
+        //this.score.update(0.01);
 
         if (!isWide)
             this.score.graphics.x = this.game.width - this.score.fullWidth - 10;

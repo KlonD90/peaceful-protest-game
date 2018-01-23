@@ -1102,7 +1102,7 @@ var Prefab = function () {
 
         this.game.physics.arcade.enable(this.sprite);
         // this.game.physics.arcade.enable(this.viewSprite);
-        this.game.physics.arcade.enable(this.viewSprite);
+
         this.sprite.body.reset(this.sprite.x, this.sprite.y);
         this.viewSprite.anchor.set(0.5);
         this.viewSprite.reset(0, 0);
@@ -1370,76 +1370,86 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 //let CACHED_TEXTURE = null;
 
 var ProgressBar = function () {
-    function ProgressBar(_ref) {
-        var radius = _ref.radius,
-            width = _ref.width,
-            color = _ref.color,
-            lineWidth = _ref.lineWidth,
-            game = _ref.game,
-            sprite_type = _ref.sprite_type;
+        function ProgressBar(_ref) {
+                var radius = _ref.radius,
+                    width = _ref.width,
+                    color = _ref.color,
+                    lineWidth = _ref.lineWidth,
+                    game = _ref.game,
+                    sprite_type = _ref.sprite_type,
+                    _ref$fill_sprite_type = _ref.fill_sprite_type,
+                    fill_sprite_type = _ref$fill_sprite_type === undefined ? null : _ref$fill_sprite_type;
 
-        _classCallCheck(this, ProgressBar);
-
-        this.lastWidth = 0;
-        this.game = game;
-        this.graphics = this.game.add.group();
-
-        this.fullWidth = width; // + radius * 2;
-        this.graphics.y = -30;
-        this.graphics.x = -this.fullWidth / 2;
-
-        //this.radius = radius;
-        //this.width = width;
-        this.color = color;
-        //this.lineWidth = lineWidth;
-
-        var s = sprite_type ? sprite_type : "small_progress";
-
-        var bg = game.add.sprite(0, 0, "ALL_IMAGES", s);
-
-        this.graphics.addChild(bg);
-
-        this.fillSprite = game.add.sprite(0, 0, "ALL_IMAGES", s);
-        this.fillSprite.tint = this.color;
-
-        this.graphics.addChild(this.fillSprite);
-
-        this.cropRect = new Phaser.Rectangle(0, 0, width / 2, radius * 2); //width);
-        this.fillSprite.crop(this.cropRect);
-
-        this.graphics.visible = false;
-    }
-
-    _createClass(ProgressBar, [{
-        key: "update",
-        value: function update(percent) {
-
-            percent = this.game.math.clamp(percent, 0, 1);
-
-            if (this.fillSprite.tint !== this.color) this.fillSprite.tint = this.color;
-
-            if (percent !== 0) {
-
-                var fillWidth = Math.round(percent * this.fullWidth);
-                if (this.lastWidth === fillWidth) {
-                    return;
-                }
-
-                this.graphics.visible = true;
-
-                this.lastWidth = fillWidth;
-
-                this.cropRect.width = fillWidth;
-                this.fillSprite.updateCrop();
-            } else {
+                _classCallCheck(this, ProgressBar);
 
                 this.lastWidth = 0;
-                this.graphics.visible = false;
-            }
-        }
-    }]);
+                this.game = game;
+                this.graphics = this.game.add.group();
 
-    return ProgressBar;
+                this.fullWidth = width; // + radius * 2;
+                //this.width = width;
+                //this.height = radius * 2
+
+                //this.radius = radius;
+                //this.width = width;
+                this.color = color;
+                //this.lineWidth = lineWidth;
+
+                var s = sprite_type ? sprite_type : "small_progress";
+
+                var bg = game.add.sprite(0, 0, "ALL_IMAGES", s);
+
+                this.graphics.addChild(bg);
+
+                var fillS = fill_sprite_type ? fill_sprite_type : s;
+
+                this.fillSprite = game.add.sprite(0, 0, "ALL_IMAGES", fillS);
+
+                if (this.color) this.fillSprite.tint = this.color;
+
+                this.graphics.addChild(this.fillSprite);
+
+                this.fullWidth = this.fillSprite.width; // + radius * 2;
+
+                this.graphics.y = -30;
+                this.graphics.x = -this.fillSprite.width / 2;
+
+                this.cropRect = new Phaser.Rectangle(0, 0, 0, this.fillSprite.height); //width);
+                this.fillSprite.crop(this.cropRect);
+
+                this.graphics.visible = false;
+        }
+
+        _createClass(ProgressBar, [{
+                key: "update",
+                value: function update(percent) {
+
+                        percent = this.game.math.clamp(percent, 0, 1);
+
+                        if (this.color && this.fillSprite.tint !== this.color) this.fillSprite.tint = this.color;
+
+                        if (percent !== 0) {
+
+                                var fillWidth = Math.round(percent * this.fullWidth);
+                                if (this.lastWidth === fillWidth) {
+                                        return;
+                                }
+
+                                this.graphics.visible = true;
+
+                                this.lastWidth = fillWidth;
+
+                                this.cropRect.width = fillWidth;
+                                this.fillSprite.updateCrop();
+                        } else {
+
+                                this.lastWidth = 0;
+                                this.graphics.visible = false;
+                        }
+                }
+        }]);
+
+        return ProgressBar;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (ProgressBar);
@@ -10051,13 +10061,11 @@ module.exports = __webpack_require__.p + "assets/7890ea6754fb124fa101877cec2457d
 /* 332 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/db6f743778d16a9654eae41d35e18b46.png";
+module.exports = __webpack_require__.p + "assets/d098fd1c96279cb64f456bfe7bc34d83.png";
 
 /***/ }),
 /* 333 */
 /***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/e2face87d740b859550321a863c8a26c.json";
 
 /***/ }),
 /* 334 */
@@ -14144,16 +14152,17 @@ var GameInterface = function () {
         this.score = new __WEBPACK_IMPORTED_MODULE_0__objects_ProgressBar_js__["a" /* default */]({
             radius: 10,
             width: 180,
-            color: 0xf0526f,
+            color: null,
             lineWidth: 10,
             game: this.game,
-            sprite_type: "big_progress"
+            sprite_type: "big_progress",
+            fill_sprite_type: "big_progress_fill"
         });
         this.score.graphics.visible = true;
         this.score.graphics.y = isWide ? 20 : 10;
         this.score.graphics.x = this.game.width / 2 - 90;
         this.group.add(this.score.graphics);
-        this.score.update(0.01);
+        //this.score.update(0.01);
 
         if (!isWide) this.score.graphics.x = this.game.width - this.score.fullWidth - 10;
 
@@ -15000,8 +15009,6 @@ var isPathinfindingDisabled = false;
 
 var Updater = function () {
   function Updater(collider) {
-    var _this = this;
-
     _classCallCheck(this, Updater);
 
     this.collider = collider;
@@ -15011,11 +15018,15 @@ var Updater = function () {
     this.immovableMatrix = this._getMatrix('immovable', now);
     if (obstacleTimer < now) {
       obstacleTimer = now + obstaclesTimeout;
-      this.collider.entities.filter(function (x) {
-        return x.obstacle;
-      }).forEach(function (x) {
-        return _this.collider.updatePersonalMatrix(x.sprite);
-      });
+      //
+      //this.collider.entities.filter(x => x.obstacle)
+      //    .forEach((x) => this.collider.updatePersonalMatrix(x.sprite))
+      for (var i = 0; i < this.collider.entities.length; i++) {
+        var x = this.collider.entities[i];
+        if (x.obstacle) {
+          this.collider.updatePersonalMatrix(x.sprite);
+        }
+      }
     }
 
     if (FORCE_DISABLE_PATHFINDING_ON_MOBILE) {
@@ -15027,13 +15038,17 @@ var Updater = function () {
   _createClass(Updater, [{
     key: "update",
     value: function update() {
-      var _this2 = this;
-
       var collider = this.collider,
           converter = this.converter;
 
       var now = new Date().getTime();
-      collider.entities.forEach(function (entity) {
+
+      //collider.entities.forEach((entity) => {
+
+      //(function(){
+      for (var i = 0; i < collider.entities.length; i++) {
+        var entity = collider.entities[i];
+
         var move = entity.move,
             sprite = entity.sprite,
             object = entity.object,
@@ -15043,8 +15058,15 @@ var Updater = function () {
             decision = entity.decision,
             lastTarget = entity.lastTarget;
 
+        //if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
 
-        if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
+        if (move.length === 0) {
+
+          if (sprite.mz) sprite.mz.stop();
+
+          continue;
+        }
+
         var _move$ = move[0],
             target = _move$.target,
             phasing = _move$.phasing,
@@ -15070,6 +15092,7 @@ var Updater = function () {
           var path = [moveFrom, moveTo];
           var pathClear = !equals(moveFrom, moveTo);
         } else {
+
           if (decision && lastDecisionTime < now && lastTarget === target) {
             var path = decision;
           } else {
@@ -15077,24 +15100,32 @@ var Updater = function () {
             entity.lastTarget = target;
             var finder = new __WEBPACK_IMPORTED_MODULE_0_pathfinding___default.a.AStarFinder({ allowDiagonal: true, dontCrossCorners: true });
             if (superphasing) {
-              var path = _this2._findImmovablePath({ finder: finder, from: moveFrom, to: moveTo });
+              var path = this._findImmovablePath({ finder: finder, from: moveFrom, to: moveTo });
             } else {
-              var path = _this2._findPath({ finder: finder, from: moveFrom, to: moveTo, personalMatrix: personalMatrix });
+              var path = this._findPath({ finder: finder, from: moveFrom, to: moveTo, personalMatrix: personalMatrix });
             }
           }
-          var pathClear = path[2] || mget(_this2.matrix, path[1]) === false;
+          var pathClear = path[2] || mget(this.matrix, path[1]) === false;
         }
 
         if (pathClear) {
+
           var nextTarget = converter.mCoordsToRCoords(path[1]);
           collider.invokeRawMoving(object, nextTarget);
         } else {
-          if (follow) return void sprite.body.stop();
+
+          //if (follow)  return void sprite.body.stop();
+          if (follow) {
+            sprite.body.stop();
+            continue;
+          }
+
           if (callback) callback();
+
           sprite.phasing = false;
           move.shift();
         }
-      });
+      } //);//})();
     }
   }, {
     key: "_findPath",
@@ -15243,22 +15274,32 @@ var Updater = function () {
           x1 = _target[0],
           y1 = _target[1];
 
-      personalMatrix.forEach(function (point) {
-        var _point = _slicedToArray(point, 2),
-            x2 = _point[0],
-            y2 = _point[1];
+      for (var i = 0; i < personalMatrix.length; i++) {
+        //personalMatrix.forEach(point => {
+        var _personalMatrix$i = _slicedToArray(personalMatrix[i], 2),
+            x2 = _personalMatrix$i[0],
+            y2 = _personalMatrix$i[1]; //point;
+
 
         mset(matrix, [Math.max(Math.min(x1 + x2, maxX), 0), Math.max(Math.min(y1 + y2, maxY), 0)], value);
-      });
+        //}//)
+      }
     }
   }, {
     key: "_cloneMatrix",
     value: function _cloneMatrix() {
-      return this.matrix.map(function (line) {
-        return line.map(function (item) {
-          return item;
-        });
-      });
+      var matrix = [];
+
+      for (var y = 0; y < this.matrix.length; y++) {
+        var line = this.matrix[y];
+        matrix[y] = [];
+        for (var x = 0; x < line.length; x++) {
+          matrix[y][x] = line[x];
+        }
+      }
+
+      return matrix;
+      //return this.matrix.map(line => line.map(item => item))
     }
   }, {
     key: "_printMatrix",
@@ -17801,15 +17842,21 @@ var BaseTweet = function () {
       }
 
       avatar.fixedToCamera = true;
+      // const mask = this.game.add.sprite(avatar.x, avatar.y, "ALL_IMAGES","tweet_mask");
 
-      var mask = this.game.add.graphics(__WEBPACK_IMPORTED_MODULE_0__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] / 2, height + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] / 2);
-      mask.beginFill(0xffffff);
-      mask.drawCircle(0, 0, __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */]);
-      mask.fixedToCamera = true;
-      avatar.mask = mask;
+      // mask Not working in current version
+      //const mask = this.game.add.graphics(MARGIN_LEFT+AVATAR_SIZE/2, height+AVATAR_SIZE/2);
+      //const mask = this.game.add.graphics(avatar.x + AVATAR_SIZE/2, avatar.y + AVATAR_SIZE/2);
+      //mask.beginFill(0xffffff);
+      //mask.drawCircle(0, 0, AVATAR_SIZE);
+      //mask.endFill();
 
-      tweet.add(mask);
+      //mask.fixedToCamera = true;
+
+      //avatar.mask = mask;
+      //tweet.add(mask);
       tweet.add(avatar);
+
       if (name) {
         //nameGameObject.cacheAsBitmap = true;
         tweet.add(nameGameObject);
@@ -17820,6 +17867,7 @@ var BaseTweet = function () {
       this.groupTweet = tweet;
 
       avatar.bringToTop();
+
       textGameObject.bringToTop();
       if (name) nameGameObject.bringToTop();
 

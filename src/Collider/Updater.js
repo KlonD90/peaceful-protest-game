@@ -42,8 +42,15 @@ class Updater {
     if (obstacleTimer < now)
     {
       obstacleTimer = now + obstaclesTimeout;
-      this.collider.entities.filter(x => x.obstacle)
-          .forEach((x) => this.collider.updatePersonalMatrix(x.sprite))
+      //
+      //this.collider.entities.filter(x => x.obstacle)
+      //    .forEach((x) => this.collider.updatePersonalMatrix(x.sprite))
+      for (var i = 0; i < this.collider.entities.length; i++) {
+        var x = this.collider.entities[i];
+        if(x.obstacle) {
+          this.collider.updatePersonalMatrix(x.sprite);
+        }
+      }
     }
 
     if(FORCE_DISABLE_PATHFINDING_ON_MOBILE){
@@ -56,10 +63,26 @@ class Updater {
   update (): void {
     const { collider, converter } = this
     const now = (new Date()).getTime();
-    collider.entities.forEach((entity) => {
+
+    //collider.entities.forEach((entity) => {
+
+    //(function(){
+    for (var i = 0; i < collider.entities.length; i++) {
+      var entity = collider.entities[i];
+
       const { move, sprite, object, personalMatrix, lastDecisionTime, lastCoords, decision, lastTarget } = entity;
 
-      if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
+      //if (move.length === 0) return void (sprite.mz && sprite.mz.stop());
+      
+      if (move.length === 0) {
+        
+        if(sprite.mz)
+          sprite.mz.stop();
+
+        continue;
+      }
+
+
       let { target, phasing, follow, callback, superphasing } = move[0]
       const moveFrom = converter.rCoordsToMCoords(sprite.body.center)
       const moveTo = converter.rCoordsToMCoords(target)
@@ -76,13 +99,17 @@ class Updater {
 
 //      phasing = true;
 
-      if (phasing || isPathinfindingDisabled) {
+      if (phasing || isPathinfindingDisabled)
+      {
      
         sprite.phasing = true
         var path = [moveFrom, moveTo]
         var pathClear = !equals(moveFrom, moveTo)
      
-      } else {
+      }
+      else
+      {
+      
         if (decision && lastDecisionTime < now && lastTarget === target)
         {
           var path = decision;
@@ -105,15 +132,25 @@ class Updater {
       }
 
       if (pathClear) {
+        
         const nextTarget = converter.mCoordsToRCoords(path[1])
         collider.invokeRawMoving(object, nextTarget)
+
       } else {
-        if (follow) return void sprite.body.stop();
-        if (callback) callback()
-        sprite.phasing = false
-        move.shift()
+        
+        //if (follow)  return void sprite.body.stop();
+        if (follow) {
+          sprite.body.stop();
+          continue;
+        }
+
+        if (callback)
+          callback();
+        
+        sprite.phasing = false;
+        move.shift();
       }
-    })
+    }//);//})();
   }
 
   _findPath(
@@ -200,14 +237,27 @@ class Updater {
     const { maxX, maxY } = this.converter
     const [x1, y1] = target
 
-    personalMatrix.forEach(point => {
-        const [x2, y2] = point;
+    for(let i = 0; i < personalMatrix.length; i++) {
+    //personalMatrix.forEach(point => {
+        const [x2, y2] = personalMatrix[i];//point;
         mset(matrix, [Math.max(Math.min(x1 + x2, maxX), 0), Math.max(Math.min(y1 + y2, maxY), 0)], value)
-    })
+    //}//)
+    }
   }
 
   _cloneMatrix() {
-    return this.matrix.map(line => line.map(item => item))
+    let matrix = [];
+
+    for (var y = 0; y < this.matrix.length; y++) {
+      let line = this.matrix[y];
+      matrix[y] = [];
+      for (var x = 0; x < line.length; x++) {
+        matrix[y][x] = line[x];
+      }
+    }
+
+    return matrix;
+    //return this.matrix.map(line => line.map(item => item))
   }
 
   _printMatrix(matrix){
