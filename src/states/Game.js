@@ -409,6 +409,23 @@ class Game {
             'help',
             {behavior: ManuallyBehavior}
         );
+/*
+        let _that = this;
+        window.gen100Tweets = function () {
+            for(var j = 0; j < 100; j++){
+              let tw = _that.mz.tweet.tweet(
+                    'Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам',
+                    'help',
+                    {behavior: ManuallyBehavior}
+                );
+              tw.show();
+              setTimeout(() => {
+                  tw.hide();
+              }, 3000);
+            }
+        }        
+  */  
+
         // this.mz.advices.shift = this.mz.tweet.tweet(
         //     'Чтобы бегать нажмите shift',
         //     'tw_help',

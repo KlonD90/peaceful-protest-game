@@ -11235,6 +11235,23 @@ var Game = function () {
             this.mz.advices.move = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_22__objects_Tweets_ManuallyBehavior__["a" /* default */] });
             this.mz.advices.space = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Нажмите ПРОБЕЛ, чтобы начать агитацию/перестать агитировать' : 'Нажмите на значок справа внизу экрана, чтобы начать/закончить агитацию', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_22__objects_Tweets_ManuallyBehavior__["a" /* default */] });
             this.mz.advices.agitate = this.mz.tweet.tweet('Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_22__objects_Tweets_ManuallyBehavior__["a" /* default */] });
+            /*
+                    let _that = this;
+                    window.gen100Tweets = function () {
+                        for(var j = 0; j < 100; j++){
+                          let tw = _that.mz.tweet.tweet(
+                                'Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам',
+                                'help',
+                                {behavior: ManuallyBehavior}
+                            );
+                          tw.show();
+                          setTimeout(() => {
+                              tw.hide();
+                          }, 3000);
+                        }
+                    }        
+              */
+
             // this.mz.advices.shift = this.mz.tweet.tweet(
             //     'Чтобы бегать нажмите shift',
             //     'tw_help',
