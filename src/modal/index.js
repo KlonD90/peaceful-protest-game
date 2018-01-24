@@ -104,8 +104,8 @@ const resultTypes = {
   'success': {
     title: 'Отличный митинг! Вы бодры и на свободе',
     text: (ratingPos) => {
-      const ratingMap = ['первое', 'второе']
-      if (ratingPos < 2) {
+      const ratingMap = ['первое', 'второе', 'третье']
+      if (ratingPos < 3) {
         return `Поздравляем! Вы заняли ${ratingMap[ratingPos]} место в сегодняшнем топе, укажите свою почту для участия в розыгрыше призов.`;
       }
 
@@ -188,7 +188,7 @@ const show = (type, currentScore, cb) => {
       if (typeof context.text === 'function')
         context.text = context.text(i);
     }
-    context.scores = scores.slice(0, 2);
+    context.scores = scores.slice(0, 3);
     context.currentURL = encodeURIComponent(window.location.href+`?result=${type}&_share=1`);
 
     _show(context, currentScore, cb);

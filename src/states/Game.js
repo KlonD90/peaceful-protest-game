@@ -1391,7 +1391,7 @@ class Game {
         const distance = (direction === 'ltor' ? 1 : -1) * (this.game.world.width / rnd);
         let foundStar = !(this.mz.objects.star && this.mz.objects.star.sprite.alive);
         const { x: starX, y: starY } = this.mz.objects.star.sprite.body.center;
-        for (let i=0; i<rnd; i++)
+        for (let i=0; i<=rnd; i++)
         {
             const t= this.getRandomCoordinates({x: st + distance * i});
             if (!foundStar) {
@@ -1415,14 +1415,6 @@ class Game {
             targets.push(t);
         }
 
-
-
-
-
-        // targets.push({
-        //   x: direction === 'ltor' ? this.game.world.width + 100 : -100,
-        //   y: this.getRandomCoordinateY(),
-        // })
 
         console.log('target omon', targets);
 

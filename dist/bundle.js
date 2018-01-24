@@ -9518,7 +9518,7 @@ module.exports = function xhrAdapter(config) {
     // For IE 8/9 CORS support
     // Only supports POST and GET calls and doesn't returns the response headers.
     // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
-    if (undefined !== 'test' &&
+    if ("development" !== 'test' &&
         typeof window !== 'undefined' &&
         window.XDomainRequest && !('withCredentials' in request) &&
         !isURLSameOrigin(config.url)) {
@@ -9974,7 +9974,7 @@ function init() {
   window.game = game;
 }
 
-if (undefined === 'production') window.protestGameInit = init;else setTimeout(init, 50);
+if (false) window.protestGameInit = init;else setTimeout(init, 50);
 
 // document.querySelector('.game-background').style.backgroundImage = `url(${require('./assets/pattern.png')})`;
 // document.querySelector('.game-background').style.backgroundImage = `url(${require('./assets/background.png')})`;
@@ -12071,7 +12071,7 @@ var Game = function () {
                 starX = _mz$objects$star$spri.x,
                 starY = _mz$objects$star$spri.y;
 
-            for (var _i13 = 0; _i13 < rnd; _i13++) {
+            for (var _i13 = 0; _i13 <= rnd; _i13++) {
                 var t = this.getRandomCoordinates({ x: st + distance * _i13 });
                 if (!foundStar) {
                     if (direction === 'ltor') {
@@ -12088,11 +12088,6 @@ var Game = function () {
                 }
                 targets.push(t);
             }
-
-            // targets.push({
-            //   x: direction === 'ltor' ? this.game.world.width + 100 : -100,
-            //   y: this.getRandomCoordinateY(),
-            // })
 
             console.log('target omon', targets);
 
@@ -17983,7 +17978,7 @@ var AVATAR_TEXT_SPACING = 20;
 
 
 // import font from  'style-loader!css-loader!./font.css';
-if (undefined === 'development') __webpack_require__(444);
+if (true) __webpack_require__(444);
 
 var HOST_URL = 'https://v3-stage.zona.media';
 // const HOST_URL = 'http://localhost:8081';
