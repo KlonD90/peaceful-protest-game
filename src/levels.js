@@ -81,7 +81,7 @@ export default {
             scoreThreshold: 300
         },
         star: {
-            score: 200
+            score: 0
         }
     },
     // level2: {
