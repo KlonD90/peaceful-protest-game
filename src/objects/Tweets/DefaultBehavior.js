@@ -62,10 +62,12 @@ export default class DefaultBehavior {
     const bgTween = game.add.tween(this.tweet.bg);
     bgTween.to({
       alpha: 0,
-    }, animOptions.fadeOut*1.2, Phaser.Easing.Default, true)
+    }, animOptions.fadeOut*1.2, Phaser.Easing.Default, true);
+
     bgTween.onComplete.add(() => {
       // испускаем событие об оконачательном скрытии
       this.tweet.hided.dispatch();
+     // this.tween.destroy();
     });
   }
 }

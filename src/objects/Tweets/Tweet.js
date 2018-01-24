@@ -30,7 +30,22 @@ export default class BaseTweet {
     this.hided = new Phaser.Signal();
     this.showed = new Phaser.Signal();
     this.nextTweet = new Phaser.Signal();
-    this.destroy = new Phaser.Signal();
+    this.destroy = new Phaser.Signal(); // Молодец! Оверайд destory
+    
+    
+
+    //destroy after hide
+    this.hided.add(() => {
+      this.destroy.dispatch();
+    });
+
+    this.destroy.add(() => {
+      this.groupAll.killAll();
+      this.groupAll.destroy();
+      console.log("TWEET:", "destroy");
+    });
+
+
   }
   set(key, val) {
     this[key] = val;
@@ -179,6 +194,7 @@ export default class BaseTweet {
   destroy() {
     this.groupAll.killAll();
     this.groupAll.destroy();
+    console.log("TWEET:", "destroy");
   }
 
   show() {

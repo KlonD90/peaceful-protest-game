@@ -933,7 +933,7 @@ module.exports = {
         },
         protesters: {
             count: {
-                start: 1, //100,
+                start: 100,
                 max: 100,
                 add: 14
             },
@@ -4130,9 +4130,11 @@ var DefaultBehavior = function () {
       bgTween.to({
         alpha: 0
       }, animOptions.fadeOut * 1.2, Phaser.Easing.Default, true);
+
       bgTween.onComplete.add(function () {
         // испускаем событие об оконачательном скрытии
         _this2.tweet.hided.dispatch();
+        // this.tween.destroy();
       });
     }
   }]);
@@ -11150,8 +11152,8 @@ var Game = function () {
             // press
             this.onFinishShooting = this.handleFinishShooting.bind(this);
             var pressRequired = this.getPressRequiredNumber();
-            for (var _i = this.mz.arrays.press.length; _i < pressRequired; _i++) {
-                var isFirst = _i === 0;
+            for (var i = this.mz.arrays.press.length; i < pressRequired; i++) {
+                var isFirst = i === 0;
                 var coords = isFirst ? {
                     x: this.mz.objects.player.sprite.x + 20,
                     y: this.mz.objects.player.sprite.y - 50
@@ -11167,7 +11169,7 @@ var Game = function () {
                     cooldownDuration: this.mz.level.press.duration * pressRequired * 2,
                     onFinishShooting: this.onFinishShooting,
                     atlasKey: 'ALL_IMAGES',
-                    spriteName: 'journalist' + _i
+                    spriteName: 'journalist' + i
                 }));
                 this.mz.arrays.press.push(journalist.sprite);
                 this.mz.groups.d.add(journalist.sprite);
@@ -11299,8 +11301,8 @@ var Game = function () {
                 posterProtesters.push(this.mz.objects.player.sprite);
             }
             var worldBounds = this.game.world.bounds;
-            for (var _i2 = 0; _i2 < this.mz.arrays.protesters.length; _i2++) {
-                var sprite = this.mz.arrays.protesters[_i2];
+            for (var _i = 0; _i < this.mz.arrays.protesters.length; _i++) {
+                var sprite = this.mz.arrays.protesters[_i];
                 if (!sprite.alive) {
                     if (this.mz.protesters.toRevive !== 0) {
                         var mood = Math.min(this.game.math.clamp(lastTickMeanMood, this.mz.level.protesters.mood, (this.mz.level.winningThreshold - 1) / 100), 0.6);
@@ -11376,7 +11378,11 @@ var Game = function () {
             }
 
             // update journalists
-            this.mz.arrays.press.forEach(function (journalistSprite) {
+            //this.mz.arrays.press.forEach(journalistSprite => {
+            var jcount = this.mz.arrays.press.length;
+            for (var j = 0; j < jcount; j++) {
+
+                var journalistSprite = this.mz.arrays.press[j];
                 var journalist = journalistSprite.mz;
                 if (journalist.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["M" /* JOURNALIST_MODE_ARRESTED */]) {
                     return;
@@ -11384,23 +11390,23 @@ var Game = function () {
                 if (journalistSprite.alive) {
                     var newTarget = null;
 
-                    if (!_this2.mz.gameEnded && journalist.FOV.isActive && _this2.mz.objects.player.showPoster && journalist.FOV.containsPoint(_this2.mz.objects.player.sprite.body.center)) {
-                        newTarget = _this2.mz.objects.player.sprite;
+                    if (!this.mz.gameEnded && journalist.FOV.isActive && this.mz.objects.player.showPoster && journalist.FOV.containsPoint(this.mz.objects.player.sprite.body.center)) {
+                        newTarget = this.mz.objects.player.sprite;
                     }
 
-                    if (_this2.mz.score >= _this2.mz.pressScore && !_this2.mz.pressJailed) {
+                    if (this.mz.score >= this.mz.pressScore && !this.mz.pressJailed) {
                         var protesterBounds = journalistSprite.getBounds();
 
                         // vs cops
-                        for (var j = 0; j < _this2.mz.arrays.cops.length; j++) {
-                            var copSprite = _this2.mz.arrays.cops[j];
+                        for (var _j = 0; _j < this.mz.arrays.cops.length; _j++) {
+                            var copSprite = this.mz.arrays.cops[_j];
                             if (!copSprite.alive || copSprite.mz.target !== journalistSprite || !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["e" /* COP_MODE_STUN */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */]) {
                                 continue;
                             }
 
-                            _this2.proceedToJail(journalistSprite, copSprite);
+                            this.proceedToJail(journalistSprite, copSprite);
                             journalist.FOV.kill();
-                            _this2.mz.pressJailed = true;
+                            this.mz.pressJailed = true;
                             return;
                         }
                     }
@@ -11413,7 +11419,7 @@ var Game = function () {
 
                     journalist.update();
                 }
-            });
+            } //);
 
             // update swat
             if (this.mz.objects.swat) {
@@ -11453,15 +11459,15 @@ var Game = function () {
             this.handleLeavingWagons();
 
             var pressRequired = this.getPressRequiredNumber();
-            for (var _i3 = this.mz.arrays.press.length; _i3 < pressRequired; _i3++) {
-                var isFirst = _i3 === 0;
+            for (var _i2 = this.mz.arrays.press.length; _i2 < pressRequired; _i2++) {
+                var isFirst = _i2 === 0;
                 var coords = isFirst ? {
                     x: this.mz.objects.player.sprite.x + 20,
                     y: this.mz.objects.player.sprite.y - 20
                 } : this.getRandomCoordinates();
                 console.log('press first', isFirst, coords);
 
-                var journalist = this.createPrefab(__WEBPACK_IMPORTED_MODULE_3__objects_Journalist_js__["a" /* default */], _extends({}, coords, {
+                var _journalist = this.createPrefab(__WEBPACK_IMPORTED_MODULE_3__objects_Journalist_js__["a" /* default */], _extends({}, coords, {
                     fov: {
                         group: this.mz.groups.pressFOV,
                         distance: this.mz.level.press.fov.distance,
@@ -11472,37 +11478,45 @@ var Game = function () {
                     cooldownDuration: this.mz.level.press.duration * pressRequired * 2,
                     onFinishShooting: this.onFinishShooting,
                     atlasKey: "ALL_IMAGES",
-                    spriteName: 'journalist' + _i3
+                    spriteName: 'journalist' + _i2
                 }));
 
-                this.mz.arrays.press.push(journalist.sprite);
-                this.mz.groups.d.add(journalist.sprite);
-                journalist.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
+                this.mz.arrays.press.push(_journalist.sprite);
+                this.mz.groups.d.add(_journalist.sprite);
+                _journalist.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
             }
-            var protesterTargets = this.mz.arrays.protesters.filter(function (x) {
-                return x.mz.showPoster;
-            }).concat(this.mz.score >= this.mz.pressScore && !this.mz.pressJailed ? this.mz.arrays.press : []);
+
+            // нужно переписать это место. Я ХЗ как, не хочу ломать, что бы без аллокаций
+            //const protesterTargets = this.mz.arrays.protesters.filter(x => x.mz.showPoster).concat(
+            var protesterTargets = this.mz.arrays.protesters;
+
+            if (this.mz.score >= this.mz.pressScore && !this.mz.pressJailed) {
+                protesterTargets = protesterTargets.concat(this.mz.arrays.press);
+            }
+
             var lastCopDecisionTimeout = 200;
             var attractionStrength = 0;
+
             if (this.mz.objects.player.showPoster) {
                 attractionStrength = 0.2;
                 for (var p = 0; p < this.mz.arrays.press; p++) {
-                    if (this.mz.arrays.press[i].mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["O" /* JOURNALIST_MODE_SHOOTING */]) {
+                    if (this.mz.arrays.press[p].mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["O" /* JOURNALIST_MODE_SHOOTING */]) {
                         attractionStrength += 0.4;
                     }
                 }
                 protesterTargets.push(this.mz.objects.player.sprite);
             }
+
             var copAttr = Math.min(1, attractionStrength * this.mz.objects.player.power);
-            for (var _i4 = 0; _i4 < this.mz.cops.alive; _i4++) {
-                var copSprite = this.mz.arrays.cops[_i4];
-                var cop = copSprite.mz;
+            for (var _i3 = 0; _i3 < this.mz.cops.alive; _i3++) {
+                var _copSprite = this.mz.arrays.cops[_i3];
+                var cop = _copSprite.mz;
 
                 if (cop.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["S" /* PLAYER_MODE_FIGHT */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["U" /* PLAYER_MODE_STUN */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */]) {
                     var playerCenter = this.mz.objects.player.sprite.body.center;
-                    var diffCop = Math.abs(copSprite.body.center.x - playerCenter.x) + Math.abs(copSprite.body.center.y - playerCenter.y);
+                    var diffCop = Math.abs(_copSprite.body.center.x - playerCenter.x) + Math.abs(_copSprite.body.center.y - playerCenter.y);
                     if (diffCop < 40) {
-                        this.mz.objects.player.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["S" /* PLAYER_MODE_FIGHT */], { target: copSprite });
+                        this.mz.objects.player.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["S" /* PLAYER_MODE_FIGHT */], { target: _copSprite });
                         cop.setMode(__WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */]);
                     }
                 }
@@ -11515,34 +11529,37 @@ var Game = function () {
                     cop.attractionStrength = copAttr;
 
                     // find target for a cop
-                    var newTarget = null;
+                    var _newTarget = null;
                     var distanceToTargetSq = Infinity;
 
-                    for (var _i5 = 0; _i5 < protesterTargets.length; _i5++) {
-                        var protester = protesterTargets[_i5].mz;
-                        if (!protester.sprite.alive || !cop.FOV.containsPoint(protester.sprite.body.center)) {
+                    for (var _i4 = 0; _i4 < protesterTargets.length; _i4++) {
+                        var protester = protesterTargets[_i4].mz;
+
+                        if (!protester.showPoster || !protester.sprite.alive || !cop.FOV.containsPoint(protester.sprite.body.center)) {
                             continue;
                         }
-                        var distanceToProtesterSq = this.getDistanceSq(copSprite.body.center, protester.sprite.body.center);
+
+                        var distanceToProtesterSq = this.getDistanceSq(_copSprite.body.center, protester.sprite.body.center);
                         // give higher priority to current target
                         if (protester.sprite === cop.target) {
                             distanceToProtesterSq *= 3 / 4;
                         }
                         if (distanceToProtesterSq < distanceToTargetSq) {
-                            newTarget = protester.sprite;
+                            _newTarget = protester.sprite;
                             distanceToTargetSq = distanceToProtesterSq;
                         }
                         //console.log('new target', newTarget);
                     }
+
                     if (cop.target && cop.target.mz.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] && cop.FOV.containsPoint(cop.target.body.center)) {
-                        var _distanceToProtesterSq = this.getDistanceSq(copSprite.body.center, cop.target.body.center) * 3 / 4;;
+                        var _distanceToProtesterSq = this.getDistanceSq(_copSprite.body.center, cop.target.body.center) * 3 / 4;;
                         if (_distanceToProtesterSq < distanceToTargetSq) {
-                            newTarget = cop.target;
+                            _newTarget = cop.target;
                         }
                     }
-                    if (newTarget) {
+                    if (_newTarget) {
                         // if theres a target in a view, pursue him
-                        cop.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["d" /* COP_MODE_PURSUE */], { target: newTarget });
+                        cop.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["d" /* COP_MODE_PURSUE */], { target: _newTarget });
                     } else if (cop.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["f" /* COP_MODE_WANDER */]) {
                         // else wander around, if not yet
                         cop.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["f" /* COP_MODE_WANDER */]);
@@ -11552,58 +11569,38 @@ var Game = function () {
                 cop.update();
             }
 
+            //охеренно, что... и как это не даст релок?
             // protesters collision
             var allProtesters = [].concat(_toConsumableArray(this.mz.arrays.protesters), [this.mz.objects.player.sprite]);
             if (this.mz.objects.star) allProtesters.push(this.mz.objects.star.sprite);
 
             this.swatFrame = (this.swatFrame || 0) + 1;
 
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
+            for (var _j2 = 0; _j2 < allProtesters.length; _j2++) {
 
-            try {
-                for (var _iterator2 = allProtesters[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var _protesterSprite = _step2.value;
-
-
-                    if (!_protesterSprite.alive || _protesterSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */]) {
-                        continue;
-                    }
-
-                    var protesterBounds = _protesterSprite.getBounds();
-
-                    // vs swat
-                    if (this.mz.objects.swat) {
-                        var j = this.swatFrame % this.mz.objects.swat.sprites.length;
-                        var swatSprite = this.mz.objects.swat.sprites[j];
-                        if (swatSprite.children.length !== 0 || swatSprite.x <= 0 || swatSprite.x >= this.game.world.width || !Phaser.Rectangle.intersects(protesterBounds, swatSprite.getBounds())) {
-                            continue;
-                        }
-                        this.arrest(_protesterSprite, swatSprite);
-                    }
+                var _protesterSprite = allProtesters[_j2];
+                if (!_protesterSprite.alive || _protesterSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */]) {
+                    continue;
                 }
 
-                // player collisions
-            } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
+                var _protesterBounds = _protesterSprite.getBounds();
+
+                // vs swat
+                if (this.mz.objects.swat) {
+                    var _j3 = this.swatFrame % this.mz.objects.swat.sprites.length;
+                    var swatSprite = this.mz.objects.swat.sprites[_j3];
+                    if (swatSprite.children.length !== 0 || swatSprite.x <= 0 || swatSprite.x >= this.game.world.width || !Phaser.Rectangle.intersects(_protesterBounds, swatSprite.getBounds())) {
+                        continue;
                     }
-                } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
-                    }
+                    this.arrest(_protesterSprite, swatSprite);
                 }
             }
 
+            // player collisions
             if (this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] && !this.mz.gameEnded) {
                 // vs posters
-                for (var _i6 = 0; _i6 < this.mz.arrays.droppedPosters.length; _i6++) {
-                    var droppedPoster = this.mz.arrays.droppedPosters[_i6];
+                for (var _i5 = 0; _i5 < this.mz.arrays.droppedPosters.length; _i5++) {
+                    var droppedPoster = this.mz.arrays.droppedPosters[_i5];
                     if (!droppedPoster.sprite.alive) {
                         continue;
                     }
@@ -11623,6 +11620,7 @@ var Game = function () {
             var checkFollowPlayer = function checkFollowPlayer(sprite) {
                 return !(sprite && sprite.mz && sprite.mz.mode && sprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["W" /* PROTESTER_MODE_FOLLOW */] && sprite.mz.following && sprite.mz.following.target === _this2.mz.objects.player.sprite);
             };
+
             var pursueTarget = function pursueTarget(mode, isArrest) {
                 return function (copSprite, protesterSprite) {
                     var isTarget = copSprite.mz.target === protesterSprite && copSprite.mz.mode === mode;
@@ -11635,6 +11633,7 @@ var Game = function () {
                     return !isTarget;
                 };
             };
+
             this.game.physics.arcade.collide(this.mz.objects.player.sprite, this.mz.arrays.protesters, null, function (sprite1, sprite2) {
                 return pursueTarget(__WEBPACK_IMPORTED_MODULE_21__constants__["Y" /* PROTESTER_MODE_NOD */])(sprite2, sprite1) && checkFollowPlayer(sprite1) && checkFollowPlayer(sprite2);
             });
@@ -11728,11 +11727,14 @@ var Game = function () {
             });
 
             // update posters
-            this.mz.arrays.droppedPosters.forEach(function (droppedPoster) {
-                if (droppedPoster.sprite.alive) {
-                    droppedPoster.update();
+            //this.mz.arrays.droppedPosters.forEach(droppedPoster => {
+            var dpcount = this.mz.arrays.droppedPosters;
+            for (var i = 0; i < dpcount; i++) {
+
+                if (this.mz.arrays.droppedPosters[i].sprite.alive) {
+                    this.mz.arrays.droppedPosters[i].update();
                 }
-            });
+            } //);
 
             this.mz.postersToRevive.forEach(this.createPoster, this);
             this.mz.postersToRevive = [];
@@ -11866,7 +11868,7 @@ var Game = function () {
         value: function createCops() {
             var totalCount = this.mz.level.cops.count[this.mz.level.cops.count.length - 1][1];
             this.mz.cops.alive = this.getCopsRequiredNumber();
-            for (var _i7 = 0; _i7 < totalCount; _i7++) {
+            for (var i = 0; i < totalCount; i++) {
                 var x = void 0,
                     y = void 0;
                 // if (i < this.mz.cops.alive) {
@@ -11890,7 +11892,7 @@ var Game = function () {
                     speed: this.mz.level.cops.speed,
                     atlasKey: 'ALL_IMAGES',
                     spriteKey: "cop",
-                    spriteName: 'cop' + _i7
+                    spriteName: 'cop' + i
                 });
 
                 this.mz.arrays.cops.push(cop.sprite);
@@ -11904,8 +11906,8 @@ var Game = function () {
     }, {
         key: 'reviveCops',
         value: function reviveCops(count) {
-            for (var _i8 = 0; _i8 < count; _i8++) {
-                var index = _i8 + this.mz.cops.alive;
+            for (var i = 0; i < count; i++) {
+                var index = i + this.mz.cops.alive;
                 var copSprite = this.mz.arrays.cops[index];
                 copSprite.mz.revive(Boolean(index % 2));
             }
@@ -11914,9 +11916,9 @@ var Game = function () {
         key: 'getCopsRequiredNumber',
         value: function getCopsRequiredNumber() {
             var result = 0;
-            for (var _i9 = 0; _i9 < this.mz.level.cops.count.length; _i9++) {
-                if (this.mz.score <= this.mz.level.cops.count[_i9][0]) {
-                    result = this.mz.level.cops.count[_i9][1];
+            for (var i = 0; i < this.mz.level.cops.count.length; i++) {
+                if (this.mz.score <= this.mz.level.cops.count[i][0]) {
+                    result = this.mz.level.cops.count[i][1];
                     break;
                 }
             }
@@ -11926,9 +11928,9 @@ var Game = function () {
         key: 'getPressRequiredNumber',
         value: function getPressRequiredNumber() {
             var result = 0;
-            for (var _i10 = 0; _i10 < this.mz.level.press.count.length; _i10++) {
-                if (this.mz.score <= this.mz.level.press.count[_i10][0]) {
-                    result = this.mz.level.press.count[_i10][1];
+            for (var i = 0; i < this.mz.level.press.count.length; i++) {
+                if (this.mz.score <= this.mz.level.press.count[i][0]) {
+                    result = this.mz.level.press.count[i][1];
                     break;
                 }
             }
@@ -11940,15 +11942,16 @@ var Game = function () {
             var count = this.mz.level.protesters.count.max;
             var onDropPoster = this.handleDropPoster.bind(this);
             var onLeft = this.handleProtesterLeft.bind(this);
-            for (var _i11 = 0; _i11 < count; _i11++) {
-                var coords = _i11 === 0 ? { x: this.game.world.centerX, y: this.game.world.centerY } : this.getRandomCoordinates();
+
+            for (var i = 0; i < count; i++) {
+                var coords = i === 0 ? { x: this.game.world.centerX, y: this.game.world.centerY } : this.getRandomCoordinates();
 
                 var protester = this.createPrefab(__WEBPACK_IMPORTED_MODULE_1__objects_NPCProtester_js__["a" /* default */], _extends({}, coords, {
                     group: this.mz.groups.d,
                     speed: this.mz.level.protesters.speed,
                     atlasKey: "ALL_IMAGES",
                     spriteKey: 'npc_0' + (Math.floor(Math.random() * 8) + 1),
-                    spriteName: 'protester' + _i11,
+                    spriteName: 'protester' + i,
                     mood: this.mz.level.protesters.mood,
                     moodUp: this.mz.level.protesters.moodUp,
                     moodDown: this.mz.level.protesters.moodDown,
@@ -11997,8 +12000,8 @@ var Game = function () {
         key: 'createPoster',
         value: function createPoster(coords) {
             var isRevived = false;
-            for (var _i12 = 0; _i12 < this.mz.arrays.droppedPosters.length; _i12++) {
-                var droppedPoster = this.mz.arrays.droppedPosters[_i12];
+            for (var i = 0; i < this.mz.arrays.droppedPosters.length; i++) {
+                var droppedPoster = this.mz.arrays.droppedPosters[i];
                 if (!droppedPoster.sprite.alive) {
                     droppedPoster.revive(coords);
                     isRevived = true;
@@ -12017,21 +12020,26 @@ var Game = function () {
     }, {
         key: 'proceedToJail',
         value: function proceedToJail(protesterSprite, copSprite) {
-            var _this3 = this;
-
             var closestCarCoords = null;
             var minDistanceSq = Infinity;
-            this.mz.arrays.wagons.forEach(function (carSprite) {
+
+            //this.mz.arrays.wagons.forEach(carSprite => {
+            var count = this.mz.arrays.wagons.length;
+            var carSprite = null;
+            for (var i = 0; i < count; i++) {
+
+                carSprite = this.mz.arrays.wagons[i];
+
                 var carCoords = {
                     x: carSprite.body.x + carSprite.body.width / 2 + carSprite.entagleX,
                     y: carSprite.body.y + carSprite.body.height + carSprite.entagleY
                 };
-                var distanceToCarSq = _this3.getDistanceSq(copSprite, carCoords);
+                var distanceToCarSq = this.getDistanceSq(copSprite, carCoords);
                 if (distanceToCarSq < minDistanceSq) {
                     closestCarCoords = carCoords;
                     minDistanceSq = distanceToCarSq;
                 }
-            });
+            } //);
 
             this.arrest(protesterSprite, copSprite);
             copSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */], { jailCoords: closestCarCoords });
@@ -12127,8 +12135,8 @@ var Game = function () {
                 starX = _mz$objects$star$spri.x,
                 starY = _mz$objects$star$spri.y;
 
-            for (var _i13 = 0; _i13 < rnd; _i13++) {
-                var t = this.getRandomCoordinates({ x: st + distance * _i13 });
+            for (var i = 0; i < rnd; i++) {
+                var t = this.getRandomCoordinates({ x: st + distance * i });
                 if (!foundStar) {
                     if (direction === 'ltor') {
                         if (t.x > starX) {
@@ -12175,7 +12183,7 @@ var Game = function () {
     }, {
         key: 'endGame',
         value: function endGame(mode) {
-            var _this4 = this;
+            var _this3 = this;
 
             this.mz.gameEnded = true;
 
@@ -12200,10 +12208,10 @@ var Game = function () {
                     sprite.mz.moodUp(1);
                 });
                 Object(__WEBPACK_IMPORTED_MODULE_15__modal___["a" /* default */])('success', this.mz.timers.gameTime.seconds, function () {
-                    _this4.mz.objects.audio.theme.stop();
-                    _this4.mz.objects.audio.meeting.stop();
+                    _this3.mz.objects.audio.theme.stop();
+                    _this3.mz.objects.audio.meeting.stop();
                     // this.mz.objects.audio.song.stop();
-                    _this4.game.state.start('Game', true, false, __WEBPACK_IMPORTED_MODULE_16__levels__["a" /* default */]['level1']);
+                    _this3.game.state.start('Game', true, false, __WEBPACK_IMPORTED_MODULE_16__levels__["a" /* default */]['level1']);
                 });
             } else {
 
@@ -12213,20 +12221,20 @@ var Game = function () {
                         {
                             // this.launchShield();
                             Object(__WEBPACK_IMPORTED_MODULE_15__modal___["a" /* default */])('desolation', 0, function () {
-                                _this4.mz.objects.audio.theme.stop();
-                                _this4.mz.objects.audio.meeting.stop();
+                                _this3.mz.objects.audio.theme.stop();
+                                _this3.mz.objects.audio.meeting.stop();
                                 // this.mz.objects.audio.song.stop();
-                                _this4.game.state.start('Game', true, false, __WEBPACK_IMPORTED_MODULE_16__levels__["a" /* default */]['level1']);
+                                _this3.game.state.start('Game', true, false, __WEBPACK_IMPORTED_MODULE_16__levels__["a" /* default */]['level1']);
                             });
                             break;
                         }
                     case __WEBPACK_IMPORTED_MODULE_19__constants_js__["g" /* END_GAME_PLAYER_KILLED */]:
                         {
                             Object(__WEBPACK_IMPORTED_MODULE_15__modal___["a" /* default */])('arrested', 0, function () {
-                                _this4.mz.objects.audio.theme.stop();
-                                _this4.mz.objects.audio.meeting.stop();
+                                _this3.mz.objects.audio.theme.stop();
+                                _this3.mz.objects.audio.meeting.stop();
                                 // this.mz.objects.audio.song.stop();
-                                _this4.game.state.start('Game', true, false, __WEBPACK_IMPORTED_MODULE_16__levels__["a" /* default */]['level1']);
+                                _this3.game.state.start('Game', true, false, __WEBPACK_IMPORTED_MODULE_16__levels__["a" /* default */]['level1']);
                             });
                             break;
                         }
@@ -12258,13 +12266,13 @@ var Game = function () {
             var extraDistance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 40;
 
             if (this.mz.levelObjects.paddyWagon) {
-                var _iteratorNormalCompletion3 = true;
-                var _didIteratorError3 = false;
-                var _iteratorError3 = undefined;
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
 
                 try {
-                    for (var _iterator3 = this.mz.levelObjects.paddyWagon[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                        var w = _step3.value;
+                    for (var _iterator2 = this.mz.levelObjects.paddyWagon[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        var w = _step2.value;
 
                         var startX = w.body.x - extraDistance;
                         var endX = w.body.x + w.body.width + extraDistance;
@@ -12273,16 +12281,16 @@ var Game = function () {
                         if (x > startX && x < endX && y > startY && y < endY) return true;
                     }
                 } catch (err) {
-                    _didIteratorError3 = true;
-                    _iteratorError3 = err;
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                            _iterator3.return();
+                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                            _iterator2.return();
                         }
                     } finally {
-                        if (_didIteratorError3) {
-                            throw _iteratorError3;
+                        if (_didIteratorError2) {
+                            throw _iteratorError2;
                         }
                     }
                 }
@@ -12392,20 +12400,20 @@ var Game = function () {
     }, {
         key: 'fightLose',
         value: function fightLose() {
-            var _this5 = this;
+            var _this4 = this;
 
-            var _loop = function _loop(_i14) {
-                var copSprite = _this5.mz.arrays.cops[_i14];
+            var _loop = function _loop(i) {
+                var copSprite = _this4.mz.arrays.cops[i];
                 var cop = copSprite.mz;
                 if (cop.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */]) {
                     var closestCarCoords = null;
                     var minDistanceSq = Infinity;
-                    _this5.mz.arrays.wagons.forEach(function (carSprite) {
+                    _this4.mz.arrays.wagons.forEach(function (carSprite) {
                         var carCoords = {
                             x: carSprite.body.x + carSprite.body.width / 2 + carSprite.entagleX,
                             y: carSprite.body.y + carSprite.body.height + carSprite.entagleY
                         };
-                        var distanceToCarSq = _this5.getDistanceSq(copSprite, carCoords);
+                        var distanceToCarSq = _this4.getDistanceSq(copSprite, carCoords);
                         if (distanceToCarSq < minDistanceSq) {
                             closestCarCoords = carCoords;
                             minDistanceSq = distanceToCarSq;
@@ -12416,8 +12424,8 @@ var Game = function () {
                 }
             };
 
-            for (var _i14 = 0; _i14 < this.mz.cops.alive; _i14++) {
-                _loop(_i14);
+            for (var i = 0; i < this.mz.cops.alive; i++) {
+                _loop(i);
             }
         }
     }, {
@@ -12430,9 +12438,9 @@ var Game = function () {
             var takens = __WEBPACK_IMPORTED_MODULE_0__objects_Player_js__["a" /* default */].instance.slots.getTakens();
             if (takens.length) {
                 this.mz.score += takens.length;
-                for (var _i15 = 0; _i15 < takens.length; _i15++) {
-                    if (takens[_i15].sprite) {
-                        this.playPoints(takens[_i15].sprite, 1);
+                for (var i = 0; i < takens.length; i++) {
+                    if (takens[i].sprite) {
+                        this.playPoints(takens[i].sprite, 1);
                     }
                 }
             }
@@ -12441,13 +12449,13 @@ var Game = function () {
     }, {
         key: 'fightWin',
         value: function fightWin() {
-            for (var _i16 = 0; _i16 < this.mz.cops.alive; _i16++) {
-                var _copSprite = this.mz.arrays.cops[_i16];
-                var cop = _copSprite.mz;
+            for (var i = 0; i < this.mz.cops.alive; i++) {
+                var _copSprite2 = this.mz.arrays.cops[i];
+                var cop = _copSprite2.mz;
                 if (cop.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */]) {
-                    this.unarrest(_copSprite);
+                    this.unarrest(_copSprite2);
                     cop.setMode(__WEBPACK_IMPORTED_MODULE_21__constants__["e" /* COP_MODE_STUN */]);
-                    this.increaseScore(10, _copSprite);
+                    this.increaseScore(10, _copSprite2);
                 }
             }
             if (Math.random() < 0.3) {
@@ -12472,14 +12480,14 @@ var Game = function () {
     }, {
         key: 'handleEnteringWagons',
         value: function handleEnteringWagons() {
-            for (var _i17 = 0; _i17 < this.mz.arrays.enterWagons.length; _i17++) {
-                var w = this.mz.arrays.enterWagons[_i17];
+            for (var i = 0; i < this.mz.arrays.enterWagons.length; i++) {
+                var w = this.mz.arrays.enterWagons[i];
                 if (w) {
                     var diff = Math.sqrt(Math.pow(w.wagon.x - w.x, 2) + Math.pow(w.wagon.y - w.y, 2));
                     if (diff < 10) {
                         this.handleGotPlaceWagon(w.wagon);
-                        this.mz.arrays.enterWagons.splice(_i17, 1);
-                        _i17--;
+                        this.mz.arrays.enterWagons.splice(i, 1);
+                        i--;
                     }
                 }
             }
@@ -12487,21 +12495,21 @@ var Game = function () {
     }, {
         key: 'handleLeaveWagon',
         value: function handleLeaveWagon(wagon, x, y) {
-            var _this6 = this;
+            var _this5 = this;
 
-            for (var _i18 = 0; _i18 < this.mz.arrays.wagons.length; _i18++) {
-                var w = this.mz.arrays.wagons[_i18];
+            for (var i = 0; i < this.mz.arrays.wagons.length; i++) {
+                var w = this.mz.arrays.wagons[i];
                 if (w === wagon) {
-                    this.mz.arrays.wagons.splice(_i18, 1);
+                    this.mz.arrays.wagons.splice(i, 1);
                     this.game.physics.arcade.moveToXY(wagon, x, y, 60);
                     this.mz.arrays.leftWagons.push(wagon);
                     break;
                 }
             }
-            for (var _i19 = 0; _i19 < this.mz.levelObjects.paddyWagon.length; _i19++) {
-                var _w = this.mz.levelObjects.paddyWagon[_i19];
+            for (var _i6 = 0; _i6 < this.mz.levelObjects.paddyWagon.length; _i6++) {
+                var _w = this.mz.levelObjects.paddyWagon[_i6];
                 if (_w === wagon) {
-                    this.mz.levelObjects.paddyWagon.splice(_i19, 1);
+                    this.mz.levelObjects.paddyWagon.splice(_i6, 1);
                     break;
                 }
             }
@@ -12510,12 +12518,12 @@ var Game = function () {
                 if (cop.alive && cop.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */]) {
                     var closestCarCoords = null;
                     var minDistanceSq = Infinity;
-                    _this6.mz.arrays.wagons.forEach(function (carSprite) {
+                    _this5.mz.arrays.wagons.forEach(function (carSprite) {
                         var carCoords = {
                             x: carSprite.body.x + carSprite.body.width / 2 + carSprite.entagleX,
                             y: carSprite.body.y + carSprite.body.height + carSprite.entagleY
                         };
-                        var distanceToCarSq = _this6.getDistanceSq(cop, carCoords);
+                        var distanceToCarSq = _this5.getDistanceSq(cop, carCoords);
                         if (distanceToCarSq < minDistanceSq) {
                             closestCarCoords = carCoords;
                             minDistanceSq = distanceToCarSq;
@@ -12525,27 +12533,27 @@ var Game = function () {
                 }
             };
 
-            var _iteratorNormalCompletion4 = true;
-            var _didIteratorError4 = false;
-            var _iteratorError4 = undefined;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
 
             try {
-                for (var _iterator4 = this.mz.arrays.cops[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                    var cop = _step4.value;
+                for (var _iterator3 = this.mz.arrays.cops[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var cop = _step3.value;
 
                     _loop2(cop);
                 }
             } catch (err) {
-                _didIteratorError4 = true;
-                _iteratorError4 = err;
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                        _iterator4.return();
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
                     }
                 } finally {
-                    if (_didIteratorError4) {
-                        throw _iteratorError4;
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
                     }
                 }
             }
@@ -12553,10 +12561,10 @@ var Game = function () {
     }, {
         key: 'handleLeavingWagons',
         value: function handleLeavingWagons() {
-            for (var _i20 = 0; _i20 < this.mz.arrays.leftWagons.length; _i20++) {
-                var w = this.mz.arrays.leftWagons[_i20];
+            for (var i = 0; i < this.mz.arrays.leftWagons.length; i++) {
+                var w = this.mz.arrays.leftWagons[i];
                 if (w && (w.y + w.height < 0 || w.x + w.width < 0 || w.y - w.height > this.game.world.height || w.x - w.width > this.game.world.width)) {
-                    this.mz.arrays.leftWagons.splice(_i20, 1);
+                    this.mz.arrays.leftWagons.splice(i, 1);
                     this.collider.removeEntityBySprite(w);
                     w.destroy();
                     break;
@@ -12577,7 +12585,7 @@ var Game = function () {
     }, {
         key: 'createLevelObjects',
         value: function createLevelObjects() {
-            var _this7 = this;
+            var _this6 = this;
 
             var _loop3 = function _loop3(key) {
                 var _levelObjects$key = __WEBPACK_IMPORTED_MODULE_18__levelObjects_js__["a" /* default */][key],
@@ -12590,11 +12598,11 @@ var Game = function () {
                     group = _levelObjects$key.group,
                     extras = _objectWithoutProperties(_levelObjects$key, ['speed', 'personalMatrix', 'sprite', 'positions', 'objectClass', 'immovable', 'group']);
 
-                if (!_this7.mz.levelObjects[key]) {
-                    _this7.mz.levelObjects[key] = [];
+                if (!_this6.mz.levelObjects[key]) {
+                    _this6.mz.levelObjects[key] = [];
                 }
-                _this7.mz.levelObjects[key] = _this7.mz.levelObjects[key].concat(positions.filter(function (x) {
-                    return !x.done && x.score <= _this7.mz.score;
+                _this6.mz.levelObjects[key] = _this6.mz.levelObjects[key].concat(positions.filter(function (x) {
+                    return !x.done && x.score <= _this6.mz.score;
                 }).map(function (obj, i) {
                     var startX = obj.startX,
                         startY = obj.startY,
@@ -12604,7 +12612,7 @@ var Game = function () {
                         entagleX = obj.entagleX,
                         entagleY = obj.entagleY;
 
-                    var levelObject = _this7.game.add.sprite(startX, startY, sprite, 0);
+                    var levelObject = _this6.game.add.sprite(startX, startY, sprite, 0);
                     levelObject.entagleX = entagleX;
                     levelObject.entagleY = entagleY;
                     levelObject.spriteName = sprite + i;
@@ -12612,7 +12620,7 @@ var Game = function () {
                     if (angle) {
                         levelObject.angle = angle;
                     }
-                    _this7.game.physics.arcade.enable(levelObject);
+                    _this6.game.physics.arcade.enable(levelObject);
                     if (angle === 90 || angle === -90) {
                         // levelObject.anchor.setTo(1, 0);
                         levelObject.body.setSize(levelObject.height, levelObject.width, levelObject.width / 2 - levelObject.height / 2, levelObject.height / 2 - levelObject.width / 2);
@@ -12621,16 +12629,16 @@ var Game = function () {
                     // {
                     //     levelObject.body.setSize(levelObject.width, levelObject.height, -levelObject.width/2, -levelObjects.height/2);
                     // }
-                    _this7.mz.groups[group].add(levelObject);
+                    _this6.mz.groups[group].add(levelObject);
 
                     if (immovable) {
                         levelObject.body.immovable = true;
                     }
-                    _this7.collider.addEntity({ sprite: levelObject, object: _this7.game, obstacle: true });
+                    _this6.collider.addEntity({ sprite: levelObject, object: _this6.game, obstacle: true });
                     if (key === 'paddyWagon') {
-                        _this7.mz.groups.cars.add(levelObject);
-                        _this7.mz.arrays.awaitWagons.push(levelObject);
-                        _this7.handleEnterWagon(levelObject, moveX, moveY);
+                        _this6.mz.groups.cars.add(levelObject);
+                        _this6.mz.arrays.awaitWagons.push(levelObject);
+                        _this6.handleEnterWagon(levelObject, moveX, moveY);
                     }
                     obj.done = true;
                     return levelObject;
@@ -12665,18 +12673,23 @@ var Game = function () {
     }, {
         key: 'updateCircle',
         value: function updateCircle() {
-            var _this8 = this;
+            var _this7 = this;
 
+            //пиздец коненечно. 
+            //и алокации и map через map
+            //ПЕРЕПИСЫВАТЬ НАДО 
             var circles = this.mz.arrays.press.map(function (x) {
-                return { sprite: x, color: 0xf7c169, circle: _this8.mz.circles.press, key: 'press' };
+                return { sprite: x, color: 0xf7c169, circle: _this7.mz.circles.press, key: 'press' };
             }).concat(this.mz.arrays.protesters.map(function (x) {
-                return { sprite: x, color: 0x6eed83, circle: _this8.mz.circles.npc, key: 'npc' };
+                return { sprite: x, color: 0x6eed83, circle: _this7.mz.circles.npc, key: 'npc' };
             })).concat(this.mz.arrays.cops.map(function (x) {
-                return { sprite: x, color: 0x2b3992, circle: _this8.mz.circles.cop, key: 'cop' };
+                return { sprite: x, color: 0x2b3992, circle: _this7.mz.circles.cop, key: 'cop' };
             })).filter(function (x) {
                 return !x.sprite.inCamera && x.sprite.visible;
             });
+
             var cameraBounds = new Phaser.Rectangle(this.game.camera.view.x + 10, this.game.camera.view.y + 10, this.game.camera.view.width - 20, this.game.camera.height - 20);
+
             var c = { x: cameraBounds.centerX, y: cameraBounds.centerY };
             var lines = {
                 top: [{ x: cameraBounds.x, y: cameraBounds.y }, { x: cameraBounds.x + cameraBounds.width, y: cameraBounds.y }],
@@ -12686,12 +12699,12 @@ var Game = function () {
             };
 
             this.circlePool.reset();
-            for (var _i21 = 0; _i21 < circles.length; _i21++) {
-                var _circles$_i = circles[_i21],
-                    _sprite = _circles$_i.sprite,
-                    color = _circles$_i.color,
-                    circle = _circles$_i.circle,
-                    key = _circles$_i.key;
+            for (var i = 0; i < circles.length; i++) {
+                var _circles$i = circles[i],
+                    _sprite = _circles$i.sprite,
+                    color = _circles$i.color,
+                    circle = _circles$i.circle,
+                    key = _circles$i.key;
 
 
                 if (_sprite.alive && !this.game.camera.view.contains(_sprite.x, _sprite.y)) {
@@ -12701,13 +12714,13 @@ var Game = function () {
 
                     var mainLine = [{ x: _sprite.x, y: _sprite.y }, c];
                     var interPoint = null;
-                    var _iteratorNormalCompletion5 = true;
-                    var _didIteratorError5 = false;
-                    var _iteratorError5 = undefined;
+                    var _iteratorNormalCompletion4 = true;
+                    var _didIteratorError4 = false;
+                    var _iteratorError4 = undefined;
 
                     try {
-                        for (var _iterator5 = positions[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                            var p = _step5.value;
+                        for (var _iterator4 = positions[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                            var p = _step4.value;
 
                             var line = lines[p];
                             var shouldBePoint = Object(__WEBPACK_IMPORTED_MODULE_20__utils_js__["b" /* lineIntersection */])(line, mainLine);
@@ -12718,21 +12731,23 @@ var Game = function () {
                             }
                         }
                     } catch (err) {
-                        _didIteratorError5 = true;
-                        _iteratorError5 = err;
+                        _didIteratorError4 = true;
+                        _iteratorError4 = err;
                     } finally {
                         try {
-                            if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                                _iterator5.return();
+                            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                                _iterator4.return();
                             }
                         } finally {
-                            if (_didIteratorError5) {
-                                throw _iteratorError5;
+                            if (_didIteratorError4) {
+                                throw _iteratorError4;
                             }
                         }
                     }
 
-                    if (interPoint) this.circlePool.pull(key, circle, interPoint.x, interPoint.y);
+                    if (interPoint) {
+                        this.circlePool.pull(key, circle, interPoint.x, interPoint.y);
+                    }
                 }
             }
             //this.circlePool.reset();
@@ -17506,7 +17521,9 @@ var Tweets = function () {
     key: 'removeFromQueue',
     value: function removeFromQueue(tweetInstance) {
       for (var i = 0; i < this.queue.length; i++) {
-        if (this.queue[i] === tweetInstance) this.queue.splice(i, 1);
+        if (this.queue[i] === tweetInstance) {
+          this.queue.splice(i, 1);
+        }
       }
     }
   }, {
@@ -17827,6 +17844,8 @@ var getTextStyle = function getTextStyle(width) {
 
 var BaseTweet = function () {
   function BaseTweet(data, animOptions, styles) {
+    var _this = this;
+
     _classCallCheck(this, BaseTweet);
 
     this.data = data;
@@ -17836,7 +17855,19 @@ var BaseTweet = function () {
     this.hided = new Phaser.Signal();
     this.showed = new Phaser.Signal();
     this.nextTweet = new Phaser.Signal();
-    this.destroy = new Phaser.Signal();
+    this.destroy = new Phaser.Signal(); // Молодец! Оверайд destory
+
+
+    //destroy after hide
+    this.hided.add(function () {
+      _this.destroy.dispatch();
+    });
+
+    this.destroy.add(function () {
+      _this.groupAll.killAll();
+      _this.groupAll.destroy();
+      console.log("TWEET:", "destroy");
+    });
   }
 
   _createClass(BaseTweet, [{
@@ -17977,6 +18008,7 @@ var BaseTweet = function () {
     value: function destroy() {
       this.groupAll.killAll();
       this.groupAll.destroy();
+      console.log("TWEET:", "destroy");
     }
   }, {
     key: 'show',

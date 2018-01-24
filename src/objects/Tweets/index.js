@@ -113,9 +113,11 @@ class Tweets {
   }
 
   removeFromQueue(tweetInstance){
-    for (let i=0; i<this.queue.length; i++)
-      if (this.queue[i] === tweetInstance)
+    for (let i=0; i<this.queue.length; i++){
+      if (this.queue[i] === tweetInstance){
         this.queue.splice(i, 1);
+      }
+    }
   }
 
   startQueue() {
