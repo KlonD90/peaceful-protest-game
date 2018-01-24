@@ -929,7 +929,7 @@ module.exports = {
         },
         protesters: {
             count: {
-                start: 1, //100,
+                start: 99, //100,
                 max: 100,
                 add: 14
             },
@@ -937,7 +937,7 @@ module.exports = {
                 value: 60
             },
             mood: 0.3,
-            moodUp: 0.002,
+            moodUp: 0.2,
             moodDown: 0.0001,
             poster: {
                 drop: 0.3,
@@ -965,7 +965,7 @@ module.exports = {
             scoreThreshold: 300
         },
         star: {
-            score: 200
+            score: 0
         }
     }
     // level2: {
@@ -4319,8 +4319,10 @@ var Star = function (_Protester) {
     _this.config = fullConfig;
 
     _this.restTimer = _this.game.time.create(false);
-
+    //this.viewSprite.animations.add('walk', [1, 2], 3, true);
     _this.kill();
+    _this.changeAnimations("star_0" + (rand + 1), 3);
+
     return _this;
   }
 
@@ -9518,7 +9520,7 @@ module.exports = function xhrAdapter(config) {
     // For IE 8/9 CORS support
     // Only supports POST and GET calls and doesn't returns the response headers.
     // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
-    if ("development" !== 'test' &&
+    if (undefined !== 'test' &&
         typeof window !== 'undefined' &&
         window.XDomainRequest && !('withCredentials' in request) &&
         !isURLSameOrigin(config.url)) {
@@ -9974,7 +9976,7 @@ function init() {
   window.game = game;
 }
 
-if (false) window.protestGameInit = init;else setTimeout(init, 50);
+if (undefined === 'production') window.protestGameInit = init;else setTimeout(init, 50);
 
 // document.querySelector('.game-background').style.backgroundImage = `url(${require('./assets/pattern.png')})`;
 // document.querySelector('.game-background').style.backgroundImage = `url(${require('./assets/background.png')})`;
@@ -10061,13 +10063,13 @@ module.exports = __webpack_require__.p + "assets/7890ea6754fb124fa101877cec2457d
 /* 332 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/d098fd1c96279cb64f456bfe7bc34d83.png";
+module.exports = __webpack_require__.p + "assets/b4aeb66dcb1599ec1294b2a72b7ef441.png";
 
 /***/ }),
 /* 333 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/5330b285c4ea222de5f817c619186458.json";
+module.exports = __webpack_require__.p + "assets/a0696655b54b16d2cf272a970af1020d.json";
 
 /***/ }),
 /* 334 */
@@ -12151,7 +12153,7 @@ var Game = function () {
                     case __WEBPACK_IMPORTED_MODULE_19__constants_js__["h" /* END_GAME_PROTEST_RATE */]:
                         {
                             // this.launchShield();
-                            __WEBPACK_IMPORTED_MODULE_15__modal___["a" /* default */]('desolation', 0, function () {
+                            __WEBPACK_IMPORTED_MODULE_15__modal___["a" /* default */]('desolation', this.mz.timers.gameTime.seconds, function () {
                                 _this4.mz.objects.audio.theme.stop();
                                 _this4.mz.objects.audio.meeting.stop();
                                 // this.mz.objects.audio.song.stop();
@@ -12161,7 +12163,7 @@ var Game = function () {
                         }
                     case __WEBPACK_IMPORTED_MODULE_19__constants_js__["g" /* END_GAME_PLAYER_KILLED */]:
                         {
-                            __WEBPACK_IMPORTED_MODULE_15__modal___["a" /* default */]('arrested', 0, function () {
+                            __WEBPACK_IMPORTED_MODULE_15__modal___["a" /* default */]('arrested', this.mz.timers.gameTime.seconds, function () {
                                 _this4.mz.objects.audio.theme.stop();
                                 _this4.mz.objects.audio.meeting.stop();
                                 // this.mz.objects.audio.song.stop();
@@ -17978,7 +17980,7 @@ var AVATAR_TEXT_SPACING = 20;
 
 
 // import font from  'style-loader!css-loader!./font.css';
-if (true) __webpack_require__(444);
+if (undefined === 'development') __webpack_require__(444);
 
 var HOST_URL = 'https://v3-stage.zona.media';
 // const HOST_URL = 'http://localhost:8081';
@@ -17995,20 +17997,6 @@ var hash = function hash(_ref) {
 
 var getScore = function getScore() {
   return __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(HOST_URL + '/game_score');
-};
-
-var getScoreFake = function getScoreFake() {
-  return new Promise(function (resolve) {
-    resolve([{
-      nick: 'Nikitka Magraritka',
-      contact: 'mogafk@gmail.com',
-      score: 1021.7
-    }, {
-      nick: 'Putin',
-      contact: 'putin@rf.gos',
-      score: 4332
-    }]);
-  });
 };
 
 var sendNewScore = function sendNewScore(formData) {
@@ -18060,13 +18048,14 @@ var validate = function validate(formData) {
 
   return res;
 };
-
-__WEBPACK_IMPORTED_MODULE_0_handlebars_dist_handlebars_js___default.a.registerHelper('parseScoreTime', function (sec) {
+var scoreToTime = function scoreToTime(sec) {
   var h = ~~(sec / 3600);
   var m = ~~(sec / 60) - h * 60;
   var s = ~~(sec % 60);
   return h + ':' + m + ':' + s;
-});
+};
+
+__WEBPACK_IMPORTED_MODULE_0_handlebars_dist_handlebars_js___default.a.registerHelper('parseScoreTime', scoreToTime);
 
 __WEBPACK_IMPORTED_MODULE_0_handlebars_dist_handlebars_js___default.a.registerHelper('plus', function (a, b) {
   return a + b;
@@ -18075,24 +18064,28 @@ __WEBPACK_IMPORTED_MODULE_0_handlebars_dist_handlebars_js___default.a.registerHe
 var resultTypes = {
   'success': {
     title: 'Отличный митинг! Вы бодры и на свободе',
-    text: function text(ratingPos) {
-      var ratingMap = ['первое', 'второе'];
-      if (ratingPos < 2) {
-        return '\u041F\u043E\u0437\u0434\u0440\u0430\u0432\u043B\u044F\u0435\u043C! \u0412\u044B \u0437\u0430\u043D\u044F\u043B\u0438 ' + ratingMap[ratingPos] + ' \u043C\u0435\u0441\u0442\u043E \u0432 \u0441\u0435\u0433\u043E\u0434\u043D\u044F\u0448\u043D\u0435\u043C \u0442\u043E\u043F\u0435, \u0443\u043A\u0430\u0436\u0438\u0442\u0435 \u0441\u0432\u043E\u044E \u043F\u043E\u0447\u0442\u0443 \u0434\u043B\u044F \u0443\u0447\u0430\u0441\u0442\u0438\u044F \u0432 \u0440\u043E\u0437\u044B\u0433\u0440\u044B\u0448\u0435 \u043F\u0440\u0438\u0437\u043E\u0432.';
+    text: function text(ratingPos, time) {
+      var ratingMap = ['первое', 'второе', 'третье'];
+      if (ratingPos < 3) {
+        return '\u041F\u043E\u0437\u0434\u0440\u0430\u0432\u043B\u044F\u0435\u043C! \u0412\u0430\u0448\u0435 \u0432\u0440\u0435\u043C\u044F ' + time + '. \u0412\u044B \u0437\u0430\u043D\u044F\u043B\u0438 ' + ratingMap[ratingPos] + ' \u043C\u0435\u0441\u0442\u043E \u0432 \u0441\u0435\u0433\u043E\u0434\u043D\u044F\u0448\u043D\u0435\u043C \u0442\u043E\u043F\u0435, \u0443\u043A\u0430\u0436\u0438\u0442\u0435 \u0441\u0432\u043E\u044E \u043F\u043E\u0447\u0442\u0443 \u0434\u043B\u044F \u0443\u0447\u0430\u0441\u0442\u0438\u044F \u0432 \u0440\u043E\u0437\u044B\u0433\u0440\u044B\u0448\u0435 \u043F\u0440\u0438\u0437\u043E\u0432.';
       }
 
-      return 'Да вы опытный активист! Попробуйте сыграть снова и набрать очки еще быстрее, тогда вы сможете выиграть наш приз — ватник «Будет хуже».';
+      return '\u0414\u0430 \u0432\u044B \u043E\u043F\u044B\u0442\u043D\u044B\u0439 \u0430\u043A\u0442\u0438\u0432\u0438\u0441\u0442! \u0412\u0430\u0448\u0435 \u0432\u0440\u0435\u043C\u044F ' + time + '. \u041F\u043E\u043F\u0440\u043E\u0431\u0443\u0439\u0442\u0435 \u0441\u044B\u0433\u0440\u0430\u0442\u044C \u0441\u043D\u043E\u0432\u0430 \u0438 \u043D\u0430\u0431\u0440\u0430\u0442\u044C \u043E\u0447\u043A\u0438 \u0435\u0449\u0435 \u0431\u044B\u0441\u0442\u0440\u0435\u0435, \u0442\u043E\u0433\u0434\u0430 \u0432\u044B \u0441\u043C\u043E\u0436\u0435\u0442\u0435 \u0432\u044B\u0438\u0433\u0440\u0430\u0442\u044C \u043D\u0430\u0448 \u043F\u0440\u0438\u0437 \u2014 \u0432\u0430\u0442\u043D\u0438\u043A \xAB\u0411\u0443\u0434\u0435\u0442 \u0445\u0443\u0436\u0435\xBB.';
     },
     background: __webpack_require__(452)
   },
   'arrested': {
     title: 'Вас свинтили. Скучайте в автозаке',
-    text: 'Агитируйте аккуратнее, и тогда полиция не обратит на вас внимание. Используйте shift, чтобы передвигаться быстрее и ускользать из лап Нацгвардии.',
+    text: function text(pos, time) {
+      return '\u0412\u0430\u0448\u0435 \u0432\u0440\u0435\u043C\u044F ' + time + '. \u0410\u0433\u0438\u0442\u0438\u0440\u0443\u0439\u0442\u0435 \u0430\u043A\u043A\u0443\u0440\u0430\u0442\u043D\u0435\u0435, \u0438 \u0442\u043E\u0433\u0434\u0430 \u043F\u043E\u043B\u0438\u0446\u0438\u044F \u043D\u0435 \u043E\u0431\u0440\u0430\u0442\u0438\u0442 \u043D\u0430 \u0432\u0430\u0441 \u0432\u043D\u0438\u043C\u0430\u043D\u0438\u044F. \n    \u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\u0442\u0435 shift, \u0447\u0442\u043E\u0431\u044B \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0433\u0430\u0442\u044C\u0441\u044F \u0431\u044B\u0441\u0442\u0440\u0435\u0435 \u0438 \u0443\u0441\u043A\u043E\u043B\u044C\u0437\u0430\u0442\u044C \u0438\u0437 \u043B\u0430\u043F \u041D\u0430\u0446\u0433\u0432\u0430\u0440\u0434\u0438\u0438.';
+    },
     background: __webpack_require__(453)
   },
   'desolation': {
     title: 'Попробуйте одиночные пикеты',
-    text: 'Вы остались в одиночестве. Ваш протест был настолько пассивным, что вас просто никто не заметил.',
+    text: function text(pos, time) {
+      return '\u0412\u0430\u0448\u0435 \u0432\u0440\u0435\u043C\u044F ' + time + '. \u0412\u044B \u043E\u0441\u0442\u0430\u043B\u0438\u0441\u044C \u0432 \u043E\u0434\u0438\u043D\u043E\u0447\u0435\u0441\u0442\u0432\u0435. \u0412\u0430\u0448 \u043F\u0440\u043E\u0442\u0435\u0441\u0442 \u0431\u044B\u043B \u043D\u0430\u0441\u0442\u043E\u043B\u044C\u043A\u043E \u043F\u0430\u0441\u0441\u0438\u0432\u043D\u044B\u043C, \u0447\u0442\u043E \u0432\u0430\u0441 \u043F\u0440\u043E\u0441\u0442\u043E \u043D\u0438\u043A\u0442\u043E \u043D\u0435 \u0437\u0430\u043C\u0435\u0442\u0438\u043B.';
+    },
     background: __webpack_require__(454)
   }
 };
@@ -18149,7 +18142,6 @@ var show = function show(type, currentScore, cb) {
   getScore().then(function (_ref2) {
     var scores = _ref2.data;
 
-    // getScoreFake().then((scores) => {
     if (type === 'success') {
       for (var i = 0; i < scores.length; i++) {
         if (scores[i].score > currentScore) {
@@ -18157,10 +18149,9 @@ var show = function show(type, currentScore, cb) {
         }
       }
       scores.splice(i, 0, { showForm: true, current: true, score: currentScore });
-
-      if (typeof context.text === 'function') context.text = context.text(i);
     }
-    context.scores = scores.slice(0, 2);
+    if (typeof context.text === 'function') context.text = context.text(i, scoreToTime(currentScore));
+    context.scores = scores.slice(0, 3);
     context.currentURL = encodeURIComponent(window.location.href + ('?result=' + type + '&_share=1'));
 
     _show(context, currentScore, cb);
@@ -19263,7 +19254,7 @@ module.exports = function spread(callback) {
 /* 440 */
 /***/ (function(module, exports) {
 
-module.exports = "\n<div class=\"game-end-container\">\n  <div class=\"game-end\">\n    <div class=\"game-end_picture\" style=\"background-image: url('{{background}}')\"></div>\n    <div class=\"game-end_content\">\n      <h1 class=\"game-end_header\">\n        {{ title }}\n      </h1>\n      <div class=\"game-end_text\">\n        {{ text }}\n      </div>\n\n      <div class=\"game-end_score\">\n        {{#each scores}}\n          {{#if showForm }}\n            <form data-js-selector=\"participated-form\" class=\"game-end_participated score-form\">\n              <input data-js-selector=\"participated-form-name\" class=\"score-form_input\" type=\"text\" placeholder=\"Имя\" />\n              <input data-js-selector=\"participated-form-email\" class=\"score-form_input\" type=\"text\" placeholder=\"Почта\" />\n              <button data-js-selector=\"participated-form-send\" class=\"game-button participated-button\">Участвовать</button>\n            </form>\n          {{^}}\n            <div class=\"score-line\">\n              <span class=\"score-line_position\">{{plus @index 1}}.</span>\n              <span class=\"score-line_name\">{{ nick }} —</span>\n              <span class=\"score-line_time\">{{ parseScoreTime score }}</span>\n            </div>\n          {{/if}}\n        {{/each}}\n      </div>\n\n      <div class=\"game-end_replay\">\n          <button data-js-selector=\"replay-button\" class=\"game-button replay-button\">Начать заново</button>\n      </div>\n\n      <div class=\"game-end_shares game-shares\">\n        <div class=\"game-shares_header\">Поделиться результатом</div>\n        <div class=\"game-shares_shares-container\">\n          <a class=\"game-shares_icon game-shares_icon--tlg\" target=\"_blank\" href=\"https://t.me/share/url?url={{currentURL}}\">\n            <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">\n              <path d=\"M18.92 6.089L4.747 11.555c-.967.388-.962.928-.176 1.168l3.534 1.104 1.353 4.146c.164.454.083.634.56.634.368 0 .53-.168.736-.368.13-.127.903-.88 1.767-1.719l3.677 2.717c.676.373 1.165.18 1.333-.628l2.414-11.374c.247-.99-.378-1.44-1.025-1.146zM8.66 13.573l7.967-5.026c.398-.242.763-.112.463.154l-6.822 6.155-.265 2.833-1.343-4.116z\" fill=\"#63a9dc\" fill-rule=\"evenodd\"/>\n            </svg>\n          </a>\n\n          <a class=\"game-shares_icon game-shares_icon--ok\" target=\"_blank\" href=\"https://connect.ok.ru/offer?url={{currentURL}}\">\n            <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">\n              <path d=\"M11.674 6.536a1.69 1.69 0 0 0-1.688 1.688c0 .93.757 1.687 1.688 1.687a1.69 1.69 0 0 0 1.688-1.687 1.69 1.69 0 0 0-1.688-1.688zm0 5.763a4.08 4.08 0 0 1-4.076-4.075 4.08 4.08 0 0 1 4.076-4.077 4.08 4.08 0 0 1 4.077 4.077 4.08 4.08 0 0 1-4.077 4.075zm-1.649 3.325a7.633 7.633 0 0 1-2.367-.98 1.194 1.194 0 0 1 1.272-2.022 5.175 5.175 0 0 0 5.489 0 1.194 1.194 0 1 1 1.272 2.022 7.647 7.647 0 0 1-2.367.98l2.279 2.28a1.194 1.194 0 0 1-1.69 1.688l-2.238-2.24-2.24 2.24a1.193 1.193 0 1 1-1.689-1.689l2.279-2.279\" fill=\"#ff9e4c\" fill-rule=\"evenodd\"/>\n            </svg>\n          </a>\n\n          <a class=\"game-shares_icon game-shares_icon--fb\" target=\"_blank\" href=\"https://www.facebook.com/dialog/share?app_id=1727953450799543&display=popup&href={{currentURL}}\">\n              <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">\n                <path d=\"M13.423 20v-7.298h2.464l.369-2.845h-2.832V8.042c0-.824.23-1.385 1.417-1.385h1.515V4.111A20.255 20.255 0 0 0 14.148 4c-2.183 0-3.678 1.326-3.678 3.76v2.097H8v2.845h2.47V20h2.953z\" fill=\"#3c5998\" fill-rule=\"evenodd\"/>\n              </svg>\n          </a>\n          <a class=\"game-shares_icon game-shares_icon--tw\" target=\"_blank\" href=\"https://twitter.com/intent/tweet?text={{currentURL}}\">\n            <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">\n              <path d=\"M20 7.539a6.56 6.56 0 0 1-1.885.517 3.294 3.294 0 0 0 1.443-1.816 6.575 6.575 0 0 1-2.085.796 3.283 3.283 0 0 0-5.593 2.994A9.32 9.32 0 0 1 5.114 6.6a3.28 3.28 0 0 0 1.016 4.382 3.274 3.274 0 0 1-1.487-.41v.041a3.285 3.285 0 0 0 2.633 3.218 3.305 3.305 0 0 1-1.482.056 3.286 3.286 0 0 0 3.066 2.28A6.585 6.585 0 0 1 4 17.524 9.291 9.291 0 0 0 9.032 19c6.038 0 9.34-5 9.34-9.337 0-.143-.004-.285-.01-.425A6.672 6.672 0 0 0 20 7.538z\" fill=\"#01acee\" fill-rule=\"evenodd\"/>\n            </svg>\n          </a>\n          <a class=\"game-shares_icon game-shares_icon--vk\" target=\"_blank\" href=\"http://vk.com/share.php?url={{currentURL}}\">\n              <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">\n                <path d=\"M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.576-1.496c.588-.19 1.341 1.26 2.14 1.818.605.422 1.064.33 1.064.33l2.137-.03s1.117-.071.587-.964c-.043-.073-.308-.661-1.588-1.87-1.34-1.264-1.16-1.059.453-3.246.983-1.332 1.376-2.145 1.253-2.493-.117-.332-.84-.244-.84-.244l-2.406.015s-.178-.025-.31.056c-.13.079-.212.262-.212.262s-.382 1.03-.89 1.907c-1.07 1.85-1.499 1.948-1.674 1.832-.407-.267-.305-1.075-.305-1.648 0-1.793.267-2.54-.521-2.733-.262-.065-.454-.107-1.123-.114-.858-.009-1.585.003-1.996.208-.274.136-.485.44-.356.457.159.022.519.099.71.363.246.341.237 1.107.237 1.107s.142 2.11-.33 2.371c-.325.18-.77-.187-1.725-1.865-.489-.859-.859-1.81-.859-1.81s-.07-.176-.198-.272c-.154-.115-.37-.151-.37-.151l-2.286.015s-.343.01-.469.161C3.94 7.721 4.043 8 4.043 8s1.79 4.258 3.817 6.403c1.858 1.967 3.968 1.838 3.968 1.838h.957z\" fill=\"#48719e\" fill-rule=\"evenodd\"/>\n              </svg>\n          </a>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>"
+module.exports = "\n<div class=\"game-end-container\">\n  <div class=\"game-end\">\n    <div class=\"game-end_picture\" style=\"background-image: url('{{background}}')\"></div>\n    <div class=\"game-end_content\">\n      <h1 class=\"game-end_header\">\n        {{ title }}\n      </h1>\n      <div class=\"game-end_text\">\n        {{ text }}\n      </div>\n      <div class=\"game-end_text\">\n        Каждый день до 1 февраля Медиазона дарит подарки из магазина мерча лучшему игроку за день. Если ваш результат был лучшим, оставьте свое имя пользователя и почту в специальной форме в конце игры. Следите за результатами ежедневно в твиттере Медиазоны.\n      </div>\n      <div class=\"game-end_score\">\n        {{#each scores}}\n          {{#if showForm }}\n            <form data-js-selector=\"participated-form\" class=\"game-end_participated score-form\">\n              <input data-js-selector=\"participated-form-name\" class=\"score-form_input\" type=\"text\" placeholder=\"Имя\" />\n              <input data-js-selector=\"participated-form-email\" class=\"score-form_input\" type=\"text\" placeholder=\"Почта\" />\n              <button data-js-selector=\"participated-form-send\" class=\"game-button participated-button\">Участвовать</button>\n            </form>\n          {{^}}\n            <div class=\"score-line\">\n              <span class=\"score-line_position\">{{plus @index 1}}.</span>\n              <span class=\"score-line_name\">{{ nick }} —</span>\n              <span class=\"score-line_time\">{{ parseScoreTime score }}</span>\n            </div>\n          {{/if}}\n        {{/each}}\n      </div>\n\n      <div class=\"game-end_replay\">\n          <button data-js-selector=\"replay-button\" class=\"game-button replay-button\">Начать заново</button>\n      </div>\n\n      <div class=\"game-end_shares game-shares\">\n        <div class=\"game-shares_header\">Поделиться результатом</div>\n        <div class=\"game-shares_shares-container\">\n          <a class=\"game-shares_icon game-shares_icon--tlg\" target=\"_blank\" href=\"https://t.me/share/url?url={{currentURL}}\">\n            <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">\n              <path d=\"M18.92 6.089L4.747 11.555c-.967.388-.962.928-.176 1.168l3.534 1.104 1.353 4.146c.164.454.083.634.56.634.368 0 .53-.168.736-.368.13-.127.903-.88 1.767-1.719l3.677 2.717c.676.373 1.165.18 1.333-.628l2.414-11.374c.247-.99-.378-1.44-1.025-1.146zM8.66 13.573l7.967-5.026c.398-.242.763-.112.463.154l-6.822 6.155-.265 2.833-1.343-4.116z\" fill=\"#63a9dc\" fill-rule=\"evenodd\"/>\n            </svg>\n          </a>\n\n          <a class=\"game-shares_icon game-shares_icon--ok\" target=\"_blank\" href=\"https://connect.ok.ru/offer?url={{currentURL}}\">\n            <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">\n              <path d=\"M11.674 6.536a1.69 1.69 0 0 0-1.688 1.688c0 .93.757 1.687 1.688 1.687a1.69 1.69 0 0 0 1.688-1.687 1.69 1.69 0 0 0-1.688-1.688zm0 5.763a4.08 4.08 0 0 1-4.076-4.075 4.08 4.08 0 0 1 4.076-4.077 4.08 4.08 0 0 1 4.077 4.077 4.08 4.08 0 0 1-4.077 4.075zm-1.649 3.325a7.633 7.633 0 0 1-2.367-.98 1.194 1.194 0 0 1 1.272-2.022 5.175 5.175 0 0 0 5.489 0 1.194 1.194 0 1 1 1.272 2.022 7.647 7.647 0 0 1-2.367.98l2.279 2.28a1.194 1.194 0 0 1-1.69 1.688l-2.238-2.24-2.24 2.24a1.193 1.193 0 1 1-1.689-1.689l2.279-2.279\" fill=\"#ff9e4c\" fill-rule=\"evenodd\"/>\n            </svg>\n          </a>\n\n          <a class=\"game-shares_icon game-shares_icon--fb\" target=\"_blank\" href=\"https://www.facebook.com/dialog/share?app_id=1727953450799543&display=popup&href={{currentURL}}\">\n              <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">\n                <path d=\"M13.423 20v-7.298h2.464l.369-2.845h-2.832V8.042c0-.824.23-1.385 1.417-1.385h1.515V4.111A20.255 20.255 0 0 0 14.148 4c-2.183 0-3.678 1.326-3.678 3.76v2.097H8v2.845h2.47V20h2.953z\" fill=\"#3c5998\" fill-rule=\"evenodd\"/>\n              </svg>\n          </a>\n          <a class=\"game-shares_icon game-shares_icon--tw\" target=\"_blank\" href=\"https://twitter.com/intent/tweet?text={{currentURL}}\">\n            <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">\n              <path d=\"M20 7.539a6.56 6.56 0 0 1-1.885.517 3.294 3.294 0 0 0 1.443-1.816 6.575 6.575 0 0 1-2.085.796 3.283 3.283 0 0 0-5.593 2.994A9.32 9.32 0 0 1 5.114 6.6a3.28 3.28 0 0 0 1.016 4.382 3.274 3.274 0 0 1-1.487-.41v.041a3.285 3.285 0 0 0 2.633 3.218 3.305 3.305 0 0 1-1.482.056 3.286 3.286 0 0 0 3.066 2.28A6.585 6.585 0 0 1 4 17.524 9.291 9.291 0 0 0 9.032 19c6.038 0 9.34-5 9.34-9.337 0-.143-.004-.285-.01-.425A6.672 6.672 0 0 0 20 7.538z\" fill=\"#01acee\" fill-rule=\"evenodd\"/>\n            </svg>\n          </a>\n          <a class=\"game-shares_icon game-shares_icon--vk\" target=\"_blank\" href=\"http://vk.com/share.php?url={{currentURL}}\">\n              <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">\n                <path d=\"M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.576-1.496c.588-.19 1.341 1.26 2.14 1.818.605.422 1.064.33 1.064.33l2.137-.03s1.117-.071.587-.964c-.043-.073-.308-.661-1.588-1.87-1.34-1.264-1.16-1.059.453-3.246.983-1.332 1.376-2.145 1.253-2.493-.117-.332-.84-.244-.84-.244l-2.406.015s-.178-.025-.31.056c-.13.079-.212.262-.212.262s-.382 1.03-.89 1.907c-1.07 1.85-1.499 1.948-1.674 1.832-.407-.267-.305-1.075-.305-1.648 0-1.793.267-2.54-.521-2.733-.262-.065-.454-.107-1.123-.114-.858-.009-1.585.003-1.996.208-.274.136-.485.44-.356.457.159.022.519.099.71.363.246.341.237 1.107.237 1.107s.142 2.11-.33 2.371c-.325.18-.77-.187-1.725-1.865-.489-.859-.859-1.81-.859-1.81s-.07-.176-.198-.272c-.154-.115-.37-.151-.37-.151l-2.286.015s-.343.01-.469.161C3.94 7.721 4.043 8 4.043 8s1.79 4.258 3.817 6.403c1.858 1.967 3.968 1.838 3.968 1.838h.957z\" fill=\"#48719e\" fill-rule=\"evenodd\"/>\n              </svg>\n          </a>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>"
 
 /***/ }),
 /* 441 */

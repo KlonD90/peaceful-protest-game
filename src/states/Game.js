@@ -1478,7 +1478,7 @@ class Game {
             switch (mode) {
                 case END_GAME_PROTEST_RATE: {
                     // this.launchShield();
-                    modalShow('desolation', 0,  () => {
+                    modalShow('desolation', this.mz.timers.gameTime.seconds,  () => {
                         this.mz.objects.audio.theme.stop();
                         this.mz.objects.audio.meeting.stop();
                         // this.mz.objects.audio.song.stop();
@@ -1487,7 +1487,7 @@ class Game {
                     break;
                 }
                 case END_GAME_PLAYER_KILLED: {
-                    modalShow('arrested', 0,  () => {
+                    modalShow('arrested', this.mz.timers.gameTime.seconds,  () => {
                         this.mz.objects.audio.theme.stop();
                         this.mz.objects.audio.meeting.stop();
                         // this.mz.objects.audio.song.stop();

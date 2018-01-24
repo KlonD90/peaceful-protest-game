@@ -22,20 +22,6 @@ const getScore = () => {
   return axios.get(`${HOST_URL}/game_score`);
 }
 
-const getScoreFake = () => {
-  return new Promise((resolve) => {
-    resolve([{
-      nick: 'Nikitka Magraritka',
-      contact: 'mogafk@gmail.com',
-      score: 1021.7
-    }, {
-      nick: 'Putin',
-      contact: 'putin@rf.gos',
-      score: 4332
-    }])
-  })
-}
-
 const sendNewScore = (formData) => {
   if (!validate(formData))
     return Promise.reject('validation error');
@@ -87,14 +73,14 @@ const validate = (formData) => {
 
   return res;
 }
+const scoreToTime = function(sec) {
+    const h = ~~(sec/3600);
+    const m = ~~(sec/60)-h*60;
+    const s = ~~(sec%60);
+    return `${h}:${m}:${s}`;
+};
 
-
-Handlebars.registerHelper('parseScoreTime', function(sec) {
-  const h = ~~(sec/3600);
-  const m = ~~(sec/60)-h*60;
-  const s = ~~(sec%60);
-  return `${h}:${m}:${s}`;
-});
+Handlebars.registerHelper('parseScoreTime', scoreToTime);
 
 Handlebars.registerHelper('plus', function(a, b) {
   return a+b;
@@ -103,24 +89,25 @@ Handlebars.registerHelper('plus', function(a, b) {
 const resultTypes = {
   'success': {
     title: 'Отличный митинг! Вы бодры и на свободе',
-    text: (ratingPos) => {
+    text: (ratingPos, time) => {
       const ratingMap = ['первое', 'второе', 'третье']
       if (ratingPos < 3) {
-        return `Поздравляем! Вы заняли ${ratingMap[ratingPos]} место в сегодняшнем топе, укажите свою почту для участия в розыгрыше призов.`;
+        return `Поздравляем! Ваше время ${time}. Вы заняли ${ratingMap[ratingPos]} место в сегодняшнем топе, укажите свою почту для участия в розыгрыше призов.`;
       }
 
-      return 'Да вы опытный активист! Попробуйте сыграть снова и набрать очки еще быстрее, тогда вы сможете выиграть наш приз — ватник «Будет хуже».'; 
+      return `Да вы опытный активист! Ваше время ${time}. Попробуйте сыграть снова и набрать очки еще быстрее, тогда вы сможете выиграть наш приз — ватник «Будет хуже».`;
     },
     background: require('../assets/win_small_500.png'),
   },
   'arrested': {
     title: 'Вас свинтили. Скучайте в автозаке',
-    text: 'Агитируйте аккуратнее, и тогда полиция не обратит на вас внимание. Используйте shift, чтобы передвигаться быстрее и ускользать из лап Нацгвардии.',
+    text: (pos, time) => `Ваше время ${time}. Агитируйте аккуратнее, и тогда полиция не обратит на вас внимания. 
+    Используйте shift, чтобы передвигаться быстрее и ускользать из лап Нацгвардии.`,
     background: require('../assets/lose_small_500.png'),
   },
   'desolation': {
     title: 'Попробуйте одиночные пикеты',
-    text: 'Вы остались в одиночестве. Ваш протест был настолько пассивным, что вас просто никто не заметил.',
+    text: (pos, time) => `Ваше время ${time}. Вы остались в одиночестве. Ваш протест был настолько пассивным, что вас просто никто не заметил.`,
     background: require('../assets/desolation_small_500.png'),
   }
 }
@@ -176,7 +163,6 @@ const show = (type, currentScore, cb) => {
   let context = resultTypes[type];
 
   getScore().then(({data: scores}) => {
-  // getScoreFake().then((scores) => {
     if (type === 'success') {
       for(var i=0; i<scores.length; i++) {
         if (scores[i].score > currentScore) {
@@ -184,10 +170,9 @@ const show = (type, currentScore, cb) => {
         }
       }
       scores.splice(i, 0, { showForm: true, current: true, score: currentScore });
-
-      if (typeof context.text === 'function')
-        context.text = context.text(i);
     }
+    if (typeof context.text === 'function')
+        context.text = context.text(i, scoreToTime(currentScore));
     context.scores = scores.slice(0, 3);
     context.currentURL = encodeURIComponent(window.location.href+`?result=${type}&_share=1`);
 
