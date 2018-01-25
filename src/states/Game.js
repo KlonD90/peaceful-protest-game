@@ -283,7 +283,7 @@ class Game {
         this.mz.timers.gameTime.start();
         this.mz.timers.twits.loop(1000 * 60, () => {
             if (Math.random() < 0.5)
-                this.mz.tweet.rTweet({type: 'description'}, {visible: 5000, fadeIn: 500, fadeOut: 500})
+                this.mz.tweet.rTweet({type: 'description'}, {visible: 1, fadeIn: 1, fadeOut: 1})
         });
         this.mz.timers.twits.start();
 
@@ -402,7 +402,7 @@ class Game {
         this.mz.advices.move = this.mz.tweet.tweet(
             Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице',
             'help',
-            {behavior: ManuallyBehavior}
+            // {behavior: ManuallyBehavior}
         );
         this.mz.advices.moveOnScreen = new Advice(
             this.game,
@@ -418,7 +418,7 @@ class Game {
                 :
                 'Нажмите кнопку с плакатом, чтобы начать агитацию',
             'help',
-            {behavior: ManuallyBehavior}
+            // {behavior: ManuallyBehavior}
         );
         this.mz.advices.spaceOnScreen = new Advice(
             this.game,
@@ -429,7 +429,7 @@ class Game {
         this.mz.advices.agitate = this.mz.tweet.tweet(
             'Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам',
             'help',
-            {behavior: ManuallyBehavior}
+            // {behavior: ManuallyBehavior}
         );
         this.mz.advices.agitateOnScreen = new Advice(
             this.game,
@@ -526,6 +526,8 @@ class Game {
         // this.mz.pressJailed = false;
         // update background
         this.mz.objects.bgTile.tilePosition.set(-this.game.camera.x, -this.game.camera.y);
+
+        this.mz.tweet.rTweet(null, {visible: 1, fadeIn: 1, fadeOut: 1});
 
         if (!this.mz.objects.star && this.mz.starScore <= this.mz.score)
         {
@@ -1485,8 +1487,14 @@ class Game {
 
         const st = (direction === 'ltor' ? 100 : this.game.world.width - 100);
         const distance = (direction === 'ltor' ? 1 : -1) * (this.game.world.width / rnd);
-        let foundStar = !(this.mz.objects.star && this.mz.objects.star.sprite.alive);
-        const { x: starX, y: starY } = this.mz.objects.star.sprite.body.center;
+        let foundStar = !(this.mz.objects.star && this.mz.objects.star.sprite && this.mz.objects.star.sprite.alive);
+        let starX = 0;
+        let starY = 0;
+        if (!foundStar)
+        {
+            starX = this.mz.objects.star.sprite.body.center.x;
+            starY = this.mz.objects.star.sprite.body.center.y;
+        }
         for (let i=0; i<=rnd; i++)
         {
             const t= this.getRandomCoordinates({x: st + distance * i});
@@ -1788,7 +1796,7 @@ class Game {
         }
         if (Math.random() < 0.3)
         {
-            this.mz.tweet.rTweet({type: 'defended'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
+            this.mz.tweet.rTweet({type: 'defended'}, {visible: 1, fadeIn: 1, fadeOut: 1});
         }
     }
 

@@ -13,6 +13,10 @@ class Tweets {
   }
 
   find(selector) {
+    if (selector === null)
+    {
+      return Object.values(data);
+    }
     const filtered = Object.values(data);
     const sKeys = Object.keys(selector);
     if (sKeys.length === 1 && typeof selector['id'] !== 'undefined')
@@ -83,9 +87,9 @@ class Tweets {
 
   createTweet(data, options) {
     const anim = {
-      visible: options.visible || 1000,
-      fadeOut: options.fadeOut || 500,  
-      fadeIn: options.fadeIn || 1000 
+      visible: options.visible || 1,
+      fadeOut: options.fadeOut || 1,
+      fadeIn: options.fadeIn || 1
     };
     const custom = {
       fontSize: options.fontSize

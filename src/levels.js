@@ -9,12 +9,12 @@ export default {
         cops: {
             count: [
                 [4, 0],
-                [20, 1],
-                [100, 2],
-                [200, 3],
-                [300, 6],
-                [400, 7],
-                [1000, 10]
+                [2000, 10],
+                // [100, 2],
+                // [200, 3],
+                // [300, 6],
+                // [400, 7],
+                // [1000, 10]
             ],
             speed: {
                 value: 60,
@@ -29,9 +29,9 @@ export default {
         press: {
             count: [
                 [4, 0],
-                [40, 1],
-                [100, 2],
-                [1000, 4]
+                [4000, 4],
+                // [100, 2],
+                // [1000, 4]
             ],
             speed: {
                 value: 50
@@ -45,7 +45,7 @@ export default {
         },
         protesters: {
             count: {
-                start:1,//100,
+                start: 100,//100,
                 max: 100,
                 add: 14
             },
@@ -53,7 +53,7 @@ export default {
                 value: 60
             },
             mood: 0.3,
-            moodUp: 0.002,
+            moodUp: 0.2,
             moodDown: 0.0001,
             poster: {
                 drop: 0.3,
@@ -78,7 +78,7 @@ export default {
                 value: 200
             },
             frequency: 5000,
-            scoreThreshold: 300
+            scoreThreshold: 0
         },
         star: {
             score: 200
