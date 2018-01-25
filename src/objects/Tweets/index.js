@@ -13,6 +13,10 @@ class Tweets {
   }
 
   find(selector) {
+    if (selector === null)
+    {
+      return Object.values(data);
+    }
     const filtered = Object.values(data);
     const sKeys = Object.keys(selector);
     if (sKeys.length === 1 && typeof selector['id'] !== 'undefined')
@@ -61,6 +65,7 @@ class Tweets {
     const tweetInstance = this.createTweet(tweet, options);
     tweetInstance.destroy.add(() => {
       this.removeFromQueue(tweetInstance);
+      tweetInstance.groupAll.destroy();
     });
     //console.log('tw instance', tweetInstance);
     if (tweetInstance.behavior instanceof ManuallyBehaviour) {
@@ -72,19 +77,19 @@ class Tweets {
     return tweetInstance;
   }
 
-  tweet(text, image, options) {
+  tweet(text, image, options, name) {
     window._Tweets = this;
     //console.log('n.kozh tweet called', text, image)
     return this._tweet({
-      text, image,
+      text, image, name: name?name:null
     }, options);
   }
 
   createTweet(data, options) {
     const anim = {
-      visible: options.visible || 1000,
-      fadeOut: options.fadeOut || 500,  
-      fadeIn: options.fadeIn || 1000 
+      visible: options.visible || 1,
+      fadeOut: options.fadeOut || 1,
+      fadeIn: options.fadeIn || 1
     };
     const custom = {
       fontSize: options.fontSize

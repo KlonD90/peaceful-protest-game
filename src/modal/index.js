@@ -19,21 +19,7 @@ const hash = ({score, name, email}) => {
 }
 
 const getScore = () => {
-  return axios.get(`${HOST_URL}/game_score`);
-}
-
-const getScoreFake = () => {
-  return new Promise((resolve) => {
-    resolve([{
-      nick: 'Nikitka Magraritka',
-      contact: 'mogafk@gmail.com',
-      score: 1021.7
-    }, {
-      nick: 'Putin',
-      contact: 'putin@rf.gos',
-      score: 4332
-    }])
-  })
+  return axios.get(`${HOST_URL}/game_score?rnd=${Math.random()}`);
 }
 
 const sendNewScore = (formData) => {
@@ -87,14 +73,14 @@ const validate = (formData) => {
 
   return res;
 }
+const scoreToTime = function(sec) {
+    const h = ~~(sec/3600);
+    const m = ~~(sec/60)-h*60;
+    const s = ~~(sec%60);
+    return `${h>9?h:'0'+h}:${m>9?m:'0'+m}:${s>9?s:'0'+s}`;
+};
 
-
-Handlebars.registerHelper('parseScoreTime', function(sec) {
-  const h = ~~(sec/3600);
-  const m = ~~(sec/60)-h*60;
-  const s = ~~(sec%60);
-  return `${h}:${m}:${s}`;
-});
+Handlebars.registerHelper('parseScoreTime', scoreToTime);
 
 Handlebars.registerHelper('plus', function(a, b) {
   return a+b;
@@ -103,30 +89,33 @@ Handlebars.registerHelper('plus', function(a, b) {
 const resultTypes = {
   'success': {
     title: 'Отличный митинг! Вы бодры и на свободе',
-    text: (ratingPos) => {
-      const ratingMap = ['первое', 'второе']
-      if (ratingPos < 2) {
-        return `Поздравляем! Вы заняли ${ratingMap[ratingPos]} место в сегодняшнем топе, укажите свою почту для участия в розыгрыше призов.`;
+    text: (ratingPos, time) => {
+      const ratingMap = ['первое', 'второе', 'третье']
+      if (ratingPos < 3) {
+        return `Поздравляем! Ваше время ${time}. Вы заняли ${ratingMap[ratingPos]} место в сегодняшнем топе, укажите свою почту для участия в розыгрыше призов.`;
       }
 
-      return 'Да вы опытный активист! Попробуйте сыграть снова и набрать очки еще быстрее, тогда вы сможете выиграть наш приз — ватник «Будет хуже».'; 
+      return `Да вы опытный активист! Ваше время ${time}. Попробуйте сыграть снова и набрать очки еще быстрее, тогда вы сможете выиграть наш приз — ватник «Будет хуже».`;
     },
     background: require('../assets/win_small_500.png'),
   },
   'arrested': {
     title: 'Вас свинтили. Скучайте в автозаке',
-    text: 'Агитируйте аккуратнее, и тогда полиция не обратит на вас внимание. Используйте shift, чтобы передвигаться быстрее и ускользать из лап Нацгвардии.',
+    text: (pos, time) => `Агитируйте аккуратнее, и тогда полиция не обратит на вас внимания. 
+    Используйте shift, чтобы передвигаться быстрее и ускользать из лап Нацгвардии.`,
     background: require('../assets/lose_small_500.png'),
   },
   'desolation': {
     title: 'Попробуйте одиночные пикеты',
-    text: 'Вы остались в одиночестве. Ваш протест был настолько пассивным, что вас просто никто не заметил.',
+    text: (pos, time) => `Вы остались в одиночестве. Ваш протест был настолько пассивным, что вас просто никто не заметил.`,
     background: require('../assets/desolation_small_500.png'),
   }
 }
 
 const _show = (context, currentScore, cb) => {
   // debugger;
+    console.log('show context', context);
+    console.log('show score', currentScore);
   const html = template(context);
   const fragment = document.createElement('div');
   fragment.innerHTML = html;
@@ -173,10 +162,13 @@ const _show = (context, currentScore, cb) => {
 
 const show = (type, currentScore, cb) => {
 // export default (type, currentScore, cb) => {
-  let context = resultTypes[type];
+  let context = {};
+  for (var p in resultTypes[type])
+  {
+    context[p] = resultTypes[type][p];
+  }
 
   getScore().then(({data: scores}) => {
-  // getScoreFake().then((scores) => {
     if (type === 'success') {
       for(var i=0; i<scores.length; i++) {
         if (scores[i].score > currentScore) {
@@ -184,11 +176,10 @@ const show = (type, currentScore, cb) => {
         }
       }
       scores.splice(i, 0, { showForm: true, current: true, score: currentScore });
-
-      if (typeof context.text === 'function')
-        context.text = context.text(i);
     }
-    context.scores = scores.slice(0, 2);
+    if (typeof context.text === 'function')
+        context.text = context.text(i, scoreToTime(currentScore));
+    context.scores = scores.slice(0, 3);
     context.currentURL = encodeURIComponent(window.location.href+`?result=${type}&_share=1`);
 
     _show(context, currentScore, cb);

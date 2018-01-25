@@ -16,6 +16,7 @@ import Tweet from '../objects/Tweets/';
 import modalShow from '../modal/';
 import levels from '../levels';
 import CirclePool from '../objects/CirclePool';
+import Advice from '../objects/Advice';
 
 //import Debuger from '../debug.js';
 
@@ -128,7 +129,10 @@ class Game {
                 npcProtesters: null,
                 levelObjects: null,
                 player: null,
-                circles: null
+                circles: null,
+                screen: null,
+                advices: null,
+                scores: null
             },
             zoomLevel: -1,
             advices: {
@@ -163,7 +167,8 @@ class Game {
             starScore: level.star.score,
             pressScore: level.press.score,
             pressJailed: false,
-            musicStage: 'start'
+            musicStage: 'start',
+            adviceIsActive: false
         };
         this.mz.score = 0;
     }
@@ -278,9 +283,13 @@ class Game {
         this.mz.timers.gameTime.start();
         this.mz.timers.twits.loop(1000 * 60, () => {
             if (Math.random() < 0.5)
-                this.mz.tweet.rTweet({type: 'description'}, {visible: 5000, fadeIn: 500, fadeOut: 500})
+                this.mz.tweet.rTweet({type: 'description'}, {visible: 1, fadeIn: 1, fadeOut: 1})
         });
         this.mz.timers.twits.start();
+
+        this.mz.groups.screen = this.game.add.group();
+        this.mz.groups.advices = this.game.add.group();
+        this.mz.groups.scores = this.game.add.group();
 
         // swat
         if (this.mz.level.swat) {
@@ -393,22 +402,84 @@ class Game {
         this.mz.advices.move = this.mz.tweet.tweet(
             Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице',
             'help',
-            {behavior: ManuallyBehavior}
+            // {behavior: ManuallyBehavior}
         );
+        this.mz.advices.moveOnScreen = new Advice(
+            this.game,
+            this,
+            'move',
+            Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице',
+        );
+        this.mz.advices.moveOnScreen.show();
         this.mz.advices.space = this.mz.tweet.tweet(
             Phaser.Device.desktop
                 ?
                 'Нажмите ПРОБЕЛ, чтобы начать агитацию/перестать агитировать'
                 :
-                'Нажмите на значок справа внизу экрана, чтобы начать/закончить агитацию',
+                'Нажмите кнопку с плакатом, чтобы начать агитацию',
             'help',
-            {behavior: ManuallyBehavior}
+            // {behavior: ManuallyBehavior}
+        );
+        this.mz.advices.spaceOnScreen = new Advice(
+            this.game,
+            this,
+            'plakat',
+            Phaser.Device.desktop ? 'Чтобы начать агитацию, поднимите плакат, нажав «Пробел»' : 'Нажмите кнопку с плакатом, чтобы начать агитацию',
         );
         this.mz.advices.agitate = this.mz.tweet.tweet(
             'Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам',
             'help',
-            {behavior: ManuallyBehavior}
+            // {behavior: ManuallyBehavior}
         );
+        this.mz.advices.agitateOnScreen = new Advice(
+            this.game,
+            this,
+            'agit',
+            'Когда вы агитируете прохожего, подождите, пока он поднимет плакат — тогда он присоединится к вам'
+        );
+        this.mz.advices.pressOnScreen = new Advice(
+            this.game,
+            this,
+            'press',
+            'Подойдите к журналисту и поднимите плакат в его поле видимости; подождите, пока он закончит прямой эфир, тогда на площадь подтянутся новые люди\n'
+        );
+        this.mz.advices.copOnScreen = new Advice(
+            this.game,
+            this,
+            'cop',
+            Phaser.Device.desktop
+                ?
+                'Не попадайтесь полицейскому с плакатом – опустите, нажав «Пробел»'
+                :
+                'Во время агитации остерегайтесь сотрудников полиции — опустите плакат до того, как они вас заметят'
+        );
+        this.mz.advices.shiftOnScreen = new Advice(
+            this.game,
+            this,
+            'shift',
+            Phaser.Device.desktop
+                ?
+                'Убегайте от полиции, зажимая «shift», однако не забывайте отдыхать, иначе быстро выдохнетесь'
+                :
+                'Если вы дважды коснетесь экрана, вы сможете убегать от полиции, однако, не забывайте отдыхать, иначе быстро выдохнетесь'
+        );
+        this.mz.advices.nodOnScreen = new Advice(
+            this.game,
+            this,
+            'nod',
+            'Смотрите, чтобы вам не плеснули зеленкой в лицо'
+        );
+        this.mz.advices.fightOnScreen = new Advice(
+            this.game,
+            this,
+            'fight',
+            Phaser.Device.desktop
+                ?
+                'Спасайте демонстрантов, которых уводит полиция. Догоните и отбейте их, заполнив синий индикатор. Для этого быстро нажимайте пробел много раз подряд'
+                :
+                'Чтобы помешать задержанию демонстранта, подойдите к нему и быстро жмите на экран много раз подряд'
+        );
+
 /*
         let _that = this;
         window.gen100Tweets = function () {
@@ -454,6 +525,13 @@ class Game {
         this.mz.circles.cop = {tex:"dot", color:0x2b3992 };//processingGraphic.clear().beginFill(0x2b3992, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
         this.circlePool = new CirclePool(this.game);
 
+        // const adv = new Advice(
+        //     this.game,
+        //     'cop',
+        //     'Во время агитации остерегайтесь сотрудников полиции — опустите плакат до того, как они вас заметят',
+        //     'Нажмите пробел, чтобы скрыть подсказку'
+        // );
+        // adv.show();
     }
 
     update() {
@@ -464,6 +542,8 @@ class Game {
         // this.mz.pressJailed = false;
         // update background
         this.mz.objects.bgTile.tilePosition.set(-this.game.camera.x, -this.game.camera.y);
+
+        this.mz.tweet.rTweet(null, {visible: 1, fadeIn: 1, fadeOut: 1});
 
         if (!this.mz.objects.star && this.mz.starScore <= this.mz.score)
         {
@@ -656,15 +736,19 @@ class Game {
             // revive if necessary
 
             if (copsRequired > this.mz.cops.alive) {
-                if (!this.mz.showedAdvice.cops)
+                if (this.mz.cops.alive === 0 && !this.mz.advices.copOnScreen.shown)
                 {
-                    this.mz.showedAdvice.cops = true;
-                    this.mz.tweet.tweet(
-                        'Во время агитации остерегайтесь сотрудников полиции, опустите плакат до того, как они вас заметят',
-                        'help',
-                        {visible: 5000, fadeIn: 500, fadeOut: 500}
-                    );
+                    this.mz.advices.copOnScreen.show();
                 }
+                // if (!this.mz.showedAdvice.cops)
+                // {
+                //     this.mz.showedAdvice.cops = true;
+                //     this.mz.tweet.tweet(
+                //         'Во время агитации остерегайтесь сотрудников полиции, опустите плакат до того, как они вас заметят',
+                //         'help',
+                //         {visible: 5000, fadeIn: 500, fadeOut: 500}
+                //     );
+                // }
                 this.reviveCops(copsRequired - this.mz.cops.alive);
                 this.mz.cops.alive = copsRequired;
             }
@@ -690,6 +774,10 @@ class Game {
                 :
                 this.getRandomCoordinates();
             console.log('press first', isFirst, coords);
+            if (isFirst && !this.mz.advices.pressOnScreen.shown)
+            {
+                this.mz.advices.pressOnScreen.show();
+            }
 
             const journalist = this.createPrefab(Journalist, {
                 ...coords,
@@ -810,6 +898,10 @@ class Game {
                 }
                 if (newTarget) {
                     // if theres a target in a view, pursue him
+                    if (!this.mz.advices.shiftOnScreen.shown && newTarget === this.mz.objects.player.sprite)
+                    {
+                        this.mz.advices.shiftOnScreen.show();
+                    }
                     cop.setMode(COP_MODE_PURSUE, { target: newTarget });
                 } else if (cop.mode !== COP_MODE_WANDER) {
                     // else wander around, if not yet
@@ -1127,6 +1219,7 @@ class Game {
             {
                 this.mz.advices.move.hide();
                 this.mz.advices.move = null;
+                this.mz.advices.spaceOnScreen.show();
             }
             const angleDegree = player.sprite.position.angle(coords, true);
             player.direction = angleDegree;
@@ -1155,7 +1248,7 @@ class Game {
     }
 
     handlePause() {
-        if (this.game.paused) {
+        if (this.game.paused && !this.mz.adviceIsActive) {
             this.mz.objects.pauseMenu.revive();
         } else {
             this.mz.objects.pauseMenu.kill();
@@ -1369,6 +1462,10 @@ class Game {
 
         if (protesterSprite.name !== 'player') {
             this.mz.protesters.arrested++;
+            if (!this.mz.advices.fightOnScreen.shown)
+            {
+                this.mz.advices.fightOnScreen.show();
+            }
         }
     }
 
@@ -1438,9 +1535,15 @@ class Game {
 
         const st = (direction === 'ltor' ? 100 : this.game.world.width - 100);
         const distance = (direction === 'ltor' ? 1 : -1) * (this.game.world.width / rnd);
-        let foundStar = !(this.mz.objects.star && this.mz.objects.star.sprite.alive);
-        const { x: starX, y: starY } = this.mz.objects.star.sprite.body.center;
-        for (let i=0; i<rnd; i++)
+        let foundStar = !(this.mz.objects.star && this.mz.objects.star.sprite && this.mz.objects.star.sprite.alive);
+        let starX = 0;
+        let starY = 0;
+        if (!foundStar)
+        {
+            starX = this.mz.objects.star.sprite.body.center.x;
+            starY = this.mz.objects.star.sprite.body.center.y;
+        }
+        for (let i=0; i<=rnd; i++)
         {
             const t= this.getRandomCoordinates({x: st + distance * i});
             if (!foundStar) {
@@ -1464,14 +1567,6 @@ class Game {
             targets.push(t);
         }
 
-
-
-
-
-        // targets.push({
-        //   x: direction === 'ltor' ? this.game.world.width + 100 : -100,
-        //   y: this.getRandomCoordinateY(),
-        // })
 
         console.log('target omon', targets);
 
@@ -1535,7 +1630,7 @@ class Game {
             switch (mode) {
                 case END_GAME_PROTEST_RATE: {
                     // this.launchShield();
-                    modalShow('desolation', 0,  () => {
+                    modalShow('desolation', this.mz.timers.gameTime.seconds,  () => {
                         this.mz.objects.audio.theme.stop();
                         this.mz.objects.audio.meeting.stop();
                         // this.mz.objects.audio.song.stop();
@@ -1544,7 +1639,7 @@ class Game {
                     break;
                 }
                 case END_GAME_PLAYER_KILLED: {
-                    modalShow('arrested', 0,  () => {
+                    modalShow('arrested', this.mz.timers.gameTime.seconds,  () => {
                         this.mz.objects.audio.theme.stop();
                         this.mz.objects.audio.meeting.stop();
                         // this.mz.objects.audio.song.stop();
@@ -1636,6 +1731,7 @@ class Game {
         {
             this.mz.screenAttacked = true;
             this.mz.objects.screenAttack = this.game.add.graphics(0, 0);
+            this.mz.groups.screen.add(this.mz.objects.screenAttack);
             this.mz.objects.screenAttack
                 .clear()
                 .beginFill(0x67c079, 0.95)
@@ -1748,7 +1844,7 @@ class Game {
         }
         if (Math.random() < 0.3)
         {
-            this.mz.tweet.rTweet({type: 'defended'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
+            this.mz.tweet.rTweet({type: 'defended'}, {visible: 1, fadeIn: 1, fadeOut: 1});
         }
     }
 
@@ -1917,6 +2013,7 @@ class Game {
     playPoints(sprite, points)
     {
         var spritePoint = this.game.add.sprite(sprite.x, sprite.y-10, 'ALL_IMAGES', 'points_'+points);
+        this.mz.groups.scores.add(spritePoint);
         spritePoint.scale.setTo(0.5);
         spritePoint.anchor.set(0.5);
         var tween = game.add.tween(spritePoint);

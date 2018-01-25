@@ -62,7 +62,7 @@ export default {
         ru: 'Загрузка'
     },
     [cnst.I18N_UI_PAUSE]: {
-        en: 'Pause',
+        en: 'Пауза',
         ru: 'Пауза'
     },
     [cnst.I18N_END_WIN]: {

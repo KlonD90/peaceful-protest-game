@@ -70,7 +70,7 @@ class GameInterface {
             'ALL_IMAGES',
             this.handleClickSound,
             this,
-            "volume_off", "volume_off", "volume_off"//, "volume_on",
+            "volume_on", "volume_on", "volume_on"//, "volume_on",
            // this.group
         );
         this.group.add(this.buttonSound);
@@ -166,9 +166,9 @@ class GameInterface {
         this.game.sound.mute = !this.game.sound.mute;
 
         if(this.game.sound.mute){
-            this.buttonSound.setFrames("volume_on","volume_on","volume_on");  
-        } else {
             this.buttonSound.setFrames("volume_off","volume_off","volume_off");
+        } else {
+            this.buttonSound.setFrames("volume_on","volume_on","volume_on");
         }
     }
 

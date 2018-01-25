@@ -231,6 +231,7 @@ class Player extends Protester {
             {
                 this.GameObject.mz.advices.move.hide();
                 this.GameObject.mz.advices.move = null;
+                this.GameObject.mz.advices.spaceOnScreen.show();
             }
             this.moveTo(null);
             const angles = [];
@@ -321,13 +322,13 @@ class Player extends Protester {
                 this.sprite.body.immovable = true;
                 this.viewSprite.animations.stop(null, true);
                 // HelpInfo.show('space_fight')
-                this.GameObject.mz.objects.fightAdvice.visible = true;
+                // this.GameObject.mz.objects.fightAdvice.visible = true;
                 console.log(this.GameObject.mz.timers.fight);
                 break;
             }
             case PLAYER_MODE_STUN: {
                 // HelpInfo.hide('space_fight')
-                this.GameObject.mz.objects.fightAdvice.visible = false;
+                // this.GameObject.mz.objects.fightAdvice.visible = false;
                 this.showPoster = false;
                 this.GameObject.mz.timers.fight.stop();
                 this.GameObject.mz.timers.fight.removeAll();
@@ -346,7 +347,7 @@ class Player extends Protester {
             }
             case PLAYER_MODE_NORMAL: {
                 // HelpInfo.hide('space_fight')
-                this.GameObject.mz.objects.fightAdvice.visible = false;
+                // this.GameObject.mz.objects.fightAdvice.visible = false;
                 this.showPoster = false;
                 this.stunTimer.removeAll();
                 this.stunTimer.stop();

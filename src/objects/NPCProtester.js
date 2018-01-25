@@ -98,9 +98,17 @@ class NPCProtester extends Protester {
             {
                 if (!this.nodDone && this.mode != PROTESTER_MODE_NOD)
                     this.setMode(PROTESTER_MODE_NOD);
+                if (!this.GameObject.mz.advices.nodOnScreen.shown)
+                {
+                    this.GameObject.mz.advices.nodOnScreen.show();
+                }
             }
             else
             {
+                if (!this.GameObject.mz.advices.agitateOnScreen.shown)
+                {
+                    this.GameObject.mz.advices.agitateOnScreen.show();
+                }
                 if (this.mood >= 1)
                     this.progressBar.update(0);
                 else
