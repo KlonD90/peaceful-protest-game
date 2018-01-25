@@ -929,7 +929,7 @@ module.exports = {
         },
         protesters: {
             count: {
-                start: 99, //100,
+                start: 1, //100,
                 max: 100,
                 add: 14
             },
@@ -937,7 +937,7 @@ module.exports = {
                 value: 60
             },
             mood: 0.3,
-            moodUp: 0.2,
+            moodUp: 0.002,
             moodDown: 0.0001,
             poster: {
                 drop: 0.3,
@@ -965,7 +965,7 @@ module.exports = {
             scoreThreshold: 300
         },
         star: {
-            score: 0
+            score: 200
         }
     }
     // level2: {
@@ -3533,6 +3533,7 @@ var Player = function (_Protester) {
                 if (this.GameObject.mz.advices.move) {
                     this.GameObject.mz.advices.move.hide();
                     this.GameObject.mz.advices.move = null;
+                    this.GameObject.mz.advices.spaceOnScreen.show();
                 }
                 this.moveTo(null);
                 var angles = [];
@@ -10063,13 +10064,13 @@ module.exports = __webpack_require__.p + "assets/7890ea6754fb124fa101877cec2457d
 /* 332 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/b4aeb66dcb1599ec1294b2a72b7ef441.png";
+module.exports = __webpack_require__.p + "assets/ee83e6dc001d958b9c1b7870fc081a9c.png";
 
 /***/ }),
 /* 333 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/a0696655b54b16d2cf272a970af1020d.json";
+module.exports = __webpack_require__.p + "assets/e041b2f4fe1f2d2abbda9af7823fa534.json";
 
 /***/ }),
 /* 334 */
@@ -10381,7 +10382,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     en: 'Loading',
     ru: 'Загрузка'
 }), _defineProperty(_cnst$I18N_GAME_TITLE, __WEBPACK_IMPORTED_MODULE_0__constants_js__["K" /* I18N_UI_PAUSE */], {
-    en: 'Pause',
+    en: 'Пауза',
     ru: 'Пауза'
 }), _defineProperty(_cnst$I18N_GAME_TITLE, __WEBPACK_IMPORTED_MODULE_0__constants_js__["t" /* I18N_END_WIN */], {
     en: 'You did it!',
@@ -10802,11 +10803,12 @@ var Controls = function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__modal___ = __webpack_require__(419);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__levels__ = __webpack_require__(63);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__objects_CirclePool__ = __webpack_require__(455);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__levelObjects_js__ = __webpack_require__(456);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__constants_js__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__utils_js__ = __webpack_require__(144);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__constants__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__objects_Tweets_ManuallyBehavior__ = __webpack_require__(93);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__objects_Advice__ = __webpack_require__(456);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__levelObjects_js__ = __webpack_require__(457);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__constants_js__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__utils_js__ = __webpack_require__(144);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__constants__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__ = __webpack_require__(93);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -10816,6 +10818,7 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 
 
 
@@ -10927,7 +10930,10 @@ var Game = function () {
                     npcProtesters: null,
                     levelObjects: null,
                     player: null,
-                    circles: null
+                    circles: null,
+                    screen: null,
+                    advices: null,
+                    scores: null
                 },
                 zoomLevel: -1,
                 advices: {
@@ -10962,7 +10968,8 @@ var Game = function () {
                 starScore: level.star.score,
                 pressScore: level.press.score,
                 pressJailed: false,
-                musicStage: 'start'
+                musicStage: 'start',
+                adviceIsActive: false
             };
             this.mz.score = 0;
         }
@@ -11074,6 +11081,10 @@ var Game = function () {
             });
             this.mz.timers.twits.start();
 
+            this.mz.groups.screen = this.game.add.group();
+            this.mz.groups.advices = this.game.add.group();
+            this.mz.groups.scores = this.game.add.group();
+
             // swat
             if (this.mz.level.swat) {
                 this.mz.objects.swat = new __WEBPACK_IMPORTED_MODULE_5__objects_SWATSquad_js__["a" /* default */](_extends({
@@ -11117,7 +11128,7 @@ var Game = function () {
                 }));
                 this.mz.arrays.press.push(journalist.sprite);
                 this.mz.groups.d.add(journalist.sprite);
-                journalist.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
+                journalist.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
             }
 
             // protesters
@@ -11176,9 +11187,19 @@ var Game = function () {
             this.game.camera.setBoundsToWorld();
             this.customCamera = new __WEBPACK_IMPORTED_MODULE_13__objects_Camera__["a" /* default */](this.game.camera, this.game);
             __WEBPACK_IMPORTED_MODULE_12__objects_HelpInfo_js__["a" /* default */].setGame(this.game);
-            this.mz.advices.move = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_22__objects_Tweets_ManuallyBehavior__["a" /* default */] });
-            this.mz.advices.space = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Нажмите ПРОБЕЛ, чтобы начать агитацию/перестать агитировать' : 'Нажмите на значок справа внизу экрана, чтобы начать/закончить агитацию', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_22__objects_Tweets_ManuallyBehavior__["a" /* default */] });
-            this.mz.advices.agitate = this.mz.tweet.tweet('Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_22__objects_Tweets_ManuallyBehavior__["a" /* default */] });
+            this.mz.advices.move = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__["a" /* default */] });
+            this.mz.advices.moveOnScreen = new __WEBPACK_IMPORTED_MODULE_18__objects_Advice__["a" /* default */](this.game, this, 'move', Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице');
+            this.mz.advices.moveOnScreen.show();
+            this.mz.advices.space = this.mz.tweet.tweet(Phaser.Device.desktop ? 'Нажмите ПРОБЕЛ, чтобы начать агитацию/перестать агитировать' : 'Нажмите кнопку с плакатом, чтобы начать агитацию', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__["a" /* default */] });
+            this.mz.advices.spaceOnScreen = new __WEBPACK_IMPORTED_MODULE_18__objects_Advice__["a" /* default */](this.game, this, 'plakat', Phaser.Device.desktop ? 'Чтобы начать агитацию, поднимите плакат, нажав «Пробел»' : 'Нажмите кнопку с плакатом, чтобы начать агитацию');
+            this.mz.advices.agitate = this.mz.tweet.tweet('Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам', 'help', { behavior: __WEBPACK_IMPORTED_MODULE_23__objects_Tweets_ManuallyBehavior__["a" /* default */] });
+            this.mz.advices.agitateOnScreen = new __WEBPACK_IMPORTED_MODULE_18__objects_Advice__["a" /* default */](this.game, this, 'agit', 'Когда вы агитируете прохожего, подождите, пока он поднимет плакат — тогда он присоединится к вам');
+            this.mz.advices.pressOnScreen = new __WEBPACK_IMPORTED_MODULE_18__objects_Advice__["a" /* default */](this.game, this, 'press', 'Подойдите к журналисту и поднимите плакат в его поле видимости; подождите, пока он закончит прямой эфир, тогда на площадь подтянутся новые люди\n');
+            this.mz.advices.copOnScreen = new __WEBPACK_IMPORTED_MODULE_18__objects_Advice__["a" /* default */](this.game, this, 'cop', Phaser.Device.desktop ? 'Не попадайтесь полицейскому с плакатом – опустите, нажав «Пробел»' : 'Во время агитации остерегайтесь сотрудников полиции — опустите плакат до того, как они вас заметят');
+            this.mz.advices.shiftOnScreen = new __WEBPACK_IMPORTED_MODULE_18__objects_Advice__["a" /* default */](this.game, this, 'shift', Phaser.Device.desktop ? 'Убегайте от полиции, зажимая «shift», однако не забывайте отдыхать, иначе быстро выдохнетесь' : 'Если вы дважды коснетесь экрана, вы сможете убегать от полиции, однако, не забывайте отдыхать, иначе быстро выдохнетесь');
+            this.mz.advices.nodOnScreen = new __WEBPACK_IMPORTED_MODULE_18__objects_Advice__["a" /* default */](this.game, this, 'nod', 'Смотрите, чтобы вам не плеснули зеленкой в лицо');
+            this.mz.advices.fightOnScreen = new __WEBPACK_IMPORTED_MODULE_18__objects_Advice__["a" /* default */](this.game, this, 'fight', Phaser.Device.desktop ? 'Спасайте демонстрантов, которых уводит полиция. Догоните и отбейте их, заполнив синий индикатор. Для этого быстро нажимайте пробел много раз подряд' : 'Чтобы помешать задержанию демонстранта, подойдите к нему и быстро жмите на экран много раз подряд');
+
             // this.mz.advices.shift = this.mz.tweet.tweet(
             //     'Чтобы бегать нажмите shift',
             //     'tw_help',
@@ -11186,7 +11207,7 @@ var Game = function () {
             // );
 
 
-            __WEBPACK_IMPORTED_MODULE_18__levelObjects_js__["b" /* reset */]();
+            __WEBPACK_IMPORTED_MODULE_19__levelObjects_js__["b" /* reset */]();
             // setTimeout(this.screenAttack.bind(this), 200);
 
             if (!this.circleGraphic) this.circleGraphic = this.game.add.graphics();
@@ -11205,6 +11226,14 @@ var Game = function () {
             this.mz.circles.npc = { tex: "dot", color: 0x6eed83 }; //processingGraphic.clear().beginFill(0x6eed83, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
             this.mz.circles.cop = { tex: "dot", color: 0x2b3992 }; //processingGraphic.clear().beginFill(0x2b3992, 0.7).drawCircle(10, 10, 20).endFill().generateTexture(ratio);
             this.circlePool = new __WEBPACK_IMPORTED_MODULE_17__objects_CirclePool__["a" /* default */](this.game);
+
+            // const adv = new Advice(
+            //     this.game,
+            //     'cop',
+            //     'Во время агитации остерегайтесь сотрудников полиции — опустите плакат до того, как они вас заметят',
+            //     'Нажмите пробел, чтобы скрыть подсказку'
+            // );
+            // adv.show();
         }
     }, {
         key: 'update',
@@ -11324,7 +11353,7 @@ var Game = function () {
             // update journalists
             this.mz.arrays.press.forEach(function (journalistSprite) {
                 var journalist = journalistSprite.mz;
-                if (journalist.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["M" /* JOURNALIST_MODE_ARRESTED */]) {
+                if (journalist.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["M" /* JOURNALIST_MODE_ARRESTED */]) {
                     return;
                 }
                 if (journalistSprite.alive) {
@@ -11340,7 +11369,7 @@ var Game = function () {
                         // vs cops
                         for (var j = 0; j < _this2.mz.arrays.cops.length; j++) {
                             var copSprite = _this2.mz.arrays.cops[j];
-                            if (!copSprite.alive || copSprite.mz.target !== journalistSprite || !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["e" /* COP_MODE_STUN */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */]) {
+                            if (!copSprite.alive || copSprite.mz.target !== journalistSprite || !Phaser.Rectangle.intersects(protesterBounds, copSprite.getBounds()) || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["e" /* COP_MODE_STUN */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["c" /* COP_MODE_FIGHT */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */]) {
                                 continue;
                             }
 
@@ -11352,9 +11381,9 @@ var Game = function () {
                     }
 
                     if (newTarget) {
-                        journalist.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["O" /* JOURNALIST_MODE_SHOOTING */], { target: newTarget });
-                    } else if (journalist.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["P" /* JOURNALIST_MODE_WANDER */] && journalist.mode !== __WEBPACK_IMPORTED_MODULE_21__constants__["N" /* JOURNALIST_MODE_FOLLOW */]) {
-                        journalist.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
+                        journalist.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["O" /* JOURNALIST_MODE_SHOOTING */], { target: newTarget });
+                    } else if (journalist.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["P" /* JOURNALIST_MODE_WANDER */] && journalist.mode !== __WEBPACK_IMPORTED_MODULE_22__constants__["N" /* JOURNALIST_MODE_FOLLOW */]) {
+                        journalist.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
                     }
 
                     journalist.update();
@@ -11363,7 +11392,7 @@ var Game = function () {
 
             // update swat
             if (this.mz.objects.swat) {
-                if ((this.mz.score >= this.mz.level.swat.scoreThreshold || this.mz.gameEnded) && this.mz.objects.swat.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["_2" /* SWAT_MODE_HIDE */] && !this.mz.timers.swat.running) {
+                if ((this.mz.score >= this.mz.level.swat.scoreThreshold || this.mz.gameEnded) && this.mz.objects.swat.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["_2" /* SWAT_MODE_HIDE */] && !this.mz.timers.swat.running) {
                     this.mz.timers.swat.add(this.mz.level.swat.frequency, this.launchSWAT, this);
                     this.mz.timers.swat.start();
                 } else if (this.mz.timers.swat.running && this.mz.score < this.mz.level.swat.scoreThreshold) {
@@ -11381,10 +11410,18 @@ var Game = function () {
                 // revive if necessary
 
                 if (copsRequired > this.mz.cops.alive) {
-                    if (!this.mz.showedAdvice.cops) {
-                        this.mz.showedAdvice.cops = true;
-                        this.mz.tweet.tweet('Во время агитации остерегайтесь сотрудников полиции, опустите плакат до того, как они вас заметят', 'help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
+                    if (this.mz.cops.alive === 0 && !this.mz.advices.copOnScreen.shown) {
+                        this.mz.advices.copOnScreen.show();
                     }
+                    // if (!this.mz.showedAdvice.cops)
+                    // {
+                    //     this.mz.showedAdvice.cops = true;
+                    //     this.mz.tweet.tweet(
+                    //         'Во время агитации остерегайтесь сотрудников полиции, опустите плакат до того, как они вас заметят',
+                    //         'help',
+                    //         {visible: 5000, fadeIn: 500, fadeOut: 500}
+                    //     );
+                    // }
                     this.reviveCops(copsRequired - this.mz.cops.alive);
                     this.mz.cops.alive = copsRequired;
                 }
@@ -11406,6 +11443,9 @@ var Game = function () {
                     y: this.mz.objects.player.sprite.y - 20
                 } : this.getRandomCoordinates();
                 console.log('press first', isFirst, coords);
+                if (isFirst && !this.mz.advices.pressOnScreen.shown) {
+                    this.mz.advices.pressOnScreen.show();
+                }
 
                 var journalist = this.createPrefab(__WEBPACK_IMPORTED_MODULE_3__objects_Journalist_js__["a" /* default */], _extends({}, coords, {
                     fov: {
@@ -11423,7 +11463,7 @@ var Game = function () {
 
                 this.mz.arrays.press.push(journalist.sprite);
                 this.mz.groups.d.add(journalist.sprite);
-                journalist.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
+                journalist.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["P" /* JOURNALIST_MODE_WANDER */]);
             }
             var protesterTargets = this.mz.arrays.protesters.filter(function (x) {
                 return x.mz.showPoster;
@@ -11433,7 +11473,7 @@ var Game = function () {
             if (this.mz.objects.player.showPoster) {
                 attractionStrength = 0.2;
                 for (var p = 0; p < this.mz.arrays.press; p++) {
-                    if (this.mz.arrays.press[i].mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["O" /* JOURNALIST_MODE_SHOOTING */]) {
+                    if (this.mz.arrays.press[i].mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["O" /* JOURNALIST_MODE_SHOOTING */]) {
                         attractionStrength += 0.4;
                     }
                 }
@@ -11444,16 +11484,16 @@ var Game = function () {
                 var copSprite = this.mz.arrays.cops[_i4];
                 var cop = copSprite.mz;
 
-                if (cop.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["S" /* PLAYER_MODE_FIGHT */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["U" /* PLAYER_MODE_STUN */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */]) {
+                if (cop.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["S" /* PLAYER_MODE_FIGHT */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["U" /* PLAYER_MODE_STUN */] && this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["V" /* PROTESTER_MODE_ARRESTED */]) {
                     var playerCenter = this.mz.objects.player.sprite.body.center;
                     var diffCop = Math.abs(copSprite.body.center.x - playerCenter.x) + Math.abs(copSprite.body.center.y - playerCenter.y);
                     if (diffCop < 40) {
-                        this.mz.objects.player.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["S" /* PLAYER_MODE_FIGHT */], { target: copSprite });
-                        cop.setMode(__WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */]);
+                        this.mz.objects.player.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["S" /* PLAYER_MODE_FIGHT */], { target: copSprite });
+                        cop.setMode(__WEBPACK_IMPORTED_MODULE_22__constants__["c" /* COP_MODE_FIGHT */]);
                     }
                 }
 
-                if (cop.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */] && cop.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["b" /* COP_MODE_ENTER */] && cop.mode !== __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */] && cop.mode !== __WEBPACK_IMPORTED_MODULE_21__constants__["e" /* COP_MODE_STUN */] && cop.lastDecisionTime < now) {
+                if (cop.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */] && cop.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["b" /* COP_MODE_ENTER */] && cop.mode !== __WEBPACK_IMPORTED_MODULE_22__constants__["c" /* COP_MODE_FIGHT */] && cop.mode !== __WEBPACK_IMPORTED_MODULE_22__constants__["e" /* COP_MODE_STUN */] && cop.lastDecisionTime < now) {
                     cop.lastDecisionTime = now + lastCopDecisionTimeout + Math.random() * 50;
                     // set attraction point and strength
                     cop.attractionPoint = _extends({}, this.mz.objects.player.sprite.body.center);
@@ -11480,7 +11520,7 @@ var Game = function () {
                         }
                         //console.log('new target', newTarget);
                     }
-                    if (cop.target && cop.target.mz.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] && cop.FOV.containsPoint(cop.target.body.center)) {
+                    if (cop.target && cop.target.mz.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] && cop.FOV.containsPoint(cop.target.body.center)) {
                         var _distanceToProtesterSq = this.getDistanceSq(copSprite.body.center, cop.target.body.center) * 3 / 4;;
                         if (_distanceToProtesterSq < distanceToTargetSq) {
                             newTarget = cop.target;
@@ -11488,10 +11528,13 @@ var Game = function () {
                     }
                     if (newTarget) {
                         // if theres a target in a view, pursue him
-                        cop.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["d" /* COP_MODE_PURSUE */], { target: newTarget });
-                    } else if (cop.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["f" /* COP_MODE_WANDER */]) {
+                        if (!this.mz.advices.shiftOnScreen.shown && newTarget === this.mz.objects.player.sprite) {
+                            this.mz.advices.shiftOnScreen.show();
+                        }
+                        cop.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["d" /* COP_MODE_PURSUE */], { target: newTarget });
+                    } else if (cop.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["f" /* COP_MODE_WANDER */]) {
                         // else wander around, if not yet
-                        cop.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["f" /* COP_MODE_WANDER */]);
+                        cop.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["f" /* COP_MODE_WANDER */]);
                     }
                 }
 
@@ -11513,7 +11556,7 @@ var Game = function () {
                     var _protesterSprite = _step2.value;
 
 
-                    if (!_protesterSprite.alive || _protesterSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */]) {
+                    if (!_protesterSprite.alive || _protesterSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["V" /* PROTESTER_MODE_ARRESTED */]) {
                         continue;
                     }
 
@@ -11546,7 +11589,7 @@ var Game = function () {
                 }
             }
 
-            if (this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] && !this.mz.gameEnded) {
+            if (this.mz.objects.player.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] && !this.mz.gameEnded) {
                 // vs posters
                 for (var _i6 = 0; _i6 < this.mz.arrays.droppedPosters.length; _i6++) {
                     var droppedPoster = this.mz.arrays.droppedPosters[_i6];
@@ -11567,13 +11610,13 @@ var Game = function () {
             //     this.mz.arrays.borders
             // );
             var checkFollowPlayer = function checkFollowPlayer(sprite) {
-                return !(sprite && sprite.mz && sprite.mz.mode && sprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["W" /* PROTESTER_MODE_FOLLOW */] && sprite.mz.following && sprite.mz.following.target === _this2.mz.objects.player.sprite);
+                return !(sprite && sprite.mz && sprite.mz.mode && sprite.mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["W" /* PROTESTER_MODE_FOLLOW */] && sprite.mz.following && sprite.mz.following.target === _this2.mz.objects.player.sprite);
             };
             var pursueTarget = function pursueTarget(mode, isArrest) {
                 return function (copSprite, protesterSprite) {
                     var isTarget = copSprite.mz.target === protesterSprite && copSprite.mz.mode === mode;
                     if (isArrest && isTarget) {
-                        if (!copSprite.alive || protesterSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["S" /* PLAYER_MODE_FIGHT */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["e" /* COP_MODE_STUN */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */]) {
+                        if (!copSprite.alive || protesterSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["S" /* PLAYER_MODE_FIGHT */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["e" /* COP_MODE_STUN */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["c" /* COP_MODE_FIGHT */] || copSprite.mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */]) {
                             return false;
                         }
                         _this2.proceedToJail(protesterSprite, copSprite);
@@ -11582,7 +11625,7 @@ var Game = function () {
                 };
             };
             this.game.physics.arcade.collide(this.mz.objects.player.sprite, this.mz.arrays.protesters, null, function (sprite1, sprite2) {
-                return pursueTarget(__WEBPACK_IMPORTED_MODULE_21__constants__["Y" /* PROTESTER_MODE_NOD */])(sprite2, sprite1) && checkFollowPlayer(sprite1) && checkFollowPlayer(sprite2);
+                return pursueTarget(__WEBPACK_IMPORTED_MODULE_22__constants__["Y" /* PROTESTER_MODE_NOD */])(sprite2, sprite1) && checkFollowPlayer(sprite1) && checkFollowPlayer(sprite2);
             });
             // this.game.physics.arcade.collide(
             //     this.mz.objects.player.sprite,
@@ -11610,7 +11653,7 @@ var Game = function () {
                     var target = moveEntry.target;
                     if (moveEntry.phasing && _this2.checkContainWagon(target)) {
                         protester.mz.moveTo(null);
-                        if (protester.mz.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["Z" /* PROTESTER_MODE_WANDER */]) protester.mz.wander();
+                        if (protester.mz.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["Z" /* PROTESTER_MODE_WANDER */]) protester.mz.wander();
                     } else {
                         var xSide = null;
                         if (protester.x > wagon.body.x + wagon.body.width) {
@@ -11665,9 +11708,9 @@ var Game = function () {
                 //     this.mz.objects.star.sprite
                 // );
             }
-            this.game.physics.arcade.collide(this.mz.arrays.cops, this.mz.arrays.protesters, null, pursueTarget(__WEBPACK_IMPORTED_MODULE_19__constants_js__["d" /* COP_MODE_PURSUE */], true));
+            this.game.physics.arcade.collide(this.mz.arrays.cops, this.mz.arrays.protesters, null, pursueTarget(__WEBPACK_IMPORTED_MODULE_20__constants_js__["d" /* COP_MODE_PURSUE */], true));
 
-            var handlePlayerPursue = pursueTarget(__WEBPACK_IMPORTED_MODULE_19__constants_js__["d" /* COP_MODE_PURSUE */], true);
+            var handlePlayerPursue = pursueTarget(__WEBPACK_IMPORTED_MODULE_20__constants_js__["d" /* COP_MODE_PURSUE */], true);
 
             this.game.physics.arcade.collide(this.mz.arrays.cops, this.mz.objects.player.sprite, null, function (cop, player) {
                 return handlePlayerPursue(cop, player) && false;
@@ -11744,10 +11787,11 @@ var Game = function () {
             };
 
             var player = this.mz.objects.player;
-            if (player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["S" /* PLAYER_MODE_FIGHT */] && player.mode !== __WEBPACK_IMPORTED_MODULE_19__constants_js__["U" /* PLAYER_MODE_STUN */]) {
+            if (player.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["S" /* PLAYER_MODE_FIGHT */] && player.mode !== __WEBPACK_IMPORTED_MODULE_20__constants_js__["U" /* PLAYER_MODE_STUN */]) {
                 if (this.mz.advices.move) {
                     this.mz.advices.move.hide();
                     this.mz.advices.move = null;
+                    this.mz.advices.spaceOnScreen.show();
                 }
                 var angleDegree = player.sprite.position.angle(coords, true);
                 player.direction = angleDegree;
@@ -11757,7 +11801,7 @@ var Game = function () {
                         return player.resetClickSpeed(true);
                     }, phasing: true });
             }
-            if (player.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["S" /* PLAYER_MODE_FIGHT */]) {
+            if (player.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["S" /* PLAYER_MODE_FIGHT */]) {
                 player.fightBar += 1;
             }
         }
@@ -11781,7 +11825,7 @@ var Game = function () {
     }, {
         key: 'handlePause',
         value: function handlePause() {
-            if (this.game.paused) {
+            if (this.game.paused && !this.mz.adviceIsActive) {
                 this.mz.objects.pauseMenu.revive();
             } else {
                 this.mz.objects.pauseMenu.kill();
@@ -11805,7 +11849,7 @@ var Game = function () {
         key: 'updateTimer',
         value: function updateTimer() {
             this.mz.timePassed++;
-            this.mz.objects.interface.updateTimer(__WEBPACK_IMPORTED_MODULE_20__utils_js__["a" /* getFormattedTime */](this.mz.timePassed));
+            this.mz.objects.interface.updateTimer(__WEBPACK_IMPORTED_MODULE_21__utils_js__["a" /* getFormattedTime */](this.mz.timePassed));
         }
     }, {
         key: 'createCops',
@@ -11980,7 +12024,7 @@ var Game = function () {
             });
 
             this.arrest(protesterSprite, copSprite);
-            copSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */], { jailCoords: closestCarCoords });
+            copSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */], { jailCoords: closestCarCoords });
         }
     }, {
         key: 'arrest',
@@ -11994,7 +12038,7 @@ var Game = function () {
             }
             var x = protesterSprite.body.center.x - copSprite.body.center.x;
             var y = protesterSprite.body.center.y - copSprite.body.center.y;
-            protesterSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */], {
+            protesterSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["V" /* PROTESTER_MODE_ARRESTED */], {
                 x: Math.sign(x) * Math.min(Math.abs(x), 17),
                 y: Math.sign(y) * Math.min(Math.abs(y), 17),
                 by: copSprite.mz
@@ -12002,6 +12046,9 @@ var Game = function () {
 
             if (protesterSprite.name !== 'player') {
                 this.mz.protesters.arrested++;
+                if (!this.mz.advices.fightOnScreen.shown) {
+                    this.mz.advices.fightOnScreen.show();
+                }
             }
         }
     }, {
@@ -12038,7 +12085,7 @@ var Game = function () {
                 protesterSprite.visible = true;
                 var slot = __WEBPACK_IMPORTED_MODULE_0__objects_Player_js__["a" /* default */].instance.slots.take(this);
                 if (slot) {
-                    protesterSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["W" /* PROTESTER_MODE_FOLLOW */], { slot: slot });
+                    protesterSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["W" /* PROTESTER_MODE_FOLLOW */], { slot: slot });
                 }
                 // protesterSprite.mz.setMode(PROTESTER_MODE_WANDER);
             }
@@ -12093,12 +12140,12 @@ var Game = function () {
 
             console.log('target omon', targets);
 
-            this.mz.objects.swat.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["_3" /* SWAT_MODE_HUNT */], { start: start, targets: targets });
+            this.mz.objects.swat.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["_3" /* SWAT_MODE_HUNT */], { start: start, targets: targets });
         }
     }, {
         key: 'launchShield',
         value: function launchShield() {
-            this.mz.objects.shield.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["_0" /* SHIELD_MODE_DRIVE */], {
+            this.mz.objects.shield.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["_0" /* SHIELD_MODE_DRIVE */], {
                 y: this.game.height / 2 + this.game.camera.y
             });
         }
@@ -12106,11 +12153,11 @@ var Game = function () {
         key: 'checkWin',
         value: function checkWin() {
             if (this.mz.protesters.alive <= 0) {
-                this.endGame(__WEBPACK_IMPORTED_MODULE_19__constants_js__["h" /* END_GAME_PROTEST_RATE */]);
+                this.endGame(__WEBPACK_IMPORTED_MODULE_20__constants_js__["h" /* END_GAME_PROTEST_RATE */]);
             } else if (this.mz.score >= this.mz.limitScore) {
-                this.endGame(__WEBPACK_IMPORTED_MODULE_19__constants_js__["j" /* END_GAME_WIN */]);
-            } else if (this.mz.objects.player.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] || !this.mz.objects.player.sprite.alive) {
-                this.endGame(__WEBPACK_IMPORTED_MODULE_19__constants_js__["g" /* END_GAME_PLAYER_KILLED */]);
+                this.endGame(__WEBPACK_IMPORTED_MODULE_20__constants_js__["j" /* END_GAME_WIN */]);
+            } else if (this.mz.objects.player.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["V" /* PROTESTER_MODE_ARRESTED */] || !this.mz.objects.player.sprite.alive) {
+                this.endGame(__WEBPACK_IMPORTED_MODULE_20__constants_js__["g" /* END_GAME_PLAYER_KILLED */]);
             }
         }
     }, {
@@ -12135,7 +12182,7 @@ var Game = function () {
             this.game.input.keyboard.removeKey(Phaser.Keyboard.ESC);
             this.game.input.onDown.remove(this.handleUnpause, this);
 
-            if (mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["j" /* END_GAME_WIN */]) {
+            if (mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["j" /* END_GAME_WIN */]) {
                 this.mz.objects.audio.applause.play('', 0, 0.25);
                 this.mz.arrays.protesters.forEach(function (sprite) {
                     sprite.mz.moodUp(1);
@@ -12150,7 +12197,7 @@ var Game = function () {
 
                 this.mz.objects.audio.boo.play();
                 switch (mode) {
-                    case __WEBPACK_IMPORTED_MODULE_19__constants_js__["h" /* END_GAME_PROTEST_RATE */]:
+                    case __WEBPACK_IMPORTED_MODULE_20__constants_js__["h" /* END_GAME_PROTEST_RATE */]:
                         {
                             // this.launchShield();
                             __WEBPACK_IMPORTED_MODULE_15__modal___["a" /* default */]('desolation', this.mz.timers.gameTime.seconds, function () {
@@ -12161,7 +12208,7 @@ var Game = function () {
                             });
                             break;
                         }
-                    case __WEBPACK_IMPORTED_MODULE_19__constants_js__["g" /* END_GAME_PLAYER_KILLED */]:
+                    case __WEBPACK_IMPORTED_MODULE_20__constants_js__["g" /* END_GAME_PLAYER_KILLED */]:
                         {
                             __WEBPACK_IMPORTED_MODULE_15__modal___["a" /* default */]('arrested', this.mz.timers.gameTime.seconds, function () {
                                 _this4.mz.objects.audio.theme.stop();
@@ -12253,12 +12300,12 @@ var Game = function () {
     }, {
         key: 'getRandomCoordinateX',
         value: function getRandomCoordinateX() {
-            return this.game.math.clamp(this.game.world.randomX, __WEBPACK_IMPORTED_MODULE_19__constants_js__["k" /* FIELD_OFFSET */].left, this.game.world.width - __WEBPACK_IMPORTED_MODULE_19__constants_js__["k" /* FIELD_OFFSET */].right);
+            return this.game.math.clamp(this.game.world.randomX, __WEBPACK_IMPORTED_MODULE_20__constants_js__["k" /* FIELD_OFFSET */].left, this.game.world.width - __WEBPACK_IMPORTED_MODULE_20__constants_js__["k" /* FIELD_OFFSET */].right);
         }
     }, {
         key: 'getRandomCoordinateY',
         value: function getRandomCoordinateY() {
-            return this.game.math.clamp(this.game.world.randomY, __WEBPACK_IMPORTED_MODULE_19__constants_js__["k" /* FIELD_OFFSET */].top, this.game.world.height - __WEBPACK_IMPORTED_MODULE_19__constants_js__["k" /* FIELD_OFFSET */].bottom);
+            return this.game.math.clamp(this.game.world.randomY, __WEBPACK_IMPORTED_MODULE_20__constants_js__["k" /* FIELD_OFFSET */].top, this.game.world.height - __WEBPACK_IMPORTED_MODULE_20__constants_js__["k" /* FIELD_OFFSET */].bottom);
         }
     }, {
         key: 'screenAttack',
@@ -12277,6 +12324,7 @@ var Game = function () {
             } else {
                 this.mz.screenAttacked = true;
                 this.mz.objects.screenAttack = this.game.add.graphics(0, 0);
+                this.mz.groups.screen.add(this.mz.objects.screenAttack);
                 this.mz.objects.screenAttack.clear().beginFill(0x67c079, 0.95).moveTo(0, 0).arc(this.mz.objects.player.sprite.x, this.mz.objects.player.sprite.y, 50, 0, Math.PI * 2).lineTo(0, 0).lineTo(0, this.game.world.height).lineTo(this.game.world.width, this.game.world.height).lineTo(this.game.world.width, 0).lineTo(0, 0).endFill();
 
                 this.mz.timers.screen.add(awaitStop, this.screenAttackStop, this);
@@ -12338,7 +12386,7 @@ var Game = function () {
             var _loop = function _loop(_i14) {
                 var copSprite = _this5.mz.arrays.cops[_i14];
                 var cop = copSprite.mz;
-                if (cop.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */]) {
+                if (cop.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["c" /* COP_MODE_FIGHT */]) {
                     var closestCarCoords = null;
                     var minDistanceSq = Infinity;
                     _this5.mz.arrays.wagons.forEach(function (carSprite) {
@@ -12353,7 +12401,7 @@ var Game = function () {
                         }
                     });
 
-                    copSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */], { jailCoords: closestCarCoords });
+                    copSprite.mz.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */], { jailCoords: closestCarCoords });
                 }
             };
 
@@ -12385,9 +12433,9 @@ var Game = function () {
             for (var _i16 = 0; _i16 < this.mz.cops.alive; _i16++) {
                 var _copSprite = this.mz.arrays.cops[_i16];
                 var cop = _copSprite.mz;
-                if (cop.mode === __WEBPACK_IMPORTED_MODULE_21__constants__["c" /* COP_MODE_FIGHT */]) {
+                if (cop.mode === __WEBPACK_IMPORTED_MODULE_22__constants__["c" /* COP_MODE_FIGHT */]) {
                     this.unarrest(_copSprite);
-                    cop.setMode(__WEBPACK_IMPORTED_MODULE_21__constants__["e" /* COP_MODE_STUN */]);
+                    cop.setMode(__WEBPACK_IMPORTED_MODULE_22__constants__["e" /* COP_MODE_STUN */]);
                     this.increaseScore(10, _copSprite);
                 }
             }
@@ -12448,7 +12496,7 @@ var Game = function () {
             }
 
             var _loop2 = function _loop2(cop) {
-                if (cop.alive && cop.mz.mode === __WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */]) {
+                if (cop.alive && cop.mz.mode === __WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */]) {
                     var closestCarCoords = null;
                     var minDistanceSq = Infinity;
                     _this6.mz.arrays.wagons.forEach(function (carSprite) {
@@ -12462,7 +12510,7 @@ var Game = function () {
                             minDistanceSq = distanceToCarSq;
                         }
                     });
-                    cop.mz.setMode(__WEBPACK_IMPORTED_MODULE_19__constants_js__["a" /* COP_MODE_CONVOY */], { jailCoords: closestCarCoords });
+                    cop.mz.setMode(__WEBPACK_IMPORTED_MODULE_20__constants_js__["a" /* COP_MODE_CONVOY */], { jailCoords: closestCarCoords });
                 }
             };
 
@@ -12521,7 +12569,7 @@ var Game = function () {
             var _this7 = this;
 
             var _loop3 = function _loop3(key) {
-                var _levelObjects$key = __WEBPACK_IMPORTED_MODULE_18__levelObjects_js__["a" /* default */][key],
+                var _levelObjects$key = __WEBPACK_IMPORTED_MODULE_19__levelObjects_js__["a" /* default */][key],
                     speed = _levelObjects$key.speed,
                     personalMatrix = _levelObjects$key.personalMatrix,
                     sprite = _levelObjects$key.sprite,
@@ -12578,7 +12626,7 @@ var Game = function () {
                 }));
             };
 
-            for (var key in __WEBPACK_IMPORTED_MODULE_18__levelObjects_js__["a" /* default */]) {
+            for (var key in __WEBPACK_IMPORTED_MODULE_19__levelObjects_js__["a" /* default */]) {
                 _loop3(key);
             }
         }
@@ -12586,6 +12634,7 @@ var Game = function () {
         key: 'playPoints',
         value: function playPoints(sprite, points) {
             var spritePoint = this.game.add.sprite(sprite.x, sprite.y - 10, 'ALL_IMAGES', 'points_' + points);
+            this.mz.groups.scores.add(spritePoint);
             spritePoint.scale.setTo(0.5);
             spritePoint.anchor.set(0.5);
             var tween = game.add.tween(spritePoint);
@@ -12651,7 +12700,7 @@ var Game = function () {
                             var p = _step5.value;
 
                             var line = lines[p];
-                            var shouldBePoint = __WEBPACK_IMPORTED_MODULE_20__utils_js__["b" /* lineIntersection */](line, mainLine);
+                            var shouldBePoint = __WEBPACK_IMPORTED_MODULE_21__utils_js__["b" /* lineIntersection */](line, mainLine);
                             // console.log(shouldBePoint, line, mainLine, sprite);
                             if (this.game.camera.view.contains(shouldBePoint.x, shouldBePoint.y)) {
                                 interPoint = shouldBePoint;
@@ -12872,7 +12921,13 @@ var NPCProtester = function (_Protester) {
             if (this.isBeingCheeredUp) {
                 if (this.isNOD) {
                     if (!this.nodDone && this.mode != __WEBPACK_IMPORTED_MODULE_3__constants_js__["Y" /* PROTESTER_MODE_NOD */]) this.setMode(__WEBPACK_IMPORTED_MODULE_3__constants_js__["Y" /* PROTESTER_MODE_NOD */]);
+                    if (!this.GameObject.mz.advices.nodOnScreen.shown) {
+                        this.GameObject.mz.advices.nodOnScreen.show();
+                    }
                 } else {
+                    if (!this.GameObject.mz.advices.agitateOnScreen.shown) {
+                        this.GameObject.mz.advices.agitateOnScreen.show();
+                    }
                     if (this.mood >= 1) this.progressBar.update(0);else this.progressBar.update(this.mood);
                     this.moodUp(this.moodUpValue);
                 }
@@ -17391,6 +17446,7 @@ var Tweets = function () {
       var tweetInstance = this.createTweet(tweet, options);
       tweetInstance.destroy.add(function () {
         _this2.removeFromQueue(tweetInstance);
+        tweetInstance.groupAll.destroy();
       });
       //console.log('tw instance', tweetInstance);
       if (tweetInstance.behavior instanceof __WEBPACK_IMPORTED_MODULE_2__ManuallyBehavior_js__["a" /* default */]) {
@@ -17403,11 +17459,11 @@ var Tweets = function () {
     }
   }, {
     key: 'tweet',
-    value: function tweet(text, image, options) {
+    value: function tweet(text, image, options, name) {
       window._Tweets = this;
       //console.log('n.kozh tweet called', text, image)
       return this._tweet({
-        text: text, image: image
+        text: text, image: image, name: name ? name : null
       }, options);
     }
   }, {
@@ -17745,15 +17801,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 
-var calcGroupPosition = function calcGroupPosition(textGameObject) {
+var calcGroupPosition = function calcGroupPosition(height) {
   var y = 0;
-  if (textGameObject._height < __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */]) {
+  if (height < __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */]) {
     y = -(__WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */]);
   } else {
-    y = -(textGameObject._height + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */]);
+    y = -(height + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */]);
   }
 
-  return y - 20;
+  return y - (Phaser.Device.desktop ? 20 : 5);
 };
 
 var getTextStyle = function getTextStyle(width) {
@@ -17808,7 +17864,7 @@ var BaseTweet = function () {
       var textGameObject = void 0;
       if (name) {
         nameGameObject = this.game.add.text(__WEBPACK_IMPORTED_MODULE_0__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["b" /* AVATAR_TEXT_SPACING */], height, name, {
-          font: '14px abc',
+          font: '14px',
           // fill: '#fcfcfc',
           fill: '#ddecff'
         });
@@ -17816,7 +17872,8 @@ var BaseTweet = function () {
         nameGameObject.resolution = window.devicePixelRatio || 1;
         nameGameObject.fixedToCamera = true;
 
-        textGameObject = this.game.add.text(__WEBPACK_IMPORTED_MODULE_0__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["b" /* AVATAR_TEXT_SPACING */], height + 20, text, getTextStyle(width));
+        textGameObject = this.game.add.text(__WEBPACK_IMPORTED_MODULE_0__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["b" /* AVATAR_TEXT_SPACING */], height, text, getTextStyle(width));
+        textGameObject.y = textGameObject.y + nameGameObject.height + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */];
         textGameObject.resolution = window.devicePixelRatio || 1;
         textGameObject.font = 'Arial';
         textGameObject.fixedToCamera = true;
@@ -17826,6 +17883,7 @@ var BaseTweet = function () {
         textGameObject.resolution = window.devicePixelRatio || 1;
         textGameObject.font = 'Arial';
         textGameObject.fixedToCamera = true;
+        textGameObject.lineSpacing = -3;
       }
 
       if (this.styles.fontSize) {
@@ -17883,7 +17941,7 @@ var BaseTweet = function () {
       // all.cacheAsBitmap = true;
       //console.log("TEXT GROUP:" + name + " CACHED!");
       this.groupAll = all;
-      this.showedY = calcGroupPosition(textGameObject, tweet);
+      this.showedY = calcGroupPosition(textGameObject.height + (name ? nameGameObject.height + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */] : 0));
       return this;
     }
   }, {
@@ -17912,12 +17970,12 @@ var BaseTweet = function () {
 
       return spriteBg;
     }
-  }, {
-    key: 'destroy',
-    value: function destroy() {
-      this.groupAll.killAll();
-      this.groupAll.destroy();
-    }
+
+    // destroy() {
+    //   this.groupAll.killAll();
+    //   this.groupAll.destroy();
+    // }
+
   }, {
     key: 'show',
     value: function show() {
@@ -19696,6 +19754,169 @@ var CirclePool = function () {
 
 /***/ }),
 /* 456 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var config = {
+    'mobile': {
+        BORDER_RADIUS: 15,
+        TOP_PADDING: 30,
+        BOTTOM_PADDING: 30,
+        SPRITE_MARGIN: 30,
+        TEXT_MARGIN: 40,
+        SUBTEXT_SIZE: '14px',
+        TEXT_SIZE: '16px',
+        TEXT_LINESPACING: 22,
+        TEXT_WIDTH: 270,
+        WIDTH: 300
+    },
+    'desktop': {
+        BORDER_RADIUS: 30,
+        TOP_PADDING: 30,
+        BOTTOM_PADDING: 30,
+        SPRITE_MARGIN: 30,
+        TEXT_MARGIN: 20,
+        SUBTEXT_SIZE: '14px',
+        TEXT_SIZE: '18px',
+        TEXT_LINESPACING: 28,
+        TEXT_WIDTH: 400,
+        WIDTH: 610
+    }
+};
+
+var TEXT_COLOR = '#ffffff';
+var SUBTEXT_COLOR = '#9c9c9c';
+var BACKGROUND_COLOR = '#000000';
+var BACKGROUND_ALPHA = 0.8;
+
+var Advice = function () {
+    function Advice(game, GameObject, sprite, text, callback) {
+        _classCallCheck(this, Advice);
+
+        this.callback = callback;
+        this.game = game;
+        this.GameObject = GameObject;
+        this.overlay = this.game.add.graphics(0, 0);
+        this.overlay.beginFill(0xffffff, 0.7);
+        this.overlay.drawRect(0, 0, this.game.width, this.game.height);
+        this.overlay.endFill();
+        this.overlay.visible = false;
+        this.overlay.fixedToCamera = true;
+        this.shown = false;
+        this.group = this.game.add.group();
+
+        var screenWidth = this.game.width;
+        var height = this.game.height;
+
+        var configName = 'desktop';
+        if (screenWidth < 610) {
+            configName = 'mobile';
+        }
+
+        var _config$configName = config[configName],
+            BORDER_RADIUS = _config$configName.BORDER_RADIUS,
+            TOP_PADDING = _config$configName.TOP_PADDING,
+            BOTTOM_PADDING = _config$configName.BOTTOM_PADDING,
+            SPRITE_MARGIN = _config$configName.SPRITE_MARGIN,
+            TEXT_MARGIN = _config$configName.TEXT_MARGIN,
+            SUBTEXT_SIZE = _config$configName.SUBTEXT_SIZE,
+            TEXT_SIZE = _config$configName.TEXT_SIZE,
+            TEXT_LINESPACING = _config$configName.TEXT_LINESPACING,
+            TEXT_WIDTH = _config$configName.TEXT_WIDTH,
+            WIDTH = _config$configName.WIDTH;
+
+
+        var subtext = configName === 'desktop' ? 'Нажмите пробел, чтобы продолжить игру' : 'Коснитесь экрана, чтобы продолжить игру';
+
+        var adviceSprite = this.game.make.sprite(WIDTH / 2, TOP_PADDING, "ALL_IMAGES", 'advice-' + sprite + '-' + configName, 0);
+        adviceSprite.anchor.set(0.5, 0);
+
+        var adviceText = this.game.add.text(TEXT_WIDTH, height, text, {
+            font: TEXT_SIZE + ' Arial',
+            fill: TEXT_COLOR,
+            wordWrap: true,
+            wordWrapWidth: TEXT_WIDTH,
+            lineSpacing: TEXT_LINESPACING
+        });
+
+        adviceText.anchor.set(0.5, 0);
+        adviceText.x = WIDTH / 2;
+        adviceText.y = TOP_PADDING + adviceSprite.height + SPRITE_MARGIN;
+        adviceText.resolution = window.devicePixelRatio || 1;
+
+        var subText = this.game.add.text(TEXT_WIDTH, height, subtext, {
+            font: SUBTEXT_SIZE + ' Arial',
+            fill: SUBTEXT_COLOR,
+            wordWrap: true,
+            wordWrapWidth: TEXT_WIDTH
+        });
+
+        subText.anchor.set(0.5, 0);
+        subText.x = WIDTH / 2;
+        subText.y = TOP_PADDING + adviceSprite.height + SPRITE_MARGIN + adviceText.height + TEXT_MARGIN;
+        subText.resolution = window.devicePixelRatio || 1;
+
+        var groupHeight = TOP_PADDING + adviceSprite.height + SPRITE_MARGIN + adviceText.height + TEXT_MARGIN + subText.height + BOTTOM_PADDING;
+        var graphic = this.game.add.graphics();
+        console.log('WIDTH', WIDTH, 'BORDER_RADIUS', BORDER_RADIUS);
+        graphic.beginFill(0x0, 0.8);
+        // .lineStyle(1, 0x00ff00, 1);
+        graphic.drawRoundedRect(0, 0, WIDTH, groupHeight, BORDER_RADIUS).endFill();
+
+        this.group.add(graphic);
+        this.group.add(adviceSprite);
+        this.group.add(adviceText);
+        this.group.add(subText);
+        // this.group.width = WIDTH;
+        // this.group.height = groupHeight;
+        this.group.fixedToCamera = true;
+        this.group.cameraOffset.x = this.game.width / 2 - WIDTH / 2;
+        this.group.cameraOffset.y = this.game.height / 2 - groupHeight / 2;
+        this.isActive = false;
+        this.group.visible = false;
+    }
+
+    _createClass(Advice, [{
+        key: 'show',
+        value: function show() {
+            var _this = this;
+
+            this.overlay.visible = true;
+            this.group.visible = true;
+            this.GameObject.mz.adviceIsActive = true;
+            this.game.paused = true;
+            this.isActive = true;
+            this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.addOnce(function () {
+                return _this.hide();
+            });
+            this.GameObject.mz.events.fieldClickHandler.events.onInputDown.addOnce(function () {
+                return _this.hide();
+            });
+            this.shown = true;
+        }
+    }, {
+        key: 'hide',
+        value: function hide() {
+            this.group.visible = false;
+            this.GameObject.mz.adviceIsActive = false;
+            this.game.paused = false;
+            this.overlay.visible = false;
+            this.isActive = false;
+            if (this.callback) this.callback();
+        }
+    }]);
+
+    return Advice;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Advice);
+
+/***/ }),
+/* 457 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
