@@ -70,7 +70,7 @@ export default class BaseTweet {
         text, 
         getTextStyle(width),
       );
-      textGameObject.y = textGameObject.y + nameGameObject.height + MARGIN_BOTTOM;
+      textGameObject.y = textGameObject.y + nameGameObject.height ;
       textGameObject.resolution = window.devicePixelRatio || 1;
       textGameObject.font = 'Arial';
       textGameObject.fixedToCamera = true;
@@ -147,7 +147,7 @@ export default class BaseTweet {
    // all.cacheAsBitmap = true;
     //console.log("TEXT GROUP:" + name + " CACHED!");
     this.groupAll = all;
-    this.showedY = calcGroupPosition(textGameObject.height + (name?nameGameObject.height + MARGIN_BOTTOM:0));
+    this.showedY = calcGroupPosition(textGameObject.height + (name?nameGameObject.height:0));
     return this;
   }
 

@@ -3619,14 +3619,14 @@ var Player = function (_Protester) {
                         this.sprite.body.immovable = true;
                         this.viewSprite.animations.stop(null, true);
                         // HelpInfo.show('space_fight')
-                        this.GameObject.mz.objects.fightAdvice.visible = true;
+                        // this.GameObject.mz.objects.fightAdvice.visible = true;
                         console.log(this.GameObject.mz.timers.fight);
                         break;
                     }
                 case __WEBPACK_IMPORTED_MODULE_2__constants_js__["U" /* PLAYER_MODE_STUN */]:
                     {
                         // HelpInfo.hide('space_fight')
-                        this.GameObject.mz.objects.fightAdvice.visible = false;
+                        // this.GameObject.mz.objects.fightAdvice.visible = false;
                         this.showPoster = false;
                         this.GameObject.mz.timers.fight.stop();
                         this.GameObject.mz.timers.fight.removeAll();
@@ -3645,7 +3645,7 @@ var Player = function (_Protester) {
                 case __WEBPACK_IMPORTED_MODULE_2__constants_js__["T" /* PLAYER_MODE_NORMAL */]:
                     {
                         // HelpInfo.hide('space_fight')
-                        this.GameObject.mz.objects.fightAdvice.visible = false;
+                        // this.GameObject.mz.objects.fightAdvice.visible = false;
                         this.showPoster = false;
                         this.stunTimer.removeAll();
                         this.stunTimer.stop();
@@ -10064,13 +10064,13 @@ module.exports = __webpack_require__.p + "assets/7890ea6754fb124fa101877cec2457d
 /* 332 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/ee83e6dc001d958b9c1b7870fc081a9c.png";
+module.exports = __webpack_require__.p + "assets/825f451410ab857fa0ae5d76660afae9.png";
 
 /***/ }),
 /* 333 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "assets/e041b2f4fe1f2d2abbda9af7823fa534.json";
+module.exports = __webpack_require__.p + "assets/28025af5905cfae0a2998eb4567ba005.json";
 
 /***/ }),
 /* 334 */
@@ -13350,7 +13350,7 @@ var Cop = function (_Prefab) {
                             if (Phaser.Device.desktop) {
                                 this.GameObject.mz.tweet.tweet('Если вы зажмете SHIFT, вы сможете убегать от полиции, однако смотрите не выдохнитесь', 'help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
                             } else {
-                                this.GameObject.mz.tweet.tweet('если вы дважды быстро коснетесь экрана, вы сможете убегать от полиции, однако смотрите не выдохнитесь', 'help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
+                                this.GameObject.mz.tweet.tweet('Если вы дважды быстро коснетесь экрана, вы сможете убегать от полиции, однако смотрите не выдохнитесь', 'help', { visible: 5000, fadeIn: 500, fadeOut: 500 });
                             }
                         }
                         break;
@@ -14240,7 +14240,7 @@ var GameInterface = function () {
         this.group.add(this.textScore);
         this.group.add(this.textTime);
 
-        this.buttonSound = this.game.add.button(isWide ? 20 : 10, isWide ? 20 : 10, 'ALL_IMAGES', this.handleClickSound, this, "volume_off", "volume_off", "volume_off" //, "volume_on",
+        this.buttonSound = this.game.add.button(isWide ? 20 : 10, isWide ? 20 : 10, 'ALL_IMAGES', this.handleClickSound, this, "volume_on", "volume_on", "volume_on" //, "volume_on",
         // this.group
         );
         this.group.add(this.buttonSound);
@@ -14315,9 +14315,9 @@ var GameInterface = function () {
             this.game.sound.mute = !this.game.sound.mute;
 
             if (this.game.sound.mute) {
-                this.buttonSound.setFrames("volume_on", "volume_on", "volume_on");
-            } else {
                 this.buttonSound.setFrames("volume_off", "volume_off", "volume_off");
+            } else {
+                this.buttonSound.setFrames("volume_on", "volume_on", "volume_on");
             }
         }
     }, {
@@ -17873,7 +17873,7 @@ var BaseTweet = function () {
         nameGameObject.fixedToCamera = true;
 
         textGameObject = this.game.add.text(__WEBPACK_IMPORTED_MODULE_0__const_js__["d" /* MARGIN_LEFT */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["a" /* AVATAR_SIZE */] + __WEBPACK_IMPORTED_MODULE_0__const_js__["b" /* AVATAR_TEXT_SPACING */], height, text, getTextStyle(width));
-        textGameObject.y = textGameObject.y + nameGameObject.height + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */];
+        textGameObject.y = textGameObject.y + nameGameObject.height;
         textGameObject.resolution = window.devicePixelRatio || 1;
         textGameObject.font = 'Arial';
         textGameObject.fixedToCamera = true;
@@ -17941,7 +17941,7 @@ var BaseTweet = function () {
       // all.cacheAsBitmap = true;
       //console.log("TEXT GROUP:" + name + " CACHED!");
       this.groupAll = all;
-      this.showedY = calcGroupPosition(textGameObject.height + (name ? nameGameObject.height + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */] : 0));
+      this.showedY = calcGroupPosition(textGameObject.height + (name ? nameGameObject.height : 0));
       return this;
     }
   }, {
