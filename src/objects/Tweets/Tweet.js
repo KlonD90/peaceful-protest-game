@@ -2,15 +2,15 @@
 
 import {MARGIN_BOTTOM, AVATAR_SIZE, MARGIN_LEFT, AVATAR_TEXT_SPACING} from './const.js';
 
-const calcGroupPosition = (textGameObject) => {
+const calcGroupPosition = (height) => {
   let y = 0;
-  if (textGameObject._height < (AVATAR_SIZE + MARGIN_BOTTOM)) {
-    y = - (AVATAR_SIZE + MARGIN_BOTTOM)     
+  if (height < (AVATAR_SIZE + MARGIN_BOTTOM)) {
+    y = - (AVATAR_SIZE + MARGIN_BOTTOM)
   } else {
-    y = -(textGameObject._height + MARGIN_BOTTOM)
+    y = -(height + MARGIN_BOTTOM)
   }
 
-  return y-20;
+  return y - (Phaser.Device.desktop? 20 : 5);
 }
 
 const getTextStyle = width => ({
@@ -56,7 +56,7 @@ export default class BaseTweet {
         (MARGIN_LEFT + AVATAR_SIZE + AVATAR_TEXT_SPACING),
         height, 
         name, {
-          font: '14px abc',
+          font: '14px',
           // fill: '#fcfcfc',
           fill: '#ddecff',
         });
@@ -66,10 +66,11 @@ export default class BaseTweet {
 
       textGameObject = this.game.add.text(
         (MARGIN_LEFT + AVATAR_SIZE + AVATAR_TEXT_SPACING), 
-        height+20, 
+        height,
         text, 
         getTextStyle(width),
       );
+      textGameObject.y = textGameObject.y + nameGameObject.height + MARGIN_BOTTOM;
       textGameObject.resolution = window.devicePixelRatio || 1;
       textGameObject.font = 'Arial';
       textGameObject.fixedToCamera = true;
@@ -85,6 +86,7 @@ export default class BaseTweet {
       textGameObject.resolution = window.devicePixelRatio || 1;
       textGameObject.font = 'Arial';
       textGameObject.fixedToCamera = true;
+      textGameObject.lineSpacing = -3;
     }
 
     if (this.styles.fontSize) {
@@ -145,7 +147,7 @@ export default class BaseTweet {
    // all.cacheAsBitmap = true;
     //console.log("TEXT GROUP:" + name + " CACHED!");
     this.groupAll = all;
-    this.showedY = calcGroupPosition(textGameObject, tweet);
+    this.showedY = calcGroupPosition(textGameObject.height + (name?nameGameObject.height + MARGIN_BOTTOM:0));
     return this;
   }
 
@@ -176,10 +178,10 @@ export default class BaseTweet {
     return spriteBg;
   }
 
-  destroy() {
-    this.groupAll.killAll();
-    this.groupAll.destroy();
-  }
+  // destroy() {
+  //   this.groupAll.killAll();
+  //   this.groupAll.destroy();
+  // }
 
   show() {
     // debugger;

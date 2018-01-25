@@ -231,6 +231,7 @@ class Player extends Protester {
             {
                 this.GameObject.mz.advices.move.hide();
                 this.GameObject.mz.advices.move = null;
+                this.GameObject.mz.advices.spaceOnScreen.show();
             }
             this.moveTo(null);
             const angles = [];

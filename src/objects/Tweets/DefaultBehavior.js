@@ -30,6 +30,7 @@ export default class DefaultBehavior {
 
     tween.onComplete.add(() => {
       tweet.showed.dispatch();
+
     });
     tween.start();
   }

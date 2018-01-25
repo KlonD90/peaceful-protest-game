@@ -61,6 +61,7 @@ class Tweets {
     const tweetInstance = this.createTweet(tweet, options);
     tweetInstance.destroy.add(() => {
       this.removeFromQueue(tweetInstance);
+      tweetInstance.groupAll.destroy();
     });
     //console.log('tw instance', tweetInstance);
     if (tweetInstance.behavior instanceof ManuallyBehaviour) {
@@ -72,11 +73,11 @@ class Tweets {
     return tweetInstance;
   }
 
-  tweet(text, image, options) {
+  tweet(text, image, options, name) {
     window._Tweets = this;
     //console.log('n.kozh tweet called', text, image)
     return this._tweet({
-      text, image,
+      text, image, name: name?name:null
     }, options);
   }
 
