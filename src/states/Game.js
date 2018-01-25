@@ -480,6 +480,22 @@ class Game {
                 'Чтобы помешать задержанию демонстранта, подойдите к нему и быстро жмите на экран много раз подряд'
         );
 
+/*
+        let _that = this;
+        window.gen100Tweets = function () {
+            for(var j = 0; j < 100; j++){
+              let tw = _that.mz.tweet.tweet(
+                    'Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам',
+                    'help',
+                    {behavior: ManuallyBehavior}
+                );
+              tw.show();
+              setTimeout(() => {
+                  tw.hide();
+              }, 3000);
+            }
+        }        
+  */ 
 
         // this.mz.advices.shift = this.mz.tweet.tweet(
         //     'Чтобы бегать нажмите shift',
@@ -522,7 +538,7 @@ class Game {
         //this.debuger.update(); // update debuger, for reset counter
         const now = Date.now();
 
-        this.updateGarbage()
+        this.updateGarbage();
         // this.mz.pressJailed = false;
         // update background
         this.mz.objects.bgTile.tilePosition.set(-this.game.camera.x, -this.game.camera.y);
@@ -632,7 +648,11 @@ class Game {
         }
 
         // update journalists
-        this.mz.arrays.press.forEach(journalistSprite => {
+        //this.mz.arrays.press.forEach(journalistSprite => {
+        let jcount = this.mz.arrays.press.length;
+        for(let j = 0; j < jcount; j++){
+            
+            let journalistSprite = this.mz.arrays.press[j];
             const journalist = journalistSprite.mz;
             if (journalist.mode === JOURNALIST_MODE_ARRESTED)
             {
@@ -685,7 +705,7 @@ class Game {
                 journalist.update();
             }
 
-        });
+        }//);
 
         // update swat
         if (this.mz.objects.swat) {
@@ -778,22 +798,30 @@ class Game {
             this.mz.groups.d.add(journalist.sprite);
             journalist.setMode(JOURNALIST_MODE_WANDER);
         }
-        const protesterTargets = this.mz.arrays.protesters.filter(x => x.mz.showPoster).concat(
-            this.mz.score >= this.mz.pressScore && !this.mz.pressJailed ? this.mz.arrays.press : []
-        );
+
+        // нужно переписать это место. Я ХЗ как, не хочу ломать, что бы без аллокаций
+        //const protesterTargets = this.mz.arrays.protesters.filter(x => x.mz.showPoster).concat(
+        let protesterTargets = this.mz.arrays.protesters;
+        
+        if(this.mz.score >= this.mz.pressScore && !this.mz.pressJailed){
+            protesterTargets = protesterTargets.concat(this.mz.arrays.press);
+        }
+
         const lastCopDecisionTimeout = 200;
         let attractionStrength = 0;
+
         if (this.mz.objects.player.showPoster) {
             attractionStrength = 0.2;
-            for (let p =0; p<this.mz.arrays.press; p++)
+            for (let p =0; p < this.mz.arrays.press; p++)
             {
-                if (this.mz.arrays.press[i].mz.mode === JOURNALIST_MODE_SHOOTING)
+                if (this.mz.arrays.press[p].mz.mode === JOURNALIST_MODE_SHOOTING)
                 {
                     attractionStrength += 0.4;
                 }
             }
             protesterTargets.push(this.mz.objects.player.sprite);
         }
+
         const copAttr = Math.min(1, attractionStrength * this.mz.objects.player.power);
         for (let i = 0; i < this.mz.cops.alive; i++) {
             const copSprite = this.mz.arrays.cops[i];
@@ -839,12 +867,14 @@ class Game {
 
                 for (let i = 0; i < protesterTargets.length; i++) {
                     const protester = protesterTargets[i].mz;
-                    if (
+
+                    if (!protester.showPoster ||
                         !protester.sprite.alive ||
                         !cop.FOV.containsPoint(protester.sprite.body.center)
                     ) {
                         continue;
                     }
+
                     let distanceToProtesterSq = this.getDistanceSq(copSprite.body.center, protester.sprite.body.center);
                     // give higher priority to current target
                     if (protester.sprite === cop.target) {
@@ -856,6 +886,9 @@ class Game {
                     }
                     //console.log('new target', newTarget);
                 }
+
+
+
                 if (cop.target && cop.target.mz.mode !== PROTESTER_MODE_ARRESTED && cop.FOV.containsPoint(cop.target.body.center))
                 {
                     let distanceToProtesterSq = this.getDistanceSq(copSprite.body.center, cop.target.body.center) * 3 / 4;;
@@ -879,6 +912,7 @@ class Game {
             cop.update();
         }
 
+        //охеренно, что... и как это не даст релок?
         // protesters collision
         let allProtesters = [...this.mz.arrays.protesters, this.mz.objects.player.sprite]
         if(this.mz.objects.star) allProtesters.push(this.mz.objects.star.sprite)
@@ -886,8 +920,9 @@ class Game {
 
         this.swatFrame = (this.swatFrame || 0) +1;
 
-        for (let protesterSprite of allProtesters) {
+        for (let j = 0; j < allProtesters.length; j++){
 
+            let protesterSprite = allProtesters[j];
             if (
                 !protesterSprite.alive ||
                 protesterSprite.mz.mode === PROTESTER_MODE_ARRESTED
@@ -944,6 +979,7 @@ class Game {
             sprite && sprite.mz && sprite.mz.mode && sprite.mz.mode === PROTESTER_MODE_FOLLOW &&
             sprite.mz.following && sprite.mz.following.target === this.mz.objects.player.sprite
         );
+
         const pursueTarget = (mode, isArrest) => (copSprite, protesterSprite) => {
             const isTarget = (
                 copSprite.mz.target === protesterSprite && copSprite.mz.mode === mode
@@ -963,6 +999,7 @@ class Game {
             }
             return !isTarget;
         };
+
         this.game.physics.arcade.collide(
             this.mz.objects.player.sprite,
             this.mz.arrays.protesters,
@@ -1091,11 +1128,14 @@ class Game {
         );
 
         // update posters
-        this.mz.arrays.droppedPosters.forEach(droppedPoster => {
-            if (droppedPoster.sprite.alive) {
-                droppedPoster.update();
+        //this.mz.arrays.droppedPosters.forEach(droppedPoster => {
+        let dpcount = this.mz.arrays.droppedPosters;
+        for(var i = 0; i < dpcount; i++){
+
+            if (this.mz.arrays.droppedPosters[i].sprite.alive) {
+                this.mz.arrays.droppedPosters[i].update();
             }
-        });
+        }//);
 
         this.mz.postersToRevive.forEach(this.createPoster, this);
         this.mz.postersToRevive = [];
@@ -1304,6 +1344,7 @@ class Game {
         const count = this.mz.level.protesters.count.max;
         const onDropPoster = this.handleDropPoster.bind(this);
         const onLeft = this.handleProtesterLeft.bind(this);
+        
         for (let i = 0; i < count; i++) {
             const coords = (i === 0) ? {x: this.game.world.centerX, y: this.game.world.centerY} : this.getRandomCoordinates();
 
@@ -1380,7 +1421,14 @@ class Game {
     proceedToJail(protesterSprite, copSprite) {
         let closestCarCoords = null;
         let minDistanceSq = Infinity;
-        this.mz.arrays.wagons.forEach(carSprite => {
+
+        //this.mz.arrays.wagons.forEach(carSprite => {
+        let count = this.mz.arrays.wagons.length;
+        var carSprite = null;
+        for(let i = 0; i < count; i++) {
+
+            carSprite = this.mz.arrays.wagons[i];
+            
             const carCoords = {
                 x: carSprite.body.x + (carSprite.body.width / 2) + carSprite.entagleX,
                 y: carSprite.body.y + carSprite.body.height + carSprite.entagleY
@@ -1390,7 +1438,7 @@ class Game {
                 closestCarCoords = carCoords;
                 minDistanceSq = distanceToCarSq;
             }
-        });
+        }//);
 
         this.arrest(protesterSprite, copSprite);
         copSprite.mz.setMode(COP_MODE_CONVOY, { jailCoords: closestCarCoords });
@@ -1990,16 +2038,21 @@ class Game {
     }
 
     updateCircle(){
+        //пиздец коненечно. 
+        //и алокации и map через map
+        //ПЕРЕПИСЫВАТЬ НАДО 
         const circles = this.mz.arrays.press.map(x => ({sprite: x, color: 0xf7c169, circle: this.mz.circles.press, key: 'press'}))
             .concat(this.mz.arrays.protesters.map(x => ({sprite: x, color: 0x6eed83, circle: this.mz.circles.npc, key: 'npc'})))
             .concat(this.mz.arrays.cops.map(x => ({sprite: x, color: 0x2b3992, circle: this.mz.circles.cop, key: 'cop'})))
-            .filter(x => !x.sprite.inCamera && x.sprite.visible)
+            .filter(x => !x.sprite.inCamera && x.sprite.visible);
+       
         const cameraBounds = new Phaser.Rectangle(
             this.game.camera.view.x + 10,
             this.game.camera.view.y + 10,
             this.game.camera.view.width - 20,
             this.game.camera.height - 20
         );
+
         const c = {x: cameraBounds.centerX, y: cameraBounds.centerY};
         const lines = {
             top: [
@@ -2021,7 +2074,7 @@ class Game {
         };
 
         this.circlePool.reset();
-        for (let i=0; i<circles.length; i++)
+        for (let i=0; i < circles.length; i++)
         {
             const {sprite, color, circle, key} = circles[i];
 
@@ -2051,8 +2104,9 @@ class Game {
                     }
                 }
 
-                if(interPoint)
+                if(interPoint){
                     this.circlePool.pull(key, circle, interPoint.x, interPoint.y);
+                }
             }
         }
         //this.circlePool.reset();
