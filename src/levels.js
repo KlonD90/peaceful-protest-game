@@ -5,16 +5,16 @@ export default {
         worldHeight: 800,
         duration: 3 * 60, // s
         winningThreshold: 100,
-        scoreWin: 300,
+        scoreWin: 500,
         cops: {
             count: [
                 [4, 0],
-                [2000, 10],
-                // [100, 2],
-                // [200, 3],
-                // [300, 6],
-                // [400, 7],
-                // [1000, 10]
+                [20, 1],
+                [100, 2],
+                [200, 3],
+                [300, 6],
+                [400, 7],
+                [1000, 8]
             ],
             speed: {
                 value: 60,
@@ -29,9 +29,9 @@ export default {
         press: {
             count: [
                 [4, 0],
-                [4000, 4],
-                // [100, 2],
-                // [1000, 4]
+                [50, 1],
+                [100, 2],
+                [1000, 4]
             ],
             speed: {
                 value: 50
@@ -45,7 +45,7 @@ export default {
         },
         protesters: {
             count: {
-                start: 100,//100,
+                start: 1,//100,
                 max: 100,
                 add: 14
             },
@@ -53,7 +53,7 @@ export default {
                 value: 60
             },
             mood: 0.3,
-            moodUp: 0.2,
+            moodUp: 0.002,
             moodDown: 0.0001,
             poster: {
                 drop: 0.3,
@@ -78,7 +78,7 @@ export default {
                 value: 200
             },
             frequency: 5000,
-            scoreThreshold: 0
+            scoreThreshold: 300
         },
         star: {
             score: 200

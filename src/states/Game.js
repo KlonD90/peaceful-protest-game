@@ -168,7 +168,13 @@ class Game {
             pressScore: level.press.score,
             pressJailed: false,
             musicStage: 'start',
-            adviceIsActive: false
+            adviceIsActive: false,
+            stats: {
+                agit: 0,
+                press: 0,
+                fight: 0,
+                screen: 0
+            }
         };
         this.mz.score = 0;
     }
@@ -283,7 +289,7 @@ class Game {
         this.mz.timers.gameTime.start();
         this.mz.timers.twits.loop(1000 * 60, () => {
             if (Math.random() < 0.5)
-                this.mz.tweet.rTweet({type: 'description'}, {visible: 1, fadeIn: 1, fadeOut: 1})
+                this.mz.tweet.rTweet({type: 'description'}, {visible: 5000, fadeIn: 500, fadeOut: 500})
         });
         this.mz.timers.twits.start();
 
@@ -371,6 +377,11 @@ class Game {
         this.mz.objects.timer.loop(Phaser.Timer.SECOND, this.updateTimer, this);
         this.mz.objects.timer.start();
 
+        if (window.ga)
+        {
+            window.ga('send' ,'event', 'protest_game', 'start');
+        }
+
         // pause menu
         this.mz.objects.pauseMenu = new PauseMenu({ game: this.game });
 
@@ -402,7 +413,7 @@ class Game {
         this.mz.advices.move = this.mz.tweet.tweet(
             Phaser.Device.desktop ? 'Передвигайтесь по улице с помощью стрелочек' : 'Коснитесь экрана, чтобы передвигаться по улице',
             'help',
-            // {behavior: ManuallyBehavior}
+            {behavior: ManuallyBehavior}
         );
         this.mz.advices.moveOnScreen = new Advice(
             this.game,
@@ -418,7 +429,7 @@ class Game {
                 :
                 'Нажмите кнопку с плакатом, чтобы начать агитацию',
             'help',
-            // {behavior: ManuallyBehavior}
+            {behavior: ManuallyBehavior}
         );
         this.mz.advices.spaceOnScreen = new Advice(
             this.game,
@@ -429,7 +440,7 @@ class Game {
         this.mz.advices.agitate = this.mz.tweet.tweet(
             'Проводите агитацию рядом с человеком без плаката, чтобы он присоединился к вам',
             'help',
-            // {behavior: ManuallyBehavior}
+            {behavior: ManuallyBehavior}
         );
         this.mz.advices.agitateOnScreen = new Advice(
             this.game,
@@ -542,8 +553,6 @@ class Game {
         // this.mz.pressJailed = false;
         // update background
         this.mz.objects.bgTile.tilePosition.set(-this.game.camera.x, -this.game.camera.y);
-
-        this.mz.tweet.rTweet(null, {visible: 1, fadeIn: 1, fadeOut: 1});
 
         if (!this.mz.objects.star && this.mz.starScore <= this.mz.score)
         {
@@ -1245,6 +1254,7 @@ class Game {
     handleFinishShooting(journalist) {
         this.mz.protesters.toRevive += this.mz.level.protesters.count.add;
         this.increaseScore(10, journalist.sprite);
+        this.mz.stats.press++;
     }
 
     handlePause() {
@@ -1612,11 +1622,23 @@ class Game {
         this.game.input.keyboard.removeKey(Phaser.Keyboard.ESC);
         this.game.input.onDown.remove(this.handleUnpause, this);
 
+        if (window.ga)
+        {
+            for (var stat in this.mz.stats)
+            {
+                window.ga('send' ,'event', 'protest_game', 'stat', stat, this.mz.stats[stat]);
+            }
+        }
+
         if (mode === END_GAME_WIN) {
             this.mz.objects.audio.applause.play('', 0, 0.25);
             this.mz.arrays.protesters.forEach(sprite => {
                 sprite.mz.moodUp(1);
             });
+            if (window.ga)
+            {
+                window.ga('send' ,'event', 'protest_game', 'end', 'success', this.mz.timers.gameTime.seconds);
+            }
             modalShow('success', this.mz.timers.gameTime.seconds, () => {
                 this.mz.objects.audio.theme.stop();
                 this.mz.objects.audio.meeting.stop();
@@ -1630,6 +1652,10 @@ class Game {
             switch (mode) {
                 case END_GAME_PROTEST_RATE: {
                     // this.launchShield();
+                    if (window.ga)
+                    {
+                        window.ga('send' ,'event', 'protest_game', 'end', 'desolation', this.mz.timers.gameTime.seconds);
+                    }
                     modalShow('desolation', this.mz.timers.gameTime.seconds,  () => {
                         this.mz.objects.audio.theme.stop();
                         this.mz.objects.audio.meeting.stop();
@@ -1639,6 +1665,10 @@ class Game {
                     break;
                 }
                 case END_GAME_PLAYER_KILLED: {
+                    if (window.ga)
+                    {
+                        window.ga('send' ,'event', 'protest_game', 'end', 'arrested', this.mz.timers.gameTime.seconds);
+                    }
                     modalShow('arrested', this.mz.timers.gameTime.seconds,  () => {
                         this.mz.objects.audio.theme.stop();
                         this.mz.objects.audio.meeting.stop();
@@ -1719,6 +1749,7 @@ class Game {
         const alphaStep = awaitStop/(alphaStops+1);
         const spriteHeight = 1035;
         const spriteWidth = 1035;
+        this.mz.stats.screen++;
         if (this.mz.screenAttacked)
         {
             this.mz.timers.screen.stop();
@@ -1840,11 +1871,12 @@ class Game {
                 this.unarrest(copSprite);
                 cop.setMode(COP_MODE_STUN);
                 this.increaseScore(10, copSprite);
+                this.mz.stats.fight++;
             }
         }
         if (Math.random() < 0.3)
         {
-            this.mz.tweet.rTweet({type: 'defended'}, {visible: 1, fadeIn: 1, fadeOut: 1});
+            this.mz.tweet.rTweet({type: 'defended'}, {visible: 5000, fadeIn: 500, fadeOut: 500});
         }
     }
 

@@ -242,5 +242,11 @@ export default {
     nickname: "evgenyfeldman",
     type: "journalist_arrest"
   },
-
+  32: {
+    id: 32,
+    name: 'Горохов',
+    text: 'Полицейские совершенно не реагируют на слова «я журналист», а еще два раза попал под газ из баллона :(',
+    nickname: 'grkhv',
+    type: 'arrest'
+  }
 };

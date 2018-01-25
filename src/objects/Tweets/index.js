@@ -87,9 +87,9 @@ class Tweets {
 
   createTweet(data, options) {
     const anim = {
-      visible: options.visible || 1,
-      fadeOut: options.fadeOut || 1,
-      fadeIn: options.fadeIn || 1
+      visible: options.visible || 5000,
+      fadeOut: options.fadeOut || 500,
+      fadeIn: options.fadeIn || 500
     };
     const custom = {
       fontSize: options.fontSize

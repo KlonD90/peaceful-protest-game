@@ -142,6 +142,7 @@ class NPCProtester extends Protester {
         if (this.showPoster && !this.shownPoster)
         {
             this.shownPoster = true;
+            this.GameObject.mz.stats.agit++;
             this.GameObject.increaseScore(5, this.sprite);
             if (this.GameObject.mz.advices.agitate)
             {
