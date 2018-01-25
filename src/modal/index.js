@@ -19,7 +19,7 @@ const hash = ({score, name, email}) => {
 }
 
 const getScore = () => {
-  return axios.get(`${HOST_URL}/game_score`);
+  return axios.get(`${HOST_URL}/game_score?rnd=${Math.random()}`);
 }
 
 const sendNewScore = (formData) => {
@@ -77,7 +77,7 @@ const scoreToTime = function(sec) {
     const h = ~~(sec/3600);
     const m = ~~(sec/60)-h*60;
     const s = ~~(sec%60);
-    return `${h}:${m}:${s}`;
+    return `${h>9?h:'0'+h}:${m>9?m:'0'+m}:${s>9?s:'0'+s}`;
 };
 
 Handlebars.registerHelper('parseScoreTime', scoreToTime);
@@ -101,19 +101,21 @@ const resultTypes = {
   },
   'arrested': {
     title: 'Вас свинтили. Скучайте в автозаке',
-    text: (pos, time) => `Ваше время ${time}. Агитируйте аккуратнее, и тогда полиция не обратит на вас внимания. 
+    text: (pos, time) => `Агитируйте аккуратнее, и тогда полиция не обратит на вас внимания. 
     Используйте shift, чтобы передвигаться быстрее и ускользать из лап Нацгвардии.`,
     background: require('../assets/lose_small_500.png'),
   },
   'desolation': {
     title: 'Попробуйте одиночные пикеты',
-    text: (pos, time) => `Ваше время ${time}. Вы остались в одиночестве. Ваш протест был настолько пассивным, что вас просто никто не заметил.`,
+    text: (pos, time) => `Вы остались в одиночестве. Ваш протест был настолько пассивным, что вас просто никто не заметил.`,
     background: require('../assets/desolation_small_500.png'),
   }
 }
 
 const _show = (context, currentScore, cb) => {
   // debugger;
+    console.log('show context', context);
+    console.log('show score', currentScore);
   const html = template(context);
   const fragment = document.createElement('div');
   fragment.innerHTML = html;
@@ -160,7 +162,11 @@ const _show = (context, currentScore, cb) => {
 
 const show = (type, currentScore, cb) => {
 // export default (type, currentScore, cb) => {
-  let context = resultTypes[type];
+  let context = {};
+  for (var p in resultTypes[type])
+  {
+    context[p] = resultTypes[type][p];
+  }
 
   getScore().then(({data: scores}) => {
     if (type === 'success') {
