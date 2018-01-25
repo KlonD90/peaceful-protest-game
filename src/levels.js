@@ -5,7 +5,7 @@ export default {
         worldHeight: 800,
         duration: 3 * 60, // s
         winningThreshold: 100,
-        scoreWin: 500,
+        scoreWin: 300,
         cops: {
             count: [
                 [4, 0],

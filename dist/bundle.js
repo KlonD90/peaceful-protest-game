@@ -906,7 +906,7 @@ module.exports = {
         worldHeight: 800,
         duration: 3 * 60, // s
         winningThreshold: 100,
-        scoreWin: 500,
+        scoreWin: 300,
         cops: {
             count: [[4, 0], [20, 1], [100, 2], [200, 3], [300, 6], [400, 7], [1000, 10]],
             speed: {
@@ -17859,6 +17859,8 @@ var getTextStyle = function getTextStyle(width) {
   };
 };
 
+var TWEET_CACHED_BITMAP = null;
+
 var BaseTweet = function () {
   function BaseTweet(data, animOptions, styles) {
     var _this = this;
@@ -18006,16 +18008,21 @@ var BaseTweet = function () {
 
 
       var bitmapH = groupH + __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */] * 2 + 40;
-      var bitmap = this.game.add.bitmapData(width, bitmapH);
-      bitmap.fixedToCamera = true;
-      var aplhaIterp = [{ x: 0, y: 0 }, { x: bitmapH * 30 / 100, y: 0.3 }, { x: bitmapH * 80 / 100, y: 0.5 }, { x: bitmapH, y: 0.7 }];
-      for (var y = 0; y < bitmapH; y += 2) {
-        // bitmap.rect(0, y, width, 2, 'rgba(0,0,0,'+ lagrange(aplhaIterp, y) +')');
-        bitmap.rect(0, y, width, 2, 'rgba(0,0,0,' + 0.2 + ')');
-      }
 
+      var bitmap = TWEET_CACHED_BITMAP;
+      if (!bitmap) {
+        bitmap = this.game.add.bitmapData(width, bitmapH);
+
+        bitmap.fixedToCamera = true;
+        //for (let y=0; y<(bitmapH); y+=2) {
+        // bitmap.rect(0, y, width, 2, 'rgba(0,0,0,'+ lagrange(aplhaIterp, y) +')');
+        bitmap.rect(0, 0, width, bitmapH, 'rgba(0,0,0,' + 0.2 + ')');
+        //}
+        TWEET_CACHED_BITMAP = bitmap;
+      }
       // var spriteBg = this.game.add.sprite(0, height-MARGIN_BOTTOM-20, bitmap);
       var spriteBg = this.game.add.sprite(0, height - __WEBPACK_IMPORTED_MODULE_0__const_js__["c" /* MARGIN_BOTTOM */] - 13, bitmap);
+      spriteBg.height = bitmapH;
       spriteBg.fixedToCamera = true;
 
       return spriteBg;

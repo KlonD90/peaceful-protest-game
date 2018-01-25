@@ -424,7 +424,7 @@ class Game {
               }, 3000);
             }
         }        
-  */  
+  */ 
 
         // this.mz.advices.shift = this.mz.tweet.tweet(
         //     'Чтобы бегать нажмите shift',

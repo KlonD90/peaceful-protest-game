@@ -20,6 +20,7 @@ const getTextStyle = width => ({
   wordWrapWidth: width - (MARGIN_LEFT + AVATAR_SIZE + AVATAR_TEXT_SPACING),
 });
 
+let TWEET_CACHED_BITMAP = null;
 
 export default class BaseTweet {
   constructor(data, animOptions, styles) {
@@ -170,22 +171,21 @@ export default class BaseTweet {
     const { height: groupH } = this.groupTweet;
 
     const bitmapH = groupH+(MARGIN_BOTTOM*2)+40;
-    const bitmap = this.game.add.bitmapData(width, bitmapH);
-    bitmap.fixedToCamera = true;
-    const aplhaIterp = [
-      {x: 0, y: 0},
-      {x: bitmapH*30/100, y: 0.3},
-      {x: bitmapH*80/100, y: 0.5},
-      {x: bitmapH, y: 0.7},
-
-    ]
-    for (let y=0; y<(bitmapH); y+=2) {
+    
+    let bitmap = TWEET_CACHED_BITMAP;
+    if(!bitmap){
+      bitmap = this.game.add.bitmapData(width, bitmapH);
+       
+      bitmap.fixedToCamera = true;
+    //for (let y=0; y<(bitmapH); y+=2) {
       // bitmap.rect(0, y, width, 2, 'rgba(0,0,0,'+ lagrange(aplhaIterp, y) +')');
-      bitmap.rect(0, y, width, 2, 'rgba(0,0,0,'+ 0.2 +')');
+      bitmap.rect(0, 0, width, bitmapH, 'rgba(0,0,0,'+ 0.2 +')');
+    //}
+      TWEET_CACHED_BITMAP = bitmap;
     }
-
     // var spriteBg = this.game.add.sprite(0, height-MARGIN_BOTTOM-20, bitmap);
     var spriteBg = this.game.add.sprite(0, height-MARGIN_BOTTOM-13, bitmap);
+    spriteBg.height = bitmapH;
     spriteBg.fixedToCamera = true;
 
     return spriteBg;
