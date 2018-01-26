@@ -10,24 +10,22 @@
         {{ text }}
       </div>
       <div class="game-end_text">
-        Ежедневно до 1 февраля игрок, показавший лучшее время за день, будет получать подарок из магазина мерча "Медиазоны". Если вы справились в игре быстрее других, вы сможете оставить свое имя и почту в специальной форме в конце игры. Победители будут объявляться на следующий день в твиттере "Медиазоны".
+        Каждый день до 1 февраля мы будем случайным образом разыгрывать подарок из магазина мерча «Медиазоны» среди победителей игры, которые оставили нам свои контактные данные. Не забывайте, что для победы вам надо не продержаться на площади как можно дольше, а именно победить, полностью заполнив зеленую шкалу с очками. Выигравшие приз победители будут объявляться на следующий день в твиттере «Медиазоны».
       </div>
       <div class="game-end_score">
-        {{#each scores}}
-          {{#if showForm }}
-            <form data-js-selector="participated-form" class="game-end_participated score-form">
-              <input data-js-selector="participated-form-name" class="score-form_input" type="text" placeholder="Имя" />
-              <input data-js-selector="participated-form-email" class="score-form_input" type="text" placeholder="Почта" />
-              <button data-js-selector="participated-form-send" class="game-button participated-button">Участвовать</button>
-            </form>
-          {{^}}
-            <div class="score-line">
-              <span class="score-line_position">{{plus @index 1}}.</span>
-              <span class="score-line_name">{{ nick }} —</span>
-              <span class="score-line_time">{{ parseScoreTime score }}</span>
+        {{#if showForm }}
+          {{#if sended}}
+            <div class="game-end_text">
+              Ваш результат записан.
             </div>
+          {{else}}
+          <form data-js-selector="participated-form" class="game-end_participated score-form">
+            <input data-js-selector="participated-form-name" class="score-form_input" type="text" placeholder="Имя" />
+            <input data-js-selector="participated-form-email" class="score-form_input" type="text" placeholder="Почта" />
+            <button data-js-selector="participated-form-send" class="game-button participated-button">Участвовать</button>
+          </form>
           {{/if}}
-        {{/each}}
+        {{/if}}
       </div>
 
       <div class="game-end_replay">

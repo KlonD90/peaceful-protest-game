@@ -90,25 +90,24 @@ const resultTypes = {
   'success': {
     title: 'Отличный митинг! Вы бодры и на свободе',
     text: (ratingPos, time) => {
-      const ratingMap = ['первое', 'второе', 'третье']
-      if (ratingPos < 3) {
-        return `Поздравляем! Ваше время ${time}. Вы заняли ${ratingMap[ratingPos]} место в сегодняшнем топе, укажите свою почту для участия в розыгрыше призов.`;
-      }
-
-      return `Да вы опытный активист! Ваше время ${time}. Попробуйте сыграть снова и набрать очки еще быстрее, тогда вы сможете выиграть наш приз — ватник «Будет хуже».`;
+      return `Да вы опытный активист! Ваше время ${time}. Поздравляем! Вы можете принять участие в сегодняшнем розыгрыше призов, укажите свою почту для участия.`;
     },
     background: require('../assets/win_small_500.png'),
+    showForm: true,
+    sended: false
   },
   'arrested': {
     title: 'Вас свинтили. Скучайте в автозаке',
     text: (pos, time) => `Агитируйте аккуратнее, и тогда полиция не обратит на вас внимания. 
     Используйте shift, чтобы передвигаться быстрее и ускользать из лап Нацгвардии.`,
     background: require('../assets/lose_small_500.png'),
+    showForm: false
   },
   'desolation': {
     title: 'Попробуйте одиночные пикеты',
     text: (pos, time) => `Вы остались в одиночестве. Ваш протест был настолько пассивным, что вас просто никто не заметил.`,
     background: require('../assets/desolation_small_500.png'),
+    showForm: false
   }
 }
 
@@ -121,7 +120,7 @@ const _show = (context, currentScore, cb) => {
   fragment.innerHTML = html;
   document.body.appendChild(fragment);
 
-  if(context.scores.find(s => s.showForm)){
+  if(context.showForm && !context.sended){
     const formEl = document.querySelector('[data-js-selector="participated-form"]');
     const nameEl = document.querySelector('[data-js-selector="participated-form-name"]');
     const emailEl = document.querySelector('[data-js-selector="participated-form-email"]');
@@ -139,17 +138,13 @@ const _show = (context, currentScore, cb) => {
       // sendNewScoreFake(formData)
       sendNewScore(formData)
         .then((res) => {
-          const c = context.scores.find(s => s.current);
-          c.nick = formData.name;
-          c.contact = formData.email;
-          c.showForm = false;
+          context.sended = true;
           document.body.removeChild(fragment);
           _show(context, currentScore, cb);
         });
 
       return false;
     }
-
   }
   document.querySelector('[data-js-selector="replay-button"]')
     .onclick = function() {

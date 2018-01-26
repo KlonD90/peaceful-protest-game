@@ -1637,7 +1637,7 @@ class Game {
             });
             if (window.ga)
             {
-                window.ga('send' ,'event', 'protest_game', 'end', 'success', this.mz.timers.gameTime.seconds);
+                window.ga('send' ,'event', 'protest_game', 'end', 'success', parseInt(this.mz.timers.gameTime.seconds,10));
             }
             modalShow('success', this.mz.timers.gameTime.seconds, () => {
                 this.mz.objects.audio.theme.stop();
@@ -1654,7 +1654,7 @@ class Game {
                     // this.launchShield();
                     if (window.ga)
                     {
-                        window.ga('send' ,'event', 'protest_game', 'end', 'desolation', this.mz.timers.gameTime.seconds);
+                        window.ga('send' ,'event', 'protest_game', 'end', 'desolation', parseInt(this.mz.timers.gameTime.seconds,10));
                     }
                     modalShow('desolation', this.mz.timers.gameTime.seconds,  () => {
                         this.mz.objects.audio.theme.stop();
@@ -1667,7 +1667,7 @@ class Game {
                 case END_GAME_PLAYER_KILLED: {
                     if (window.ga)
                     {
-                        window.ga('send' ,'event', 'protest_game', 'end', 'arrested', this.mz.timers.gameTime.seconds);
+                        window.ga('send' ,'event', 'protest_game', 'end', 'arrested', parseInt(this.mz.timers.gameTime.seconds,10));
                     }
                     modalShow('arrested', this.mz.timers.gameTime.seconds,  () => {
                         this.mz.objects.audio.theme.stop();
